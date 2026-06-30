@@ -13,6 +13,39 @@ Reuses v18 naive numbers. Only runs AVR.
 
 USAGE: !python v23_avr_trace.py
 Runtime: ~2 hours on T4
+
+======================================================================
+ACCURACY FIXES (toggle below in AVR_CONFIG)
+======================================================================
+
+The original AVR pulls ALL LoRA weights toward the snapshot during repair,
+which preserves old tasks but undoes new-task learning — that's the
+plasticity tax (ACC 0.374 vs SLAO+MVA 0.397).
+
+Two fixes, both togglable in AVR_CONFIG:
+
+  FIX A — ADAPTIVE_ALPHA (default: True)
+    Scale repair strength by drift severity instead of fixed α=0.1.
+    Mild drift (ratio 1.15-1.3)  → small α=0.05, gentle nudge
+    Severe drift (ratio >1.5)    → larger α=0.2, harder pull
+    Formula: α = clip(0.05 + 0.1·(ratio − 1.15), 0.05, 0.2)
+    Also tighten convergence threshold (CONVERGE_BELOW=1.10) so we stop
+    repairing the moment drift is contained, not over-repair.
+
+  FIX B — SELECTIVE_REPAIR (default: True)
+    Don't pull all LoRA weights toward snapshot. Only pull the modules
+    that actually contribute to drift on the affected tasks.
+    For each LoRA module m, compute attribution = |grad_ppl| × |Δθ_m|.
+    Repair only the top-k% highest-attribution modules.
+    Low-attribution modules (new-task-specific) stay at current θ.
+    Default TOP_K_PCT = 0.3 (repair the 30% most drift-causing modules).
+
+To run the 4 ablation conditions, edit AVR_CONFIG below and re-run:
+
+  Condition 1 (baseline):    ADAPTIVE_ALPHA=False, SELECTIVE_REPAIR=False
+  Condition 2 (Fix A only):  ADAPTIVE_ALPHA=True,  SELECTIVE_REPAIR=False
+  Condition 3 (Fix B only):  ADAPTIVE_ALPHA=False, SELECTIVE_REPAIR=True
+  Condition 4 (both fixes):  ADAPTIVE_ALPHA=True,  SELECTIVE_REPAIR=True
 """
 
 import subprocess, sys, os, json, time, random, math, gc, re, copy
@@ -43,10 +76,36 @@ TASK_EPOCHS = 3
 BATCH_SIZE = 8
 CONTEXT_LENGTH = 512
 
-# AVR config (from v11 — PPL-ratio, NOT hidden-state)
-DRIFT_THRESHOLD = 1.15   # fire repair if PPL > 1.15x best
-REPAIR_ALPHA = 0.1       # pull strength per repair step
-MAX_REPAIR_STEPS = 100   # no practical cap — repair until drift is fixed
+# ============================================================================
+# AVR CONFIG — edit these flags to switch between fix conditions
+# ============================================================================
+
+AVR_CONFIG = {
+    # Original AVR parameters
+    "DRIFT_THRESHOLD": 1.15,       # fire repair if PPL > 1.15x best
+    "REPAIR_ALPHA": 0.1,           # base pull strength (used when ADAPTIVE_ALPHA=False)
+    "MAX_REPAIR_STEPS": 100,       # cap on repair iterations per task
+    "CONVERGE_BELOW": 1.10,        # stop repairing once drift drops below this ratio
+
+    # Fix A — Adaptive α (scale by drift severity)
+    "ADAPTIVE_ALPHA": True,        # True = scale α per drifted task by severity
+    "ADAPTIVE_ALPHA_MIN": 0.05,    # floor for adaptive α
+    "ADAPTIVE_ALPHA_MAX": 0.20,    # ceiling for adaptive α
+
+    # Fix B — Selective repair (only repair high-attribution modules)
+    "SELECTIVE_REPAIR": True,      # True = repair only top-k% drift-causing modules
+    "TOP_K_PCT": 0.30,             # repair the top 30% highest-attribution LoRA modules
+    "ATTRIBUTION_BATCH": 16,       # samples to use for gradient attribution
+}
+
+# Sanity: extract config into module-level names so the rest of the code reads cleanly
+DRIFT_THRESHOLD = AVR_CONFIG["DRIFT_THRESHOLD"]
+REPAIR_ALPHA = AVR_CONFIG["REPAIR_ALPHA"]
+MAX_REPAIR_STEPS = AVR_CONFIG["MAX_REPAIR_STEPS"]
+CONVERGE_BELOW = AVR_CONFIG["CONVERGE_BELOW"]
+ADAPTIVE_ALPHA = AVR_CONFIG["ADAPTIVE_ALPHA"]
+SELECTIVE_REPAIR = AVR_CONFIG["SELECTIVE_REPAIR"]
+TOP_K_PCT = AVR_CONFIG["TOP_K_PCT"]
 
 BENCH_MAX_NEW_TOKENS = 20
 SEED = 42
@@ -143,7 +202,7 @@ def create_model():
     return model, tokenizer
 
 # ============================================================================
-# SLAO CORE (from v13/v18)
+# LoRA STATE UTILITIES
 # ============================================================================
 
 def get_lora_state(model):
@@ -154,54 +213,13 @@ def set_lora_state(model, state):
         if "lora_" in n and n in state:
             p.data.copy_(state[n].to(DEVICE).to(p.data.dtype))
 
-def extract_orthogonal_A(model):
-    ortho_A = {}
-    for name, module in model.named_modules():
-        if not isinstance(module, LoraLayer): continue
-        if "default" not in module.lora_A: continue
-        A = module.lora_A["default"].weight.data.float()
-        Q, R = torch.linalg.qr(A.T.contiguous())
-        signs = torch.sign(torch.diag(R))
-        Q = Q * signs.unsqueeze(0)
-        ortho_A[name] = Q.T
-    return ortho_A
-
-def initialize_slao(model, ortho_A, prev_ft_B):
-    for name, module in model.named_modules():
-        if not isinstance(module, LoraLayer): continue
-        if "default" not in module.lora_A: continue
-        if name in ortho_A:
-            module.lora_A["default"].weight.data.copy_(
-                ortho_A[name].to(DEVICE).to(module.lora_A["default"].weight.data.dtype))
-        B_key = f"{name}.lora_B.default.weight"
-        if B_key in prev_ft_B:
-            module.lora_B["default"].weight.data.copy_(
-                prev_ft_B[B_key].to(DEVICE).to(module.lora_B["default"].weight.data.dtype))
-
-def slao_merge_B(merged_state, ft_state, task_num):
-    lam = 1.0 / math.sqrt(task_num)
-    new_merged = {}
-    for key in ft_state:
-        ft_val = ft_state[key]
-        if key in merged_state:
-            if "lora_A" in key:
-                new_merged[key] = ft_val.cpu().clone()
-            elif "lora_B" in key:
-                old_val = merged_state[key]
-                new_merged[key] = (old_val + lam * (ft_val - old_val)).cpu().clone()
-            else:
-                new_merged[key] = ft_val.cpu().clone()
-        else:
-            new_merged[key] = ft_val.cpu().clone()
-    return new_merged
-
 # ============================================================================
-# AVR CORE (from v11 — PPL-ratio verify + closed-form repair)
+# AVR CORE — verify + repair (with Fix A and Fix B)
 # ============================================================================
 
 def verify_drift(current_ppls, best_ppls, completed_tasks, threshold=DRIFT_THRESHOLD):
     """Check if any previous task has PPL > threshold × best PPL.
-    This is the v11 mechanism: PPL-ratio gate, NOT hidden-state MSE.
+    Returns dict[task] = {current_ppl, best_ppl, ratio} for drifted tasks.
     """
     drifted = {}
     for task in completed_tasks:
@@ -216,18 +234,97 @@ def verify_drift(current_ppls, best_ppls, completed_tasks, threshold=DRIFT_THRES
             }
     return drifted
 
-def repair_toward_snapshot(model, snapshot_state, alpha=REPAIR_ALPHA):
-    """Pull LoRA weights toward snapshot: θ = (1-α)θ + α·θ_snapshot
-    Closed-form interpolation — no optimizer, no gradients, just weight math.
-    This is the v11 mechanism.
+def adaptive_alpha(ratio):
+    """Fix A: scale repair strength by drift severity.
+    Mild drift (ratio near 1.15) → α ≈ 0.05 (gentle)
+    Severe drift (ratio > 1.5)   → α ≈ 0.20 (hard pull)
     """
+    base = AVR_CONFIG["REPAIR_ALPHA"]
+    a_min = AVR_CONFIG["ADAPTIVE_ALPHA_MIN"]
+    a_max = AVR_CONFIG["ADAPTIVE_ALPHA_MAX"]
+    return float(np.clip(base + 0.1 * (ratio - DRIFT_THRESHOLD), a_min, a_max))
+
+def compute_drift_attribution(model, tokenizer, drifted_tasks, train_data, task_order, snapshot_state):
+    """Fix B: for each LoRA module, compute how much its update since snapshot
+    contributes to drift on the drifted tasks.
+
+    attribution(m) = |∂PPL_drifted / ∂θ_m| × |θ_m − θ_snapshot_m|
+
+    High attribution = this module's recent update is causing the drift.
+    Low attribution  = this module is either irrelevant to drifted tasks,
+                       or hasn't changed much (likely new-task-specific).
+
+    We repair only the high-attribution modules (top-k%).
+    """
+    model.eval()
+    attributions = {}
+    # Zero out all grads
+    for n, p in model.named_parameters():
+        if p.grad is not None: p.grad.zero_()
+
+    # Accumulate gradient of mean PPL across drifted tasks
+    n_samples = AVR_CONFIG["ATTRIBUTION_BATCH"]
+    n_tasks = len(drifted_tasks)
+    for task in drifted_tasks:
+        pairs = train_data[task][:n_samples]
+        for prompt, answer in pairs:
+            text = prompt + " " + answer + tokenizer.eos_token
+            inputs = tokenizer(text, return_tensors="pt", truncation=True, max_length=512).to(DEVICE)
+            with torch.enable_grad():
+                outputs = model(**inputs, labels=inputs["input_ids"])
+                # Normalize loss by token count, scale by 1/n_tasks to average over tasks
+                n_tok = inputs["input_ids"].shape[1]
+                (outputs.loss / (n_tasks * n_tok)).backward()
+
+    # attribution = |grad| × |Δθ|
+    for n, p in model.named_parameters():
+        if "lora_" not in n or n not in snapshot_state:
+            continue
+        grad_norm = p.grad.norm().item() if p.grad is not None else 0.0
+        delta_norm = (p.data - snapshot_state[n].to(DEVICE)).norm().item()
+        attributions[n] = grad_norm * delta_norm
+        # zero grad for next call
+        if p.grad is not None: p.grad.zero_()
+
+    model.train()
+    return attributions
+
+def repair_toward_snapshot(model, snapshot_state, drifted, attributions=None):
+    """Pull LoRA weights toward snapshot: θ = (1−α)·θ + α·θ_snapshot.
+
+    If ADAPTIVE_ALPHA=True (Fix A): α is per-task, scaled by that task's drift ratio.
+                                    We use the max α across drifted tasks (most severe drives repair).
+    If SELECTIVE_REPAIR=True (Fix B): only repair modules whose attribution is in the top-k%.
+                                       Other modules keep their current (new-task-trained) weights.
+    """
+    # Determine α
+    if ADAPTIVE_ALPHA:
+        # Use the max α across drifted tasks — most severe drift sets the pull strength
+        alpha = max(adaptive_alpha(info["ratio"]) for info in drifted.values())
+    else:
+        alpha = REPAIR_ALPHA
+
+    # Determine which modules to repair
+    if SELECTIVE_REPAIR and attributions is not None and len(attributions) > 0:
+        threshold_val = float(np.percentile(
+            list(attributions.values()),
+            100 * (1 - TOP_K_PCT)
+        ))
+        modules_to_repair = {n for n, a in attributions.items() if a >= threshold_val}
+    else:
+        # Original behavior: repair all lora_ modules
+        modules_to_repair = None  # None means "all"
+
     n_adj = 0
     for n, p in model.named_parameters():
-        if "lora_" in n and n in snapshot_state:
-            snap_val = snapshot_state[n].to(DEVICE)
-            p.data.copy_((1 - alpha) * p.data + alpha * snap_val)
-            n_adj += 1
-    return n_adj
+        if "lora_" not in n or n not in snapshot_state:
+            continue
+        if modules_to_repair is not None and n not in modules_to_repair:
+            continue  # Fix B: skip this module (preserve new-task learning)
+        snap_val = snapshot_state[n].to(DEVICE)
+        p.data.copy_((1 - alpha) * p.data + alpha * snap_val)
+        n_adj += 1
+    return n_adj, alpha
 
 # ============================================================================
 # TRAINING
@@ -278,7 +375,6 @@ def train_on_pairs(model, tokenizer, pairs, epochs=TASK_EPOCHS):
 # ============================================================================
 
 def compute_ppl(model, tokenizer, pairs, max_samples=200):
-    """Compute perplexity on a set of (prompt, answer) pairs."""
     model.eval()
     total_loss, total_tokens = 0.0, 0
     for prompt, answer in pairs[:max_samples]:
@@ -292,7 +388,6 @@ def compute_ppl(model, tokenizer, pairs, max_samples=200):
     return math.exp(total_loss / max(total_tokens, 1))
 
 def eval_all_ppls(model, tokenizer, train_data, task_order, trained_so_far, max_samples=200):
-    """Evaluate PPL on all tasks seen so far (for AVR drift detection)."""
     ppls = {}
     for i, task in enumerate(task_order):
         if i >= trained_so_far:
@@ -330,7 +425,6 @@ def score_answer(response, gold):
     return 1.0 if norm(response) == norm(gold) else 0.0
 
 def evaluate_task_accuracy(model, tokenizer, test_pairs, task_name, max_questions=200):
-    """Evaluate accuracy (not PPL) on a task's test set."""
     print(f"    Eval {task_name} ({min(len(test_pairs), max_questions)} Qs)...")
     correct = 0
     total = min(len(test_pairs), max_questions)
@@ -353,7 +447,7 @@ def compute_metrics(R, task_order):
     return {"ACC": float(ACC), "BWT": float(BWT), "FF": float(FF)}
 
 # ============================================================================
-# RUN SLAO+AVR (v11 style — PPL-ratio verify + closed-form repair)
+# RUN AVR (with Fix A and Fix B)
 # ============================================================================
 
 def run_avr(train_data, test_data, task_order):
@@ -361,11 +455,18 @@ def run_avr(train_data, test_data, task_order):
     1. Train on task (plain SFT)
     2. Check PPL drift on previous tasks
     3. If drifted: repair toward snapshot (closed-form interpolation)
+       - Fix A: adaptive α scaled by drift severity
+       - Fix B: only repair top-k% highest-attribution modules
     4. Snapshot current state for next phase
     """
+    config_str = (
+        f"ADAPTIVE_ALPHA={ADAPTIVE_ALPHA}, SELECTIVE_REPAIR={SELECTIVE_REPAIR}"
+        + (f", TOP_K_PCT={TOP_K_PCT}" if SELECTIVE_REPAIR else "")
+    )
     print(f"\n{'#'*70}")
     print(f"# AVR (standalone — PPL-ratio verify + closed-form repair)")
-    print(f"# drift_threshold={DRIFT_THRESHOLD} | repair_alpha={REPAIR_ALPHA}")
+    print(f"# drift_threshold={DRIFT_THRESHOLD} | converge_below={CONVERGE_BELOW} | base_alpha={REPAIR_ALPHA}")
+    print(f"# FIXES: {config_str}")
     print(f"{'#'*70}")
 
     model, tokenizer = create_model()
@@ -377,6 +478,7 @@ def run_avr(train_data, test_data, task_order):
     completed_tasks = []
     total_repair_steps = 0
     repair_log = []
+    alpha_log = []            # track α used per repair step (for diagnostics)
 
     for task_idx, task in enumerate(task_order):
         task_num = task_idx + 1
@@ -402,6 +504,7 @@ def run_avr(train_data, test_data, task_order):
 
         # ── AVR VERIFY + REPAIR ──
         phase_repair_steps = 0
+        phase_alphas = []
 
         if task_num > 1 and merged_snapshot is not None:
             # Verify: check PPL drift on ALL previous tasks
@@ -415,14 +518,26 @@ def run_avr(train_data, test_data, task_order):
                 # Repair loop: closed-form interpolation toward snapshot
                 still_drifted = drifted
                 for step in range(MAX_REPAIR_STEPS):
-                    n_adj = repair_toward_snapshot(model, merged_snapshot)
+                    # Fix B: compute attribution once per repair step (it changes as we repair)
+                    if SELECTIVE_REPAIR:
+                        attributions = compute_drift_attribution(
+                            model, tokenizer, list(still_drifted.keys()),
+                            train_data, task_order, merged_snapshot
+                        )
+                    else:
+                        attributions = None
+
+                    n_adj, alpha_used = repair_toward_snapshot(
+                        model, merged_snapshot, still_drifted, attributions
+                    )
                     phase_repair_steps += 1
+                    phase_alphas.append(alpha_used)
 
                     # Re-evaluate PPL after repair
                     repair_ppls = eval_all_ppls(model, tokenizer, train_data, task_order, task_num)
-                    still_drifted = verify_drift(repair_ppls, best_ppls, completed_tasks[:-1])
+                    still_drifted = verify_drift(repair_ppls, best_ppls, completed_tasks[:-1], threshold=CONVERGE_BELOW)
 
-                    print(f"    [AVR] Repair step {step+1}: {n_adj} params adjusted, "
+                    print(f"    [AVR] Repair step {step+1}: α={alpha_used:.3f}, {n_adj} params adjusted, "
                           f"still drifted: {list(still_drifted.keys()) if still_drifted else 'none'}")
 
                     if not still_drifted:
@@ -439,7 +554,8 @@ def run_avr(train_data, test_data, task_order):
                 print(f"  [AVR] No drift — repair not needed")
 
         total_repair_steps += phase_repair_steps
-        repair_log.append({"task": task, "repair_steps": phase_repair_steps})
+        repair_log.append({"task": task, "repair_steps": phase_repair_steps, "alphas": phase_alphas})
+        alpha_log.extend(phase_alphas)
 
         # Final PPL after repair (if any)
         final_ppls = eval_all_ppls(model, tokenizer, train_data, task_order, task_num)
@@ -462,7 +578,12 @@ def run_avr(train_data, test_data, task_order):
     metrics = compute_metrics(R, task_order)
 
     print(f"\n  [AVR] Total repair steps: {total_repair_steps}")
-    print(f"  [AVR] Repair log: {repair_log}")
+    print(f"  [AVR] Repair log:")
+    for entry in repair_log:
+        a_str = f", alphas={[f'{a:.3f}' for a in entry['alphas']]}" if entry['alphas'] else ""
+        print(f"    {entry['task']}: {entry['repair_steps']} repair steps{a_str}")
+    if alpha_log:
+        print(f"  [AVR] α stats: min={min(alpha_log):.3f}, mean={np.mean(alpha_log):.3f}, max={max(alpha_log):.3f}")
 
     del model; gc.collect()
     if torch.cuda.is_available(): torch.cuda.empty_cache()
@@ -475,9 +596,12 @@ def run_avr(train_data, test_data, task_order):
 
 def main():
     print("=" * 70)
-    print("V23: Your AVR (v11 style) on TRACE")
+    print("V23: AVR on TRACE — with Fix A (adaptive α) + Fix B (selective repair)")
     print(f"Seed: {SEED} | Tasks: {TRACE_TASKS}")
-    print(f"AVR: PPL-ratio verify (threshold={DRIFT_THRESHOLD}) + closed-form repair (alpha={REPAIR_ALPHA})")
+    print(f"AVR: PPL-ratio verify (threshold={DRIFT_THRESHOLD}, converge_below={CONVERGE_BELOW})")
+    print(f"     + closed-form repair (base α={REPAIR_ALPHA})")
+    print(f"Fix A (ADAPTIVE_ALPHA)   = {ADAPTIVE_ALPHA}")
+    print(f"Fix B (SELECTIVE_REPAIR) = {SELECTIVE_REPAIR}" + (f" (top {TOP_K_PCT*100:.0f}%)" if SELECTIVE_REPAIR else ""))
     print("=" * 70)
 
     # Download TRACE
@@ -490,46 +614,41 @@ def main():
     for task in TRACE_TASKS:
         train_data[task], test_data[task] = load_trace_task(trace_dir, task)
 
-    # v18 results (reuse)
+    # v18 baselines (for comparison)
     naive_v18 = {"ACC": 0.379, "BWT": -0.130, "FF": 0.130}
     slao_v18 = {"ACC": 0.397, "BWT": -0.062, "FF": 0.062}
     avr_v19_broken = {"ACC": 0.405, "BWT": -0.082, "FF": 0.082}
 
-    # --- Run AVR (standalone) ---
+    # --- Run AVR (standalone, with fixes) ---
     avr_R, avr_metrics, total_repairs, repair_log = run_avr(train_data, test_data, TRACE_TASKS)
 
     # --- VERDICT ---
     print(f"\n{'='*70}")
-    print("THE VERDICT: Your AVR (v11 style) on TRACE")
+    print("THE VERDICT: AVR on TRACE")
+    print(f"  (ADAPTIVE_ALPHA={ADAPTIVE_ALPHA}, SELECTIVE_REPAIR={SELECTIVE_REPAIR})")
     print(f"{'='*70}")
 
-    print(f"\n{'Method':<35} {'ACC':<10} {'BWT':<10} {'FF':<10} {'Repairs':<10}")
-    print("-" * 75)
-    print(f"{'Naive (v18)':<35} {naive_v18['ACC']:<10.3f} {naive_v18['BWT']:<10.3f} {naive_v18['FF']:<10.3f} {'—':<10}")
-    print(f"{'SLAO (v18, published method)':<35} {slao_v18['ACC']:<10.3f} {slao_v18['BWT']:<10.3f} {slao_v18['FF']:<10.3f} {'—':<10}")
-    print(f"{'AVR broken (v19, hidden-state)':<35} {avr_v19_broken['ACC']:<10.3f} {avr_v19_broken['BWT']:<10.3f} {avr_v19_broken['FF']:<10.3f} {'0':<10}")
-    print(f"{'AVR (PPL-ratio + closed-form)':<35} {avr_metrics['ACC']:<10.3f} {avr_metrics['BWT']:<10.3f} {avr_metrics['FF']:<10.3f} {total_repairs:<10}")
+    print(f"\n{'Method':<40} {'ACC':<10} {'BWT':<10} {'FF':<10} {'Repairs':<10}")
+    print("-" * 80)
+    print(f"{'Naive (v18)':<40} {naive_v18['ACC']:<10.3f} {naive_v18['BWT']:<10.3f} {naive_v18['FF']:<10.3f} {'—':<10}")
+    print(f"{'SLAO (v18, published method)':<40} {slao_v18['ACC']:<10.3f} {slao_v18['BWT']:<10.3f} {slao_v18['FF']:<10.3f} {'—':<10}")
+    print(f"{'AVR broken (v19, hidden-state)':<40} {avr_v19_broken['ACC']:<10.3f} {avr_v19_broken['BWT']:<10.3f} {avr_v19_broken['FF']:<10.3f} {'0':<10}")
+    cond_label = (f"AVR baseline" if not (ADAPTIVE_ALPHA or SELECTIVE_REPAIR)
+                  else f"AVR +{'A' if ADAPTIVE_ALPHA else ''}{'B' if SELECTIVE_REPAIR else ''}")
+    print(f"{cond_label:<40} {avr_metrics['ACC']:<10.3f} {avr_metrics['BWT']:<10.3f} {avr_metrics['FF']:<10.3f} {total_repairs:<10}")
 
-    # Delta from naive and SLAO
+    # Deltas
     d_naive_acc = avr_metrics["ACC"] - naive_v18["ACC"]
     d_naive_bwt = avr_metrics["BWT"] - naive_v18["BWT"]
     d_slao_acc = avr_metrics["ACC"] - slao_v18["ACC"]
     d_slao_bwt = avr_metrics["BWT"] - slao_v18["BWT"]
-    print(f"\n{'Delta from naive':<35} {d_naive_acc:<+10.3f} {d_naive_bwt:<+10.3f}")
-    print(f"{'Delta from SLAO':<35} {d_slao_acc:<+10.3f} {d_slao_bwt:<+10.3f}")
+    print(f"\n{'Delta from naive':<40} {d_naive_acc:<+10.3f} {d_naive_bwt:<+10.3f}")
+    print(f"{'Delta from SLAO':<40} {d_slao_acc:<+10.3f} {d_slao_bwt:<+10.3f}")
 
     # Repair summary
     print(f"\n  Repair steps per task:")
     for entry in repair_log:
         print(f"    {entry['task']}: {entry['repair_steps']} repair steps")
-
-    print(f"\n{'='*70}")
-    if avr_metrics["ACC"] > naive_v18["ACC"] and total_repairs > 0:
-        print(f"  AVR BEATS NAIVE — repairs fired {total_repairs} times, ACC {avr_metrics['ACC']:.3f} vs {naive_v18['ACC']:.3f}")
-    elif total_repairs > 0:
-        print(f"  AVR FIRED — {total_repairs} repairs, ACC {avr_metrics['ACC']:.3f} vs naive {naive_v18['ACC']:.3f}")
-    else:
-        print(f"  AVR DID NOT FIRE — no PPL drift above {DRIFT_THRESHOLD}x threshold")
 
     # R matrix
     print(f"\n  R MATRIX (AVR standalone):")
@@ -539,16 +658,29 @@ def main():
         row = f"  {TRACE_TASKS[i][:8]:<10} " + "  ".join(f"{avr_R[i][j]:<10.3f}" for j in range(len(TRACE_TASKS)))
         print(row)
 
-    # Save
+    # Save — filename encodes which condition was run
+    cond_tag = ("baseline" if not (ADAPTIVE_ALPHA or SELECTIVE_REPAIR)
+                else f"{'A' if ADAPTIVE_ALPHA else ''}{'B' if SELECTIVE_REPAIR else ''}")
+    out_name = f"v23_results_{cond_tag}.json"
+
     results = {
-        "seed": SEED, "tasks": TRACE_TASKS,
+        "seed": SEED,
+        "tasks": TRACE_TASKS,
+        "config": {
+            "DRIFT_THRESHOLD": DRIFT_THRESHOLD,
+            "REPAIR_ALPHA": REPAIR_ALPHA,
+            "CONVERGE_BELOW": CONVERGE_BELOW,
+            "ADAPTIVE_ALPHA": ADAPTIVE_ALPHA,
+            "SELECTIVE_REPAIR": SELECTIVE_REPAIR,
+            "TOP_K_PCT": TOP_K_PCT,
+        },
         "avr_standalone": {"metrics": avr_metrics, "R": avr_R,
                           "total_repair_steps": total_repairs, "repair_log": repair_log},
         "comparison": {"naive_v18": naive_v18, "slao_v18": slao_v18, "avr_v19_broken": avr_v19_broken},
     }
-    with open(OUTPUT_DIR / "v23_results.json", "w") as f:
+    with open(OUTPUT_DIR / out_name, "w") as f:
         json.dump(results, f, indent=2)
-    print(f"\nResults: {OUTPUT_DIR}/v23_results.json")
+    print(f"\nResults saved to: {OUTPUT_DIR / out_name}")
 
 if __name__ == "__main__":
     main()
