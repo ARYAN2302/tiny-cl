@@ -18,9 +18,8 @@ checkpoints/
 *.pt
 *.pth
 
-# Results (regeneratable)
+# Regeneratable outputs (per-experiment, NOT the curated results/ dir)
 output/
-results/
 v*_results/
 trace_data/
 
