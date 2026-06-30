@@ -103,7 +103,6 @@ _ensure_deps()
 import numpy as np
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from peft import LoraConfig, get_peft_model, TaskType
-from peft.tuners.lora.layer import LoraLayer
 
 random.seed(SEED)
 np.random.seed(SEED)
@@ -164,7 +163,7 @@ def create_model():
     return model, tokenizer
 
 # ============================================================================
-# SLAO CORE (from v13/v18)
+# LoRA STATE UTILITIES
 # ============================================================================
 
 def get_lora_state(model):
@@ -175,49 +174,8 @@ def set_lora_state(model, state):
         if "lora_" in n and n in state:
             p.data.copy_(state[n].to(DEVICE).to(p.data.dtype))
 
-def extract_orthogonal_A(model):
-    ortho_A = {}
-    for name, module in model.named_modules():
-        if not isinstance(module, LoraLayer): continue
-        if "default" not in module.lora_A: continue
-        A = module.lora_A["default"].weight.data.float()
-        Q, R = torch.linalg.qr(A.T.contiguous())
-        signs = torch.sign(torch.diag(R))
-        Q = Q * signs.unsqueeze(0)
-        ortho_A[name] = Q.T
-    return ortho_A
-
-def initialize_slao(model, ortho_A, prev_ft_B):
-    for name, module in model.named_modules():
-        if not isinstance(module, LoraLayer): continue
-        if "default" not in module.lora_A: continue
-        if name in ortho_A:
-            module.lora_A["default"].weight.data.copy_(
-                ortho_A[name].to(DEVICE).to(module.lora_A["default"].weight.data.dtype))
-        B_key = f"{name}.lora_B.default.weight"
-        if B_key in prev_ft_B:
-            module.lora_B["default"].weight.data.copy_(
-                prev_ft_B[B_key].to(DEVICE).to(module.lora_B["default"].weight.data.dtype))
-
-def slao_merge_B(merged_state, ft_state, task_num):
-    lam = 1.0 / math.sqrt(task_num)
-    new_merged = {}
-    for key in ft_state:
-        ft_val = ft_state[key]
-        if key in merged_state:
-            if "lora_A" in key:
-                new_merged[key] = ft_val.cpu().clone()
-            elif "lora_B" in key:
-                old_val = merged_state[key]
-                new_merged[key] = (old_val + lam * (ft_val - old_val)).cpu().clone()
-            else:
-                new_merged[key] = ft_val.cpu().clone()
-        else:
-            new_merged[key] = ft_val.cpu().clone()
-    return new_merged
-
 # ============================================================================
-# AVR CORE (from v11 — PPL-ratio verify + closed-form repair)
+# AVR CORE — PPL-ratio verify + closed-form repair (with Fix A + Fix B)
 # ============================================================================
 
 def verify_drift(current_ppls, best_ppls, completed_tasks, threshold=DRIFT_THRESHOLD):
@@ -439,11 +397,11 @@ def compute_metrics(R, task_order):
     return {"ACC": float(ACC), "BWT": float(BWT), "FF": float(FF)}
 
 # ============================================================================
-# RUN SLAO+AVR (v11 style — PPL-ratio verify + closed-form repair)
+# RUN AVR
 # ============================================================================
 
 def run_avr(train_data, test_data, task_order):
-    """AVR standalone — no SLAO. Just:
+    """AVR standalone. Plain SFT + verify + repair.
     1. Train on task (plain SFT)
     2. Check PPL drift on previous tasks
     3. If drifted: repair toward snapshot (closed-form interpolation)
@@ -472,7 +430,7 @@ def run_avr(train_data, test_data, task_order):
 
         train_pairs = train_data[task]
 
-        # Plain SFT — no SLAO init, no orthogonal projection
+        # Plain SFT on this task
         gs, tl = train_on_pairs(model, tokenizer, train_pairs)
 
         # Get current LoRA state
