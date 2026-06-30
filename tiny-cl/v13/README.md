@@ -50,4 +50,4 @@ Medical (A) is the most fragile. Creative-first is the worst curriculum.
 
 **SLAO r=32 is the shipped method.** FF(A) = 1.097× is "good enough" for the living-model claim. The 5% gap to the 1.05× target is understood and structural. We do not pursue further CL methods.
 
-Next phase: **self-improvement without forgetting**, building on top of SLAO — see `../v14/` (SLAO + 1 MVA round), `../v15/` (SLAO + 3 MVA rounds), `../v18/` (TRACE benchmark), and `../v23/` (AVR standalone on TRACE). Design notes in [`../../NEXT_STEPS.md`](../../NEXT_STEPS.md).
+Next phase: **self-improvement without forgetting**, building on top of SLAO — see `../v14/` (SLAO + 1 MVA round), `../v15/` (SLAO + 3 MVA rounds), `../v18/` (TRACE benchmark), and `../v23/` (AVR standalone on TRACE). Design notes in [`../../docs/NEXT_STEPS.md`](../../docs/NEXT_STEPS.md).

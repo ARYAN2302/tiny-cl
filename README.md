@@ -72,10 +72,6 @@ tiny-cl/
 ├── CITATION.cff             ← citation metadata
 ├── .gitignore
 │
-├── BUILD.md                 ← V1 build log (30M GPT-2, Anchor-AVR origin)
-├── BUILD_V2.md              ← V2 build log (move to LFM2.5-350M + LoRA)
-├── NEXT_STEPS.md            ← design notes for self-improvement phase
-│
 ├── docs/
 │   ├── architecture.md      ← how SLAO + MVA + AVR compose
 │   ├── methods.md           ← formal definitions, equations, hyperparameters
@@ -174,9 +170,9 @@ LFM2.5-350M has 16 layers: conv at positions `[0,1,3,4,6,7,9,11,13,15]` and atte
 - [`docs/experiments.md`](docs/experiments.md) — versioned experiment index (v1 → v23)
 - [`docs/results.md`](docs/results.md) — full results tables, plots, statistical interpretation
 - [`docs/research/`](docs/research/) — literature review (39 papers: SEAL, INTUITOR, SDPO, R-Zero, REST-EM, etc.)
-- [`BUILD.md`](BUILD.md) — V1 build log (30M GPT-2, Anchor-AVR origin story)
-- [`BUILD_V2.md`](BUILD_V2.md) — V2 build log (migration to LFM2.5-350M + LoRA)
-- [`NEXT_STEPS.md`](NEXT_STEPS.md) — design notes for the self-improvement phase
+- [`docs/BUILD.md`](docs/BUILD.md) — V1 build log (30M GPT-2, Anchor-AVR origin story)
+- [`docs/BUILD_V2.md`](docs/BUILD_V2.md) — V2 build log (migration to LFM2.5-350M + LoRA)
+- [`docs/NEXT_STEPS.md`](docs/NEXT_STEPS.md) — design notes for the self-improvement phase
 
 ---
 

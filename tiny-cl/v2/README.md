@@ -43,5 +43,6 @@ Superseded by the single-file Kaggle scripts (v4 onward) for portability. The V2
 
 ## See also
 
-- [`BUILD_V2.md`](../../BUILD_V2.md) — full V2 build log
+- [`docs/BUILD.md`](../../docs/BUILD.md) — V1 build log (30M GPT-2, Anchor-AVR origin)
+- [`docs/BUILD_V2.md`](../../docs/BUILD_V2.md) — full V2 build log
 - [`../../docs/architecture.md`](../../docs/architecture.md) — how V2's framework evolved into the three-mechanism living model

@@ -12,7 +12,7 @@ Every iteration from V1 (30M GPT-2 from scratch) through V23 (AVR standalone on 
 
 **Result:** 3× less forgetting than naive sequential SFT and than EWC.
 
-**Files:** [`BUILD.md`](../BUILD.md) (full V1 build log).
+**Files:** [`docs/BUILD.md`](BUILD.md) (full V1 build log).
 
 **Status:** Superseded by V2 (move to pretrained LFM2.5-350M). Kept as the origin story for AVR.
 
@@ -24,7 +24,7 @@ Every iteration from V1 (30M GPT-2 from scratch) through V23 (AVR standalone on 
 
 **Mechanism:** Freeze LFM2.5-350M base, attach LoRA adapters, apply Anchor-AVR on the LoRA weights only (not the base weights). Three domains: Medical / Code / Creative, 1M tokens each.
 
-**Files:** Top-level `config.py`, `data.py`, `methods.py`, `train.py`, `evaluate.py`, `model.py`, `run_all.py`, `plot_results.py`, `modal_run.py`. Full build log in [`BUILD_V2.md`](../BUILD_V2.md).
+**Files:** The V2 framework under [`../tiny-cl/v2/`](../tiny-cl/v2/) (`config.py`, `data.py`, `methods.py`, `train.py`, `evaluate.py`, `model.py`, `run_all.py`, `plot_results.py`, `modal_run.py`). Full build log in [`BUILD_V2.md`](BUILD_V2.md).
 
 **Status:** Superseded by the single-file Kaggle scripts (v4 onward). Kept because it's the cleanest reference implementation of the V2 framework.
 
@@ -241,7 +241,7 @@ Each MVA round uses a fresh SQuAD sample, an adaptive threshold (50th percentile
 
 | Version | Why skipped |
 |---------|-------------|
-| v1      | Folded into V2; the 30M from-scratch story is in `BUILD.md` |
+| v1      | Folded into V2; the 30M from-scratch story is in `docs/BUILD.md` |
 | v12     | Never made it past design — merged into v13 |
 | v16, v17| Alternative MVA thresholds; superseded by v15's adaptive threshold |
 | v19, v20, v21, v22 | Iterations on TRACE harness; v23 is the clean version |
