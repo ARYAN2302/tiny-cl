@@ -408,8 +408,10 @@ def run_avr(train_data, test_data, task_order):
     4. Snapshot current state for next phase
     """
     print(f"\n{'#'*70}")
-    print(f"# AVR (standalone — PPL-ratio verify + closed-form repair)")
-    print(f"# drift_threshold={DRIFT_THRESHOLD} | repair_alpha={REPAIR_ALPHA}")
+    print(f"# AVR (standalone) — PPL-ratio verify + closed-form repair")
+    print(f"# drift_threshold={DRIFT_THRESHOLD} | converge_below={CONVERGE_BELOW} | base_alpha={REPAIR_ALPHA}")
+    print(f"# Fix A (adaptive α)    = ON  (range [{ADAPTIVE_ALPHA_MIN}, {ADAPTIVE_ALPHA_MAX}])")
+    print(f"# Fix B (selective)     = ON  (top {TOP_K_PCT*100:.0f}% by attribution)")
     print(f"{'#'*70}")
 
     model, tokenizer = create_model()
@@ -446,6 +448,8 @@ def run_avr(train_data, test_data, task_order):
 
         # ── AVR VERIFY + REPAIR ──
         phase_repair_steps = 0
+        drifted = {}           # always defined — empty when no drift check runs
+        phase_alphas = []      # always defined — empty when no repair runs
 
         if task_num > 1 and merged_snapshot is not None:
             # Verify: check PPL drift on ALL previous tasks
@@ -494,7 +498,7 @@ def run_avr(train_data, test_data, task_order):
                 print(f"  [AVR] No drift — repair not needed")
 
         total_repair_steps += phase_repair_steps
-        repair_log.append({"task": task, "repair_steps": phase_repair_steps, "alphas": phase_alphas if drifted else []})
+        repair_log.append({"task": task, "repair_steps": phase_repair_steps, "alphas": phase_alphas})
 
         # Final PPL after repair (if any)
         final_ppls = eval_all_ppls(model, tokenizer, train_data, task_order, task_num)
