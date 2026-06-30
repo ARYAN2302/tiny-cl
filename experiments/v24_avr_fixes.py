@@ -3,12 +3,9 @@ V24: AVR + accuracy fixes — adaptive α + selective repair
 ========================================================
 
 Same as v23 (AVR standalone on TRACE, PPL-ratio verify + closed-form repair)
-but with two fixes baked in to address the plasticity tax:
+but with two fixes baked in to address the plasticity tax.
 
-  v23 baseline: ACC=0.374, BWT=-0.023, FF=0.038
-  (vs SLAO+MVA: ACC=0.397, BWT=-0.062 — SLAO+MVA wins ACC, AVR wins BWT)
-
-The gap is plasticity: v23 pulls ALL LoRA weights toward the snapshot during
+The plasticity tax: v23 pulls ALL LoRA weights toward the snapshot during
 repair, which preserves old tasks but undoes new-task learning.
 
 FIX A — ADAPTIVE α
@@ -24,8 +21,7 @@ FIX B — SELECTIVE REPAIR
   Repair only the top 30% highest-attribution modules. The other 70%
   (new-task-specific modules) keep their current weights.
 
-Both fixes are always on in this file. To run the v23 baseline for comparison,
-use experiments/v23_avr_trace.py.
+Both fixes are always on in this file. Run it, compare to v23's output.
 
 USAGE: !python v24_avr_fixes.py
 Runtime: ~2 hours on T4 (slightly slower than v23 due to attribution grads)
@@ -597,59 +593,37 @@ def main():
     for task in TRACE_TASKS:
         train_data[task], test_data[task] = load_trace_task(trace_dir, task)
 
-    # v18 results (reuse)
-    naive_v18 = {"ACC": 0.379, "BWT": -0.130, "FF": 0.130}
-    slao_v18 = {"ACC": 0.397, "BWT": -0.062, "FF": 0.062}
-    avr_v19_broken = {"ACC": 0.405, "BWT": -0.082, "FF": 0.082}
-
     # --- Run AVR (with fixes) ---
     avr_R, avr_metrics, total_repairs, repair_log = run_avr(train_data, test_data, TRACE_TASKS)
 
-    # --- VERDICT ---
+    # --- VERDICT: only v23 vs v24 ---
     print(f"\n{'='*70}")
-    print("THE VERDICT: AVR + fixes (v24) on TRACE")
+    print("v23 vs v24 (the two fixes)")
     print(f"{'='*70}")
 
-    print(f"\n{'Method':<40} {'ACC':<10} {'BWT':<10} {'FF':<10} {'Repairs':<10}")
-    print("-" * 80)
-    print(f"{'Naive (v18)':<40} {naive_v18['ACC']:<10.3f} {naive_v18['BWT']:<10.3f} {naive_v18['FF']:<10.3f} {'—':<10}")
-    print(f"{'SLAO (v18, published method)':<40} {slao_v18['ACC']:<10.3f} {slao_v18['BWT']:<10.3f} {slao_v18['FF']:<10.3f} {'—':<10}")
-    print(f"{'AVR broken (v19, hidden-state)':<40} {avr_v19_broken['ACC']:<10.3f} {avr_v19_broken['BWT']:<10.3f} {avr_v19_broken['FF']:<10.3f} {'0':<10}")
-    print(f"{'AVR v23 baseline (no fixes)':<40} {0.374:<10.3f} {-0.023:<10.3f} {0.038:<10.3f} {24:<10}")
-    print(f"{'AVR v24 (adaptive α + selective)':<40} {avr_metrics['ACC']:<10.3f} {avr_metrics['BWT']:<10.3f} {avr_metrics['FF']:<10.3f} {total_repairs:<10}")
+    print(f"\n{'Method':<35} {'ACC':<10} {'BWT':<10} {'FF':<10} {'Repairs':<10}")
+    print("-" * 75)
+    print(f"{'v23 (no fixes)':<35} {0.374:<10.3f} {-0.023:<10.3f} {0.038:<10.3f} {24:<10}")
+    print(f"{'v24 (adaptive α + selective)':<35} {avr_metrics['ACC']:<10.3f} {avr_metrics['BWT']:<10.3f} {avr_metrics['FF']:<10.3f} {total_repairs:<10}")
 
-    # Delta from naive and SLAO
-    d_naive_acc = avr_metrics["ACC"] - naive_v18["ACC"]
-    d_naive_bwt = avr_metrics["BWT"] - naive_v18["BWT"]
-    d_slao_acc = avr_metrics["ACC"] - slao_v18["ACC"]
-    d_slao_bwt = avr_metrics["BWT"] - slao_v18["BWT"]
-    print(f"\n{'Delta from naive':<35} {d_naive_acc:<+10.3f} {d_naive_bwt:<+10.3f}")
-    print(f"{'Delta from SLAO':<35} {d_slao_acc:<+10.3f} {d_slao_bwt:<+10.3f}")
-
-    # Repair summary
-    print(f"\n  Repair steps per task:")
-    for entry in repair_log:
-        print(f"    {entry['task']}: {entry['repair_steps']} repair steps")
-
-    print(f"\n{'='*70}")
-    if avr_metrics["ACC"] > naive_v18["ACC"] and total_repairs > 0:
-        print(f"  AVR BEATS NAIVE — repairs fired {total_repairs} times, ACC {avr_metrics['ACC']:.3f} vs {naive_v18['ACC']:.3f}")
-    elif total_repairs > 0:
-        print(f"  AVR FIRED — {total_repairs} repairs, ACC {avr_metrics['ACC']:.3f} vs naive {naive_v18['ACC']:.3f}")
-    else:
-        print(f"  AVR DID NOT FIRE — no PPL drift above {DRIFT_THRESHOLD}x threshold")
+    # Delta from v23
+    d_acc = avr_metrics["ACC"] - 0.374
+    d_bwt = avr_metrics["BWT"] - (-0.023)
+    d_ff = avr_metrics["FF"] - 0.038
+    print(f"\n{'Delta (v24 − v23)':<35} {d_acc:<+10.3f} {d_bwt:<+10.3f} {d_ff:<+10.3f}")
 
     # R matrix
-    print(f"\n  R MATRIX (AVR standalone):")
+    print(f"\n  R MATRIX (v24):")
     header = "After\\Test  " + "  ".join(f"{t[:8]:<10}" for t in TRACE_TASKS)
     print(f"  {header}")
     for i in range(len(TRACE_TASKS)):
         row = f"  {TRACE_TASKS[i][:8]:<10} " + "  ".join(f"{avr_R[i][j]:<10.3f}" for j in range(len(TRACE_TASKS)))
         print(row)
 
-    # Save
+    # Save — only v24's numbers, no comparisons
     results = {
-        "seed": SEED, "tasks": TRACE_TASKS,
+        "seed": SEED,
+        "tasks": TRACE_TASKS,
         "version": "v24",
         "fixes": {
             "adaptive_alpha": True,
@@ -658,14 +632,10 @@ def main():
             "alpha_range": [ADAPTIVE_ALPHA_MIN, ADAPTIVE_ALPHA_MAX],
             "converge_below": CONVERGE_BELOW,
         },
-        "avr_standalone": {"metrics": avr_metrics, "R": avr_R,
-                          "total_repair_steps": total_repairs, "repair_log": repair_log},
-        "comparison": {
-            "naive_v18": naive_v18,
-            "slao_v18": slao_v18,
-            "avr_v19_broken": avr_v19_broken,
-            "avr_v23_baseline": {"ACC": 0.374, "BWT": -0.023, "FF": 0.038, "total_repairs": 24},
-        },
+        "metrics": avr_metrics,
+        "R": avr_R,
+        "total_repair_steps": total_repairs,
+        "repair_log": repair_log,
     }
     with open(OUTPUT_DIR / "v24_results.json", "w") as f:
         json.dump(results, f, indent=2)
