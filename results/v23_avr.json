@@ -1,0 +1,20 @@
+{
+  "seed": 42,
+  "tasks": ["C-STANCE", "FOMC", "NumGLUE-cm", "NumGLUE-ds"],
+  "avr_standalone": {
+    "metrics": {"ACC":0.373564814814815,"BWT":-0.0234362139917696,"FF":0.0383333333333333},
+    "R": [[0.475,0,0,0],[0.45,0.55,0,0],[0.45,0.57,0.234567901234568,0],[0.42,0.51,0.259259259259259,0.305]],
+    "total_repair_steps": 24,
+    "repair_log": [
+      {"task":"C-STANCE","repair_steps":0},
+      {"task":"FOMC","repair_steps":4},
+      {"task":"NumGLUE-cm","repair_steps":10},
+      {"task":"NumGLUE-ds","repair_steps":10}
+    ]
+  },
+  "comparison": {
+    "naive_v18": {"ACC":0.379,"BWT":-0.13,"FF":0.13},
+    "slao_v18":  {"ACC":0.397,"BWT":-0.062,"FF":0.062},
+    "avr_v19_broken": {"ACC":0.405,"BWT":-0.082,"FF":0.082}
+  }
+}
