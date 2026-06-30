@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Data and caches
+data/
+hf_cache/
+checkpoints/
+*.bin
+*.safetensors
+*.ckpt
+*.pt
+*.pth
+
+# Results (regeneratable)
+output/
+results/
+v*_results/
+trace_data/
+
+# Kaggle / Colab
+.cache/
+.config/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Modal
+.modal/
+
+# Env / secrets
+.env
+.env.local
+*.key
+
+# Skill framework internals (not part of this repo)
+skills/
+tool-results/
+upload/

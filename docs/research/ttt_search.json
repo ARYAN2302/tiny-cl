@@ -1,0 +1,92 @@
+[
+  {
+    "url": "https://arxiv.org/html/2604.06169v1",
+    "name": "In-Place Test-Time Training - arXiv",
+    "snippet": "Test-Time Training (TTT) offers a compelling alternative by updating a subset of model parameters (fast weights) at inference time, yet its ...",
+    "host_name": "arxiv.org",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.newline.co/@Dipen/testtime-selftraining-to-boost-llm-reasoning--09e52239",
+    "name": "Test‑Time Self‑Training to Boost LLM Reasoning - Newline",
+    "snippet": "For example, a 2025 paper showed that test-time self-training reduced the need for labeled data by 70% compared to fine-tuning while ...",
+    "host_name": "www.newline.co",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://openreview.net/forum?id=WO6ngOsEL3",
+    "name": "Test-Time Scaling via Metric Geometry for LLM Reasoning",
+    "snippet": "AIME Dataset Benchmark : We agree that AIME is a valuable benchmark for LLM reasoning. We have now included the AIME dataset (gneubig/aime ...",
+    "host_name": "openreview.net",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://magazine.sebastianraschka.com/p/state-of-llm-reasoning-and-inference-scaling",
+    "name": "The State of LLM Reasoning Model Inference",
+    "snippet": "This article explores recent research advancements in reasoning-optimized LLMs, with a particular focus on inference-time compute scaling.",
+    "host_name": "magazine.sebastianraschka.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/mbzuai-oryx/awesome-llm-post-training",
+    "name": "GitHub - mbzuai-oryx/Awesome-LLM-Post-training",
+    "snippet": "A taxonomy of post-training approaches for **LLMs**, categorized into Fine-tuning, Reinforcement Learning, and Test-time Scaling methods. We summarize the key ...",
+    "host_name": "github.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://aclanthology.org/2025.emnlp-main.1304.pdf",
+    "name": "[PDF] How Far Can LLMs Improve from Experience? Measuring Test-Time",
+    "snippet": "This work aims to evaluate the test-time learning capabilities of large language models and compare their gains with humans. Consistent with ...",
+    "host_name": "aclanthology.org",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/singularity/comments/1gs561t/mit_lab_publishes_the_surprising_effectiveness_of",
+    "name": "Test-Time Training (TTT) produces a 61.9% score on the AGI-ARC",
+    "snippet": "Applying TTT to an 8B-parameter language model, we achieve 53% accuracy on the ARC's public validation set, improving the state-of-the-art by nearly 25%.",
+    "host_name": "www.reddit.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://futureagi.com/blog/llm-reasoning-2025",
+    "name": "LLM Reasoning 2026: o3, GPT-5, Claude Thinking, R1 - Future AGI",
+    "snippet": "How Reinforcement Learning, Test-Time Compute, and Self-Training Move LLMs Toward Genuine Reasoning; Summary: How to Pick a Reasoning Model and Evaluate It in ...",
+    "host_name": "futureagi.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.intoai.pub/p/test-time-reinforcement-learning",
+    "name": "LLMs Can Now Self-Evolve At Test Time Using Reinforcement",
+    "snippet": "3 mathematical reasoning benchmarks, namely, AIME 2024, AMC, and MATH-500. The primary metric to evaluate the LLMs on each benchmark is pass@1 ...",
+    "host_name": "www.intoai.pub",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://neurips.cc/virtual/2025/poster/121417",
+    "name": "A Multi-level Benchmark for Temporal Reasoning of LLMs in Real",
+    "snippet": "Extensive experiments across diverse models reveal that test-time scaling significantly enhances logical reasoning while showing varied effects ...",
+    "host_name": "neurips.cc",
+    "rank": 9,
+    "date": "",
+    "favicon": ""
+  }
+]

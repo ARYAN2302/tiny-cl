@@ -1,0 +1,56 @@
+[
+  {
+    "url": "https://arxiv.org/html/2510.07841v1",
+    "name": "Self-Improving LLM Agents at Test-Time - arXiv",
+    "snippet": "Sirius: Self-improving multi-agent systems via bootstrapped reasoning. In Workshop on Reasoning and Planning for Large Language Models, 2025.",
+    "host_name": "arxiv.org",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/Zesearch/self-improvement-llm",
+    "name": "GitHub - Zesearch/self-improvement-llm: A technical and",
+    "snippet": "It spans decoding-level enhancements, structured reasoning processes, agentic system coordination, and test-time parameter adaptation. Decoding Strategies (§5.2).",
+    "host_name": "github.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.newline.co/@Dipen/testtime-selftraining-to-boost-llm-reasoning--09e52239",
+    "name": "Test‑Time Self‑Training to Boost LLM Reasoning - Newline",
+    "snippet": "These results align with academic findings: studies show test-time methods can improve LLM performance by 15-45% on reasoning-heavy benchmarks.",
+    "host_name": "www.newline.co",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://icml.cc/virtual/2025/poster/44699",
+    "name": "ReVISE: Learning to Refine at Test-Time via Intrinsic Self-Verification",
+    "snippet": "This paper introduces ReVISE, a method that allows LLMs to check and improve their own reasoning during inference without external feedback or more supervision.",
+    "host_name": "icml.cc",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://self-rewarding-llm-training.github.io",
+    "name": "Can Large Reasoning Models Self-Train?: SRT",
+    "snippet": "TTRL (Zuo et al., 2025), proposes a test-time training algorithm, which is equivalent to SRT used at test time. Similarly, Zhao et al., 2025 incorporates ...",
+    "host_name": "self-rewarding-llm-training.github.io",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://iclr.cc/virtual/2025/session/31965",
+    "name": "Track: Oral Session 6A - ICLR 2026",
+    "snippet": "In this paper, we explore how far an LLM can improve its reasoning by self-synthesizing reasoning paths as training data without any additional supervision.",
+    "host_name": "iclr.cc",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  }
+]

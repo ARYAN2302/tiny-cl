@@ -1,0 +1,92 @@
+[
+  {
+    "url": "https://arxiv.org/abs/2508.03682",
+    "name": "[2508.03682] Self-Questioning Language Models - arXiv",
+    "snippet": "The proposer receives a reward if the problem is not too easy or too difficult, and the solver receives a reward based on majority voting, a ...",
+    "host_name": "arxiv.org",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://self-questioning.github.io",
+    "name": "Self-Questioning Language Models",
+    "snippet": "The proposer receives a reward if the problem is not too easy or too difficult, and the solver receives a reward based on majority voting, a proxy for ...",
+    "host_name": "self-questioning.github.io",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.semanticscholar.org/paper/Self-Questioning-Language-Models-Chen-Prabhudesai/26bde5ebc6609218ad565cd6ba04f3c3d586e3a9",
+    "name": "[PDF] Self-Questioning Language Models | Semantic Scholar",
+    "snippet": "Self-Questioning Language Models (SQLM), an asymmetric self-play framework ... Published in arXiv.org 5 August 2025; Computer ... This work uses majority voting as ...",
+    "host_name": "www.semanticscholar.org",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.emergentmind.com/topics/self-questioning-language-models-sqlm",
+    "name": "Self-Questioning Language Models (SQLM) - Emergent Mind",
+    "snippet": "SQLM leverages self-generated questions and reinforcement learning to autonomously improve reasoning and performance across diverse domains.",
+    "host_name": "www.emergentmind.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.facebook.com/groups/3670562573177653/posts/4274042406162997",
+    "name": "Self-Questioning Language Models (CMU, August 2025  - Facebook",
+    "snippet": "The solver's reward is computed by using the majority vote as proxy for the answer. The proposer's reward is computed based on how many of the answers match the ...",
+    "host_name": "www.facebook.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.researchgate.net/publication/394323275_Self-Questioning_Language_Models",
+    "name": "Self-Questioning Language Models | Request PDF - ResearchGate",
+    "snippet": "The proposer receives a reward if the problem is not too easy or too difficult, and the solver receives a reward based on majority voting, a proxy for ...",
+    "host_name": "www.researchgate.net",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/mlscaling/comments/1mj4gne/selfquestioning_language_models_chen_et_al_2025",
+    "name": "Self-Questioning Language Models, Chen et al. 2025 [LLM self-play",
+    "snippet": "The paper proposes to use self-consistency/majority voting to distinguish between \"right\" and \"wrong\" answers. ... reReddit: Top posts of August ...",
+    "host_name": "www.reddit.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://openreview.net/pdf?id=MnDXA6CNNV",
+    "name": "[PDF] SELF-QUESTIONING LANGUAGE MODELS - OpenReview",
+    "snippet": "The proposer receives a reward if the prob- lem is not too easy or too difficult, and the solver receives a reward based on majority voting, a proxy for ...",
+    "host_name": "openreview.net",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://chatpaper.com/paper/173448",
+    "name": "Self-Questioning Language Models - ChatPaper",
+    "snippet": "The proposer receives a reward if the problem is not too easy or too difficult, and the solver receives a reward based on majority voting, a proxy for ...",
+    "host_name": "chatpaper.com",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/lili-chen/self-questioning-lm",
+    "name": "lili-chen/self-questioning-lm: Self-Questioning Language Models",
+    "snippet": "Self-Questioning Language Models (SQLM): an asymmetric self-play framework where a proposer is given the topic and generates a question for a solver, ...",
+    "host_name": "github.com",
+    "rank": 9,
+    "date": "",
+    "favicon": ""
+  }
+]

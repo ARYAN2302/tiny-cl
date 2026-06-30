@@ -1,0 +1,74 @@
+[
+  {
+    "url": "https://arxiv.org/pdf/2312.06585",
+    "name": "[PDF] Beyond Human Data: Scaling Self-Training for Problem-Solving with",
+    "snippet": "ReSTEM, with its various adaptations (Section 4), has demonstrated success in enhancing language models across diverse domains, including ...",
+    "host_name": "arxiv.org",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://papers.neurips.cc/paper_files/paper/2025/file/6b41e04c41726e2a60e456d0a2b961ab-Paper-Conference.pdf",
+    "name": "[PDF] Self-Adapting Language Models - NIPS",
+    "snippet": "ReSTEM can be viewed as an expectation-maximization (EM) procedure: the E-step samples candi- date outputs from the current model policy, and the M-step ...",
+    "host_name": "papers.neurips.cc",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://openreview.net/forum?id=CjwERcAU7w",
+    "name": "Training Language Models to Self-Correct via Reinforcement Learning",
+    "snippet": "This paper presents SCoRe, a novel multi-turn reinforcement learning approach for improving self-correction capabilities in large language models.",
+    "host_name": "openreview.net",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=V4dO2pyYGgs",
+    "name": "Reinforced Self-Training (ReST) for Language Modeling  - YouTube",
+    "snippet": "... improve the quality of large language model's (LLM) outputs by aligning them with human preferences. We propose a simple algorithm for ...",
+    "host_name": "www.youtube.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://ritvik19.medium.com/papers-explained-302-rest-em-9abe7c76936e",
+    "name": "Papers Explained 302: ReST^EM - Ritvik Rastogi",
+    "snippet": "ReST-EM is a simple self-training method based on expectation-maximization. It involves (1) generating samples from the model and filtering ...",
+    "host_name": "ritvik19.medium.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://agarwl.github.io/research",
+    "name": "Research Overview – Google Brain - Rishabh Agarwal",
+    "snippet": "Self-improvement approaches, such as ReST^EM and STaR, discard all the LLM-generated incorrect solutions during training.",
+    "host_name": "agarwl.github.io",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://research.ibm.com/publications/latent-principle-discovery-for-language-model-self-improvement",
+    "name": "Latent Principle Discovery for Language Model Self-Improvement",
+    "snippet": "Expectation-Maximization bootstrapping our algorithm over multiple iterations enables smaller language models (7-8B parameters) to self-improve ...",
+    "host_name": "research.ibm.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://sites.google.com/berkeley.edu/selfimprovingfoundationmodels/home",
+    "name": "ICLR 2025 Self-Improving Foundation Models",
+    "snippet": "Machine learning techniques that enable models to self-improve, ie, continually improve beyond their initial training data become essential.",
+    "host_name": "sites.google.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  }
+]

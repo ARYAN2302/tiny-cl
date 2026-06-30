@@ -1,0 +1,56 @@
+[
+  {
+    "url": "https://neurips.cc/virtual/2024/poster/96343",
+    "name": "ReST-MCTS*: LLM Self-Training via Process Reward Guided Tree",
+    "snippet": "In this paper, we develop a reinforced self-training approach, called ReST-MCTS*, based on integrating process reward guidance with tree search MCTS* for ...",
+    "host_name": "neurips.cc",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://openreview.net/forum?id=8rcFOqEud5&noteId=raRhxceoTn",
+    "name": "ReST-MCTS*: LLM Self-Training via Process Reward Guided Tree",
+    "snippet": "This paper proposes a novel approach for self-training large language models (LLMs) that combines process reward guidance with Monte Carlo Tree Search (MCTS).",
+    "host_name": "openreview.net",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/abs/2406.03816",
+    "name": "LLM Self-Training via Process Reward Guided Tree Search - arXiv",
+    "snippet": "In this paper, we develop a reinforced self-training approach, called ReST-MCTS*, based on integrating process reward guidance with tree search MCTS*.",
+    "host_name": "arxiv.org",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://aclanthology.org/2025.findings-acl.484.pdf",
+    "name": "[PDF] REKG-MCTS: Reinforcing LLM Reasoning on Knowledge Graphs",
+    "snippet": "In this work, we introduce REKG-MCTS, a novel training-free framework that combines Monte. Carlo Tree Search (MCTS) with LLMs to solve multi-hop ...",
+    "host_name": "aclanthology.org",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.emergentmind.com/papers/2406.03816",
+    "name": "ReST-MCTS*: LLM Self-Training via Reward Guided Search",
+    "snippet": "The paper introduces a self-training framework that integrates reward-guided tree search to refine LLM reasoning traces and value predictions.",
+    "host_name": "www.emergentmind.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.ijcai.org/proceedings/2025/0965.pdf",
+    "name": "[PDF] SRA-MCTS: Self-driven Reasoning Augmentation with Monte Carlo",
+    "snippet": "To tackle this, we propose a self-driven reasoning augmentation pro- cess, SRA-MCTS, which incorporates Monte Carlo. Tree Search (MCTS) for reasoning data ...",
+    "host_name": "www.ijcai.org",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  }
+]

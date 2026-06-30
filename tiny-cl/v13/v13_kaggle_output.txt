@@ -1,0 +1,1204 @@
+######################################################################
+# NAIVE rank=32 | seed=42 | A→B→C
+######################################################################
+  Loading LiquidAI/LFM2.5-350M...
+Loading weights: 100%
+ 148/148 [00:00<00:00, 305.19it/s, Materializing param=model.layers.15.operator_norm.weight]
+trainable params: 2,359,296 || all params: 356,843,264 || trainable%: 0.6612
+  [VERIFY] LoRA: 20 conv + 6 attn = 26 total (rank=32)
+    step 100 | avg_loss=3.0601
+    step 200 | avg_loss=2.9101
+  Eval: A: 16.94 | B: 6.47 | C: 11.75
+    step 100 | avg_loss=1.4322
+    step 200 | avg_loss=1.3959
+  Eval: A: 18.97 | B: 3.88 | C: 9.63
+    step 100 | avg_loss=1.9045
+    step 200 | avg_loss=1.8620
+  Eval: A: 26.17 | B: 5.55 | C: 5.88
+
+######################################################################
+# SLAO rank=32 | seed=42 | A→B→C
+######################################################################
+  Loading LiquidAI/LFM2.5-350M...
+Loading weights: 100%
+ 148/148 [00:00<00:00, 304.03it/s, Materializing param=model.layers.15.operator_norm.weight]
+trainable params: 2,359,296 || all params: 356,843,264 || trainable%: 0.6612
+  [VERIFY] LoRA: 20 conv + 6 attn = 26 total (rank=32)
+  Phase A: Medical — standard fine-tune
+    step 100 | avg_loss=3.0601
+    step 200 | avg_loss=2.9101
+  Eval: A: 16.94 | B: 6.47 | C: 11.75
+  Phase B: Code — SLAO init
+    step 100 | avg_loss=1.4211
+    step 200 | avg_loss=1.3855
+  [SLAO-MERGE] Task 2: A=replace, B=interpolate(λ=0.7071)
+  Eval: A: 16.85 | B: 3.96 | C: 9.22
+  Phase C: Creative — SLAO init
+    step 100 | avg_loss=1.8945
+    step 200 | avg_loss=1.8512
+  [SLAO-MERGE] Task 3: A=replace, B=interpolate(λ=0.5774)
+  Eval: A: 18.42 | B: 4.20 | C: 6.22
+
+######################################################################
+# FIXED-A rank=32 | seed=42 | A→B→C
+######################################################################
+  Loading LiquidAI/LFM2.5-350M...
+Loading weights: 100%
+ 148/148 [00:00<00:00, 334.59it/s, Materializing param=model.layers.15.operator_norm.weight]
+trainable params: 2,359,296 || all params: 356,843,264 || trainable%: 0.6612
+  [VERIFY] LoRA: 20 conv + 6 attn = 26 total (rank=32)
+  Phase A: Medical — train A+B (task 1)
+    step 100 | avg_loss=3.0601
+    step 200 | avg_loss=2.9101
+  Eval: A: 16.94 | B: 6.47 | C: 11.75
+  Phase B: Code — A FROZEN, train B only
+    step 100 | avg_loss=1.4322
+    step 200 | avg_loss=1.3959
+  [SLAO-MERGE] Task 2: A=replace, B=interpolate(λ=0.7071)
+  Eval: A: 17.47 | B: 4.00 | C: 9.40
+  Phase C: Creative — A FROZEN, train B only
+    step 100 | avg_loss=1.9056
+    step 200 | avg_loss=1.8627
+  [SLAO-MERGE] Task 3: A=replace, B=interpolate(λ=0.5774)
+  Eval: A: 19.39 | B: 4.44 | C: 6.31
+
+######################################################################
+# ΔW-STITCH rank=32 | seed=42 | A→B→C
+######################################################################
+  Loading LiquidAI/LFM2.5-350M...
+Loading weights: 100%
+ 148/148 [00:00<00:00, 345.35it/s, Materializing param=model.layers.15.operator_norm.weight]
+trainable params: 2,359,296 || all params: 356,843,264 || trainable%: 0.6612
+  [VERIFY] LoRA: 20 conv + 6 attn = 26 total (rank=32)
+  Phase A: Medical — standard fine-tune
+    step 100 | avg_loss=3.0601
+    step 200 | avg_loss=2.9101
+  Eval: A: 16.94 | B: 6.47 | C: 11.75
+  Phase B: Code — SLAO init + ΔW-stitch merge
+    step 100 | avg_loss=1.4211
+    step 200 | avg_loss=1.3855
+  [ΔW-STITCH] Task 2: 26 layers merged via QR+SVD (λ=0.7071, SVD size=64×64)
+  Eval: A: 163.14 | B: 8.89 | C: 64.91
+  Phase C: Creative — SLAO init + ΔW-stitch merge
+    step 100 | avg_loss=2.0276
+    step 200 | avg_loss=1.9254
+  [ΔW-STITCH] Task 3: 26 layers merged via QR+SVD (λ=0.5774, SVD size=64×64)
+  Eval: A: 4106.43 | B: 118.72 | C: 6878.47
+
+######################################################################
+# SLAO rank=64 | seed=42 | A→B→C
+######################################################################
+  Loading LiquidAI/LFM2.5-350M...
+Loading weights: 100%
+ 148/148 [00:00<00:00, 303.16it/s, Materializing param=model.layers.15.operator_norm.weight]
+trainable params: 4,718,592 || all params: 359,202,560 || trainable%: 1.3136
+  [VERIFY] LoRA: 20 conv + 6 attn = 26 total (rank=64)
+  Phase A: Medical — standard fine-tune
+    step 100 | avg_loss=2.9718
+    step 200 | avg_loss=2.8425
+  Eval: A: 16.35 | B: 6.37 | C: 11.31
+  Phase B: Code — SLAO init
+    step 100 | avg_loss=1.4175
+    step 200 | avg_loss=1.3581
+  [SLAO-MERGE] Task 2: A=replace, B=interpolate(λ=0.7071)
+  Eval: A: 16.19 | B: 3.87 | C: 9.30
+  Phase C: Creative — SLAO init
+    step 100 | avg_loss=1.8821
+    step 200 | avg_loss=1.8302
+  [SLAO-MERGE] Task 3: A=replace, B=interpolate(λ=0.5774)
+  Eval: A: 17.67 | B: 4.11 | C: 6.12
+
+================================================================================
+  FORWARD ORDER (A→B→C) | SEED = 123
+================================================================================
+  Loading LiquidAI/LFM2.5-350M...
+Loading weights: 100%
+ 148/148 [00:00<00:00, 307.69it/s, Materializing param=model.layers.15.operator_norm.weight]
+  Loading: Medical
+    1,000,000 tokens
+  Loading: Code
+    1,000,000 tokens
+  Loading: Creative
+    1,000,000 tokens
+
+######################################################################
+# NAIVE rank=32 | seed=123 | A→B→C
+######################################################################
+  Loading LiquidAI/LFM2.5-350M...
+Loading weights: 100%
+ 148/148 [00:00<00:00, 334.43it/s, Materializing param=model.layers.15.operator_norm.weight]
+trainable params: 2,359,296 || all params: 356,843,264 || trainable%: 0.6612
+  [VERIFY] LoRA: 20 conv + 6 attn = 26 total (rank=32)
+    step 100 | avg_loss=3.1357
+    step 200 | avg_loss=3.0018
+  Eval: A: 14.52 | B: 7.11 | C: 11.91
+    step 100 | avg_loss=1.4690
+    step 200 | avg_loss=1.4109
+  Eval: A: 16.26 | B: 4.31 | C: 9.77
+    step 100 | avg_loss=1.9120
+    step 200 | avg_loss=1.8637
+  Eval: A: 21.77 | B: 6.08 | C: 5.98
+
+######################################################################
+# SLAO rank=32 | seed=123 | A→B→C
+######################################################################
+  Loading LiquidAI/LFM2.5-350M...
+Loading weights: 100%
+ 148/148 [00:00<00:00, 354.48it/s, Materializing param=model.layers.15.operator_norm.weight]
+trainable params: 2,359,296 || all params: 356,843,264 || trainable%: 0.6612
+  [VERIFY] LoRA: 20 conv + 6 attn = 26 total (rank=32)
+  Phase A: Medical — standard fine-tune
+    step 100 | avg_loss=3.1357
+    step 200 | avg_loss=3.0018
+  Eval: A: 14.52 | B: 7.11 | C: 11.91
+  Phase B: Code — SLAO init
+    step 100 | avg_loss=1.4541
+    step 200 | avg_loss=1.3981
+  [SLAO-MERGE] Task 2: A=replace, B=interpolate(λ=0.7071)
+  Eval: A: 14.69 | B: 4.39 | C: 9.67
+  Phase C: Creative — SLAO init
+    step 100 | avg_loss=1.9017
+    step 200 | avg_loss=1.8536
+  [SLAO-MERGE] Task 3: A=replace, B=interpolate(λ=0.5774)
+  Eval: A: 16.00 | B: 4.70 | C: 6.33
+
+######################################################################
+# FIXED-A rank=32 | seed=123 | A→B→C
+######################################################################
+  Loading LiquidAI/LFM2.5-350M...
+Loading weights: 100%
+ 148/148 [00:00<00:00, 340.10it/s, Materializing param=model.layers.15.operator_norm.weight]
+trainable params: 2,359,296 || all params: 356,843,264 || trainable%: 0.6612
+  [VERIFY] LoRA: 20 conv + 6 attn = 26 total (rank=32)
+  Phase A: Medical — train A+B (task 1)
+    step 100 | avg_loss=3.1357
+    step 200 | avg_loss=3.0018
+  Eval: A: 14.52 | B: 7.11 | C: 11.91
+  Phase B: Code — A FROZEN, train B only
+    step 100 | avg_loss=1.4690
+    step 200 | avg_loss=1.4109
+  [SLAO-MERGE] Task 2: A=replace, B=interpolate(λ=0.7071)
+  Eval: A: 15.08 | B: 4.45 | C: 9.51
+  Phase C: Creative — A FROZEN, train B only
+    step 100 | avg_loss=1.9125
+    step 200 | avg_loss=1.8644
+  [SLAO-MERGE] Task 3: A=replace, B=interpolate(λ=0.5774)
+  Eval: A: 16.64 | B: 4.95 | C: 6.43
+
+######################################################################
+# ΔW-STITCH rank=32 | seed=123 | A→B→C
+######################################################################
+  Loading LiquidAI/LFM2.5-350M...
+Loading weights: 100%
+ 148/148 [00:00<00:00, 327.90it/s, Materializing param=model.layers.15.operator_norm.weight]
+trainable params: 2,359,296 || all params: 356,843,264 || trainable%: 0.6612
+  [VERIFY] LoRA: 20 conv + 6 attn = 26 total (rank=32)
+  Phase A: Medical — standard fine-tune
+    step 100 | avg_loss=3.1357
+    step 200 | avg_loss=3.0018
+  Eval: A: 14.52 | B: 7.11 | C: 11.91
+  Phase B: Code — SLAO init + ΔW-stitch merge
+    step 100 | avg_loss=1.4541
+    step 200 | avg_loss=1.3981
+  [ΔW-STITCH] Task 2: 26 layers merged via QR+SVD (λ=0.7071, SVD size=64×64)
+  Eval: A: 107.82 | B: 11.47 | C: 70.59
+  Phase C: Creative — SLAO init + ΔW-stitch merge
+    step 100 | avg_loss=2.0396
+    step 200 | avg_loss=1.9320
+  [ΔW-STITCH] Task 3: 26 layers merged via QR+SVD (λ=0.5774, SVD size=64×64)
+  Eval: A: 1889.54 | B: 259.46 | C: 6705.71
+
+######################################################################
+# SLAO rank=64 | seed=123 | A→B→C
+######################################################################
+  Loading LiquidAI/LFM2.5-350M...
+Loading weights: 100%
+ 148/148 [00:00<00:00, 289.45it/s, Materializing param=model.layers.15.operator_norm.weight]
+trainable params: 4,718,592 || all params: 359,202,560 || trainable%: 1.3136
+  [VERIFY] LoRA: 20 conv + 6 attn = 26 total (rank=64)
+  Phase A: Medical — standard fine-tune
+    step 100 | avg_loss=3.0559
+    step 200 | avg_loss=2.9385
+  Eval: A: 14.05 | B: 6.81 | C: 12.02
+  Phase B: Code — SLAO init
+    step 100 | avg_loss=1.4397
+    step 200 | avg_loss=1.3754
+  [SLAO-MERGE] Task 2: A=replace, B=interpolate(λ=0.7071)
+  Eval: A: 14.08 | B: 4.31 | C: 9.18
+  Phase C: Creative — SLAO init
+    step 100 | avg_loss=1.8672
+    step 200 | avg_loss=1.8263
+  [SLAO-MERGE] Task 3: A=replace, B=interpolate(λ=0.5774)
+  Eval: A: 15.16 | B: 4.58 | C: 6.24
+
+================================================================================
+  FORWARD ORDER (A→B→C) | SEED = 456
+================================================================================
+  Loading LiquidAI/LFM2.5-350M...
+Loading weights: 100%
+ 148/148 [00:00<00:00, 300.52it/s, Materializing param=model.layers.15.operator_norm.weight]
+  Loading: Medical
+    1,000,000 tokens
+  Loading: Code
+    1,000,000 tokens
+  Loading: Creative
+    1,000,000 tokens
+
+######################################################################
+# NAIVE rank=32 | seed=456 | A→B→C
+######################################################################
+  Loading LiquidAI/LFM2.5-350M...
+Loading weights: 100%
+ 148/148 [00:00<00:00, 401.39it/s, Materializing param=model.layers.15.operator_norm.weight]
+trainable params: 2,359,296 || all params: 356,843,264 || trainable%: 0.6612
+  [VERIFY] LoRA: 20 conv + 6 attn = 26 total (rank=32)
+    step 100 | avg_loss=3.0873
+    step 200 | avg_loss=2.9267
+  Eval: A: 13.97 | B: 6.56 | C: 12.40
+    step 100 | avg_loss=1.4967
+    step 200 | avg_loss=1.4607
+  Eval: A: 15.93 | B: 3.92 | C: 9.93
+    step 100 | avg_loss=1.9056
+    step 200 | avg_loss=1.8596
+  Eval: A: 21.04 | B: 5.40 | C: 6.15
+
+######################################################################
+# SLAO rank=32 | seed=456 | A→B→C
+######################################################################
+  Loading LiquidAI/LFM2.5-350M...
+Loading weights: 100%
+ 148/148 [00:00<00:00, 351.68it/s, Materializing param=model.layers.15.operator_norm.weight]
+trainable params: 2,359,296 || all params: 356,843,264 || trainable%: 0.6612
+  [VERIFY] LoRA: 20 conv + 6 attn = 26 total (rank=32)
+  Phase A: Medical — standard fine-tune
+    step 100 | avg_loss=3.0873
+    step 200 | avg_loss=2.9267
+  Eval: A: 13.97 | B: 6.56 | C: 12.40
+  Phase B: Code — SLAO init
+    step 100 | avg_loss=1.4832
+    step 200 | avg_loss=1.4483
+  [SLAO-MERGE] Task 2: A=replace, B=interpolate(λ=0.7071)
+  Eval: A: 14.24 | B: 4.00 | C: 9.40
+  Phase C: Creative — SLAO init
+    step 100 | avg_loss=1.8922
+    step 200 | avg_loss=1.8473
+  [SLAO-MERGE] Task 3: A=replace, B=interpolate(λ=0.5774)
+  Eval: A: 15.40 | B: 4.24 | C: 6.49
+
+######################################################################
+# FIXED-A rank=32 | seed=456 | A→B→C
+######################################################################
+  Loading LiquidAI/LFM2.5-350M...
+Loading weights: 100%
+ 148/148 [00:00<00:00, 377.34it/s, Materializing param=model.layers.15.operator_norm.weight]
+trainable params: 2,359,296 || all params: 356,843,264 || trainable%: 0.6612
+  [VERIFY] LoRA: 20 conv + 6 attn = 26 total (rank=32)
+  Phase A: Medical — train A+B (task 1)
+    step 100 | avg_loss=3.0873
+    step 200 | avg_loss=2.9267
+  Eval: A: 13.97 | B: 6.56 | C: 12.40
+  Phase B: Code — A FROZEN, train B only
+    step 100 | avg_loss=1.4967
+    step 200 | avg_loss=1.4607
+  [SLAO-MERGE] Task 2: A=replace, B=interpolate(λ=0.7071)
+  Eval: A: 14.69 | B: 4.05 | C: 9.65
+  Phase C: Creative — A FROZEN, train B only
+    step 100 | avg_loss=1.9066
+    step 200 | avg_loss=1.8606
+  [SLAO-MERGE] Task 3: A=replace, B=interpolate(λ=0.5774)
+  Eval: A: 16.16 | B: 4.45 | C: 6.57
+
+######################################################################
+# ΔW-STITCH rank=32 | seed=456 | A→B→C
+######################################################################
+  Loading LiquidAI/LFM2.5-350M...
+Loading weights: 100%
+ 148/148 [00:00<00:00, 303.68it/s, Materializing param=model.layers.15.operator_norm.weight]
+trainable params: 2,359,296 || all params: 356,843,264 || trainable%: 0.6612
+  [VERIFY] LoRA: 20 conv + 6 attn = 26 total (rank=32)
+  Phase A: Medical — standard fine-tune
+    step 100 | avg_loss=3.0873
+    step 200 | avg_loss=2.9267
+  Eval: A: 13.97 | B: 6.56 | C: 12.40
+  Phase B: Code — SLAO init + ΔW-stitch merge
+    step 100 | avg_loss=1.4832
+    step 200 | avg_loss=1.4483
+  [ΔW-STITCH] Task 2: 26 layers merged via QR+SVD (λ=0.7071, SVD size=64×64)
+  Eval: A: 91.70 | B: 9.18 | C: 80.81
+  Phase C: Creative — SLAO init + ΔW-stitch merge
+    step 100 | avg_loss=2.0492
+    step 200 | avg_loss=1.9373
+  [ΔW-STITCH] Task 3: 26 layers merged via QR+SVD (λ=0.5774, SVD size=64×64)
+  Eval: A: 3502.65 | B: 398.01 | C: 14318.01
+
+######################################################################
+# SLAO rank=64 | seed=456 | A→B→C
+######################################################################
+  Loading LiquidAI/LFM2.5-350M...
+Loading weights: 100%
+ 148/148 [00:00<00:00, 338.24it/s, Materializing param=model.layers.15.operator_norm.weight]
+trainable params: 4,718,592 || all params: 359,202,560 || trainable%: 1.3136
+  [VERIFY] LoRA: 20 conv + 6 attn = 26 total (rank=64)
+  Phase A: Medical — standard fine-tune
+    step 100 | avg_loss=2.9909
+    step 200 | avg_loss=2.8607
+  Eval: A: 13.60 | B: 6.70 | C: 11.96
+  Phase B: Code — SLAO init
+    step 100 | avg_loss=1.4801
+    step 200 | avg_loss=1.4149
+  [SLAO-MERGE] Task 2: A=replace, B=interpolate(λ=0.7071)
+  Eval: A: 13.87 | B: 3.93 | C: 9.44
+  Phase C: Creative — SLAO init
+    step 100 | avg_loss=1.8601
+    step 200 | avg_loss=1.8199
+  [SLAO-MERGE] Task 3: A=replace, B=interpolate(λ=0.5774)
+  Eval: A: 15.13 | B: 4.11 | C: 6.34
+  Loading LiquidAI/LFM2.5-350M...
+Loading weights: 100%
+ 148/148 [00:00<00:00, 320.88it/s, Materializing param=model.layers.15.operator_norm.weight]
+  Loading: Medical
+    1,000,000 tokens
+  Loading: Code
+    1,000,000 tokens
+  Loading: Creative
+    1,000,000 tokens
+
+================================================================================
+  ORDER C→B→A | SEED = 42
+================================================================================
+
+######################################################################
+# SLAO rank=32 | seed=42 | C→B→A
+######################################################################
+  Loading LiquidAI/LFM2.5-350M...
+Loading weights: 100%
+ 148/148 [00:00<00:00, 366.77it/s, Materializing param=model.layers.15.operator_norm.weight]
+trainable params: 2,359,296 || all params: 356,843,264 || trainable%: 0.6612
+  [VERIFY] LoRA: 20 conv + 6 attn = 26 total (rank=32)
+  Phase C: Creative — standard fine-tune
+    step 100 | avg_loss=2.1374
+    step 200 | avg_loss=1.9971
+  Eval: C: 6.08 | B: 10.64 | A: 33.94
+  Phase B: Code — SLAO init
+    step 100 | avg_loss=1.4557
+    step 200 | avg_loss=1.4050
+  [SLAO-MERGE] Task 2: A=replace, B=interpolate(λ=0.7071)
+  Eval: C: 6.89 | B: 4.02 | A: 19.64
+  Phase A: Medical — SLAO init
+    step 100 | avg_loss=2.7509
+    step 200 | avg_loss=2.7026
+  [SLAO-MERGE] Task 3: A=replace, B=interpolate(λ=0.5774)
+  Eval: C: 7.23 | B: 4.15 | A: 15.83
+
+######################################################################
+# FIXED-A rank=32 | seed=42 | C→B→A
+######################################################################
+  Loading LiquidAI/LFM2.5-350M...
+Loading weights: 100%
+ 148/148 [00:00<00:00, 353.94it/s, Materializing param=model.layers.15.operator_norm.weight]
+trainable params: 2,359,296 || all params: 356,843,264 || trainable%: 0.6612
+  [VERIFY] LoRA: 20 conv + 6 attn = 26 total (rank=32)
+  Phase C: Creative — train A+B (task 1)
+    step 100 | avg_loss=2.1374
+    step 200 | avg_loss=1.9971
+  Eval: C: 6.08 | B: 10.64 | A: 33.94
+  Phase B: Code — A FROZEN, train B only
+    step 100 | avg_loss=1.4722
+    step 200 | avg_loss=1.4184
+  [SLAO-MERGE] Task 2: A=replace, B=interpolate(λ=0.7071)
+  Eval: C: 7.20 | B: 4.07 | A: 19.88
+  Phase A: Medical — A FROZEN, train B only
+    step 100 | avg_loss=2.7653
+    step 200 | avg_loss=2.7166
+  [SLAO-MERGE] Task 3: A=replace, B=interpolate(λ=0.5774)
+  Eval: C: 7.64 | B: 4.32 | A: 16.14
+
+######################################################################
+# ΔW-STITCH rank=32 | seed=42 | C→B→A
+######################################################################
+  Loading LiquidAI/LFM2.5-350M...
+Loading weights: 100%
+ 148/148 [00:00<00:00, 362.96it/s, Materializing param=model.layers.15.operator_norm.weight]
+trainable params: 2,359,296 || all params: 356,843,264 || trainable%: 0.6612
+  [VERIFY] LoRA: 20 conv + 6 attn = 26 total (rank=32)
+  Phase C: Creative — standard fine-tune
+    step 100 | avg_loss=2.1374
+    step 200 | avg_loss=1.9971
+  Eval: C: 6.08 | B: 10.64 | A: 33.94
+  Phase B: Code — SLAO init + ΔW-stitch merge
+    step 100 | avg_loss=1.4557
+    step 200 | avg_loss=1.4050
+  [ΔW-STITCH] Task 2: 26 layers merged via QR+SVD (λ=0.7071, SVD size=64×64)
+  Eval: C: 15.81 | B: 7.41 | A: 44.68
+  Phase A: Medical — SLAO init + ΔW-stitch merge
+    step 100 | avg_loss=2.9105
+    step 200 | avg_loss=2.7898
+  [ΔW-STITCH] Task 3: 26 layers merged via QR+SVD (λ=0.5774, SVD size=64×64)
+  Eval: C: 1374.89 | B: 66.08 | A: 323.07
+
+================================================================================
+  ORDER B→C→A | SEED = 42
+================================================================================
+
+######################################################################
+# SLAO rank=32 | seed=42 | B→C→A
+######################################################################
+  Loading LiquidAI/LFM2.5-350M...
+Loading weights: 100%
+ 148/148 [00:00<00:00, 335.33it/s, Materializing param=model.layers.15.operator_norm.weight]
+trainable params: 2,359,296 || all params: 356,843,264 || trainable%: 0.6612
+  [VERIFY] LoRA: 20 conv + 6 attn = 26 total (rank=32)
+  Phase B: Code — standard fine-tune
+    step 100 | avg_loss=1.7684
+    step 200 | avg_loss=1.5776
+  Eval: B: 4.03 | C: 9.52 | A: 20.70
+  Phase C: Creative — SLAO init
+    step 100 | avg_loss=1.9234
+    step 200 | avg_loss=1.8688
+  [SLAO-MERGE] Task 2: A=replace, B=interpolate(λ=0.7071)
+  Eval: B: 5.47 | C: 6.06 | A: 23.45
+  Phase A: Medical — SLAO init
+    step 100 | avg_loss=2.7749
+    step 200 | avg_loss=2.7172
+  [SLAO-MERGE] Task 3: A=replace, B=interpolate(λ=0.5774)
+  Eval: B: 4.64 | C: 6.66 | A: 16.21
+
+######################################################################
+# FIXED-A rank=32 | seed=42 | B→C→A
+######################################################################
+  Loading LiquidAI/LFM2.5-350M...
+Loading weights: 100%
+ 148/148 [00:00<00:00, 387.45it/s, Materializing param=model.layers.15.operator_norm.weight]
+trainable params: 2,359,296 || all params: 356,843,264 || trainable%: 0.6612
+  [VERIFY] LoRA: 20 conv + 6 attn = 26 total (rank=32)
+  Phase B: Code — train A+B (task 1)
+    step 100 | avg_loss=1.7684
+    step 200 | avg_loss=1.5776
+  Eval: B: 4.03 | C: 9.52 | A: 20.70
+  Phase C: Creative — A FROZEN, train B only
+    step 100 | avg_loss=1.9372
+    step 200 | avg_loss=1.8827
+  [SLAO-MERGE] Task 2: A=replace, B=interpolate(λ=0.7071)
+  Eval: B: 6.11 | C: 6.14 | A: 24.28
+  Phase A: Medical — A FROZEN, train B only
+    step 100 | avg_loss=2.7763
+    step 200 | avg_loss=2.7227
+  [SLAO-MERGE] Task 3: A=replace, B=interpolate(λ=0.5774)
+  Eval: B: 4.94 | C: 6.92 | A: 16.53
+
+######################################################################
+# ΔW-STITCH rank=32 | seed=42 | B→C→A
+######################################################################
+  Loading LiquidAI/LFM2.5-350M...
+Loading weights: 100%
+ 148/148 [00:00<00:00, 360.11it/s, Materializing param=model.layers.15.operator_norm.weight]
+trainable params: 2,359,296 || all params: 356,843,264 || trainable%: 0.6612
+  [VERIFY] LoRA: 20 conv + 6 attn = 26 total (rank=32)
+  Phase B: Code — standard fine-tune
+    step 100 | avg_loss=1.7684
+    step 200 | avg_loss=1.5776
+  Eval: B: 4.03 | C: 9.52 | A: 20.70
+  Phase C: Creative — SLAO init + ΔW-stitch merge
+    step 100 | avg_loss=1.9234
+    step 200 | avg_loss=1.8688
+  [ΔW-STITCH] Task 2: 26 layers merged via QR+SVD (λ=0.7071, SVD size=64×64)
+  Eval: B: 49.47 | C: 9.10 | A: 59.08
+  Phase A: Medical — SLAO init + ΔW-stitch merge
+    step 100 | avg_loss=2.9018
+    step 200 | avg_loss=2.7904
+  [ΔW-STITCH] Task 3: 26 layers merged via QR+SVD (λ=0.5774, SVD size=64×64)
+  Eval: B: 2022.30 | C: 118.10 | A: 296.56
+
+================================================================================
+  ORDER A→C→B | SEED = 42
+================================================================================
+
+######################################################################
+# SLAO rank=32 | seed=42 | A→C→B
+######################################################################
+  Loading LiquidAI/LFM2.5-350M...
+Loading weights: 100%
+ 148/148 [00:00<00:00, 374.13it/s, Materializing param=model.layers.15.operator_norm.weight]
+trainable params: 2,359,296 || all params: 356,843,264 || trainable%: 0.6612
+  [VERIFY] LoRA: 20 conv + 6 attn = 26 total (rank=32)
+  Phase A: Medical — standard fine-tune
+    step 100 | avg_loss=3.0601
+    step 200 | avg_loss=2.9101
+  Eval: A: 16.94 | C: 11.75 | B: 6.47
+  Phase C: Creative — SLAO init
+    step 100 | avg_loss=1.9343
+    step 200 | avg_loss=1.8743
+  [SLAO-MERGE] Task 2: A=replace, B=interpolate(λ=0.7071)
+  Eval: A: 19.47 | C: 6.08 | B: 6.58
+  Phase B: Code — SLAO init
+    step 100 | avg_loss=1.4350
+    step 200 | avg_loss=1.3867
+  [SLAO-MERGE] Task 3: A=replace, B=interpolate(λ=0.5774)
+  Eval: A: 17.42 | C: 6.39 | B: 4.06
+
+######################################################################
+# FIXED-A rank=32 | seed=42 | A→C→B
+######################################################################
+  Loading LiquidAI/LFM2.5-350M...
+Loading weights: 100%
+ 148/148 [00:00<00:00, 362.93it/s, Materializing param=model.layers.15.operator_norm.weight]
+trainable params: 2,359,296 || all params: 356,843,264 || trainable%: 0.6612
+  [VERIFY] LoRA: 20 conv + 6 attn = 26 total (rank=32)
+  Phase A: Medical — train A+B (task 1)
+    step 100 | avg_loss=3.0601
+    step 200 | avg_loss=2.9101
+  Eval: A: 16.94 | C: 11.75 | B: 6.47
+  Phase C: Creative — A FROZEN, train B only
+    step 100 | avg_loss=1.9492
+    step 200 | avg_loss=1.8892
+  [SLAO-MERGE] Task 2: A=replace, B=interpolate(λ=0.7071)
+  Eval: A: 20.75 | C: 6.19 | B: 6.95
+  Phase B: Code — A FROZEN, train B only
+    step 100 | avg_loss=1.4407
+    step 200 | avg_loss=1.3930
+  [SLAO-MERGE] Task 3: A=replace, B=interpolate(λ=0.5774)
+  Eval: A: 18.13 | C: 6.72 | B: 4.10
+
+######################################################################
+# ΔW-STITCH rank=32 | seed=42 | A→C→B
+######################################################################
+  Loading LiquidAI/LFM2.5-350M...
+Loading weights: 100%
+ 148/148 [00:00<00:00, 332.05it/s, Materializing param=model.layers.15.operator_norm.weight]
+trainable params: 2,359,296 || all params: 356,843,264 || trainable%: 0.6612
+  [VERIFY] LoRA: 20 conv + 6 attn = 26 total (rank=32)
+  Phase A: Medical — standard fine-tune
+    step 100 | avg_loss=3.0601
+    step 200 | avg_loss=2.9101
+  Eval: A: 16.94 | C: 11.75 | B: 6.47
+  Phase C: Creative — SLAO init + ΔW-stitch merge
+    step 100 | avg_loss=1.9343
+    step 200 | avg_loss=1.8743
+  [ΔW-STITCH] Task 2: 26 layers merged via QR+SVD (λ=0.7071, SVD size=64×64)
+  Eval: A: 451.56 | C: 128.72 | B: 36.55
+  Phase B: Code — SLAO init + ΔW-stitch merge
+    step 100 | avg_loss=1.6155
+    step 200 | avg_loss=1.4798
+  [ΔW-STITCH] Task 3: 26 layers merged via QR+SVD (λ=0.5774, SVD size=64×64)
+  Eval: A: 6638.20 | C: 5661.56 | B: 708.16
+
+================================================================================
+  ORDER C→A→B | SEED = 42
+================================================================================
+
+######################################################################
+# SLAO rank=32 | seed=42 | C→A→B
+######################################################################
+  Loading LiquidAI/LFM2.5-350M...
+Loading weights: 100%
+ 148/148 [00:00<00:00, 341.82it/s, Materializing param=model.layers.15.operator_norm.weight]
+trainable params: 2,359,296 || all params: 356,843,264 || trainable%: 0.6612
+  [VERIFY] LoRA: 20 conv + 6 attn = 26 total (rank=32)
+  Phase C: Creative — standard fine-tune
+    step 100 | avg_loss=2.1374
+    step 200 | avg_loss=1.9971
+  Eval: C: 6.08 | A: 33.94 | B: 10.64
+  Phase A: Medical — SLAO init
+    step 100 | avg_loss=2.8016
+    step 200 | avg_loss=2.7554
+  [SLAO-MERGE] Task 2: A=replace, B=interpolate(λ=0.7071)
+  Eval: C: 7.39 | A: 16.48 | B: 6.10
+  Phase B: Code — SLAO init
+    step 100 | avg_loss=1.4236
+    step 200 | avg_loss=1.3789
+  [SLAO-MERGE] Task 3: A=replace, B=interpolate(λ=0.5774)
+  Eval: C: 7.22 | A: 15.99 | B: 4.03
+
+######################################################################
+# FIXED-A rank=32 | seed=42 | C→A→B
+######################################################################
+  Loading LiquidAI/LFM2.5-350M...
+Loading weights: 100%
+ 148/148 [00:00<00:00, 334.53it/s, Materializing param=model.layers.15.operator_norm.weight]
+trainable params: 2,359,296 || all params: 356,843,264 || trainable%: 0.6612
+  [VERIFY] LoRA: 20 conv + 6 attn = 26 total (rank=32)
+  Phase C: Creative — train A+B (task 1)
+    step 100 | avg_loss=2.1374
+    step 200 | avg_loss=1.9971
+  Eval: C: 6.08 | A: 33.94 | B: 10.64
+  Phase A: Medical — A FROZEN, train B only
+    step 100 | avg_loss=2.8202
+    step 200 | avg_loss=2.7714
+  [SLAO-MERGE] Task 2: A=replace, B=interpolate(λ=0.7071)
+  Eval: C: 7.68 | A: 16.70 | B: 6.11
+  Phase B: Code — A FROZEN, train B only
+    step 100 | avg_loss=1.4257
+    step 200 | avg_loss=1.3826
+  [SLAO-MERGE] Task 3: A=replace, B=interpolate(λ=0.5774)
+  Eval: C: 7.58 | A: 16.60 | B: 4.07
+
+######################################################################
+# ΔW-STITCH rank=32 | seed=42 | C→A→B
+######################################################################
+  Loading LiquidAI/LFM2.5-350M...
+Loading weights: 100%
+ 148/148 [00:00<00:00, 359.08it/s, Materializing param=model.layers.15.operator_norm.weight]
+trainable params: 2,359,296 || all params: 356,843,264 || trainable%: 0.6612
+  [VERIFY] LoRA: 20 conv + 6 attn = 26 total (rank=32)
+  Phase C: Creative — standard fine-tune
+    step 100 | avg_loss=2.1374
+    step 200 | avg_loss=1.9971
+  Eval: C: 6.08 | A: 33.94 | B: 10.64
+  Phase A: Medical — SLAO init + ΔW-stitch merge
+    step 100 | avg_loss=2.8016
+    step 200 | avg_loss=2.7554
+  [ΔW-STITCH] Task 2: 26 layers merged via QR+SVD (λ=0.7071, SVD size=64×64)
+  Eval: C: 47.94 | A: 38.25 | B: 21.03
+  Phase B: Code — SLAO init + ΔW-stitch merge
+    step 100 | avg_loss=1.5831
+    step 200 | avg_loss=1.4659
+  [ΔW-STITCH] Task 3: 26 layers merged via QR+SVD (λ=0.5774, SVD size=64×64)
+  Eval: C: 3142.03 | A: 423.35 | B: 118.96
+
+====================================================================================================
+V13: THE FULL PICTURE — WHERE ARE WE?
+====================================================================================================
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+FORWARD ORDER (A→B→C) — Multi-seed comparison
+────────────────────────────────────────────────────────────────────────────────────────────────────
+Method         Rank  Seed   A PPL    B PPL    C PPL    FF(A)    FF(B)    New PPL  Noise%  
+----------------------------------------------------------------------------------------------------
+naive          32    42     26.2     5.5      5.9      1.55     1.43     5.88     195.7%  
+slao           32    42     18.4     4.2      6.2      1.09     1.06     6.22     191.2%  
+fixed_a        32    42     19.4     4.4      6.3      1.15     1.11     6.31     196.1%  
+dw_stitch      32    42     4106.4   118.7    6878.5   242.48   13.36    6878.47  190.4%  
+slao_r64       64    42     17.7     4.1      6.1      1.08     1.06     6.12     190.2%  
+naive          32    123    21.8     6.1      6.0      1.50     1.41     5.98     195.6%  
+slao           32    123    16.0     4.7      6.3      1.10     1.07     6.33     191.1%  
+fixed_a        32    123    16.6     5.0      6.4      1.15     1.11     6.43     196.1%  
+dw_stitch      32    123    1889.5   259.5    6705.7   130.16   22.61    6705.71  190.0%  
+slao_r64       64    123    15.2     4.6      6.2      1.08     1.06     6.24     190.1%  
+naive          32    456    21.0     5.4      6.2      1.51     1.38     6.15     195.5%  
+slao           32    456    15.4     4.2      6.5      1.10     1.06     6.49     191.1%  
+fixed_a        32    456    16.2     4.5      6.6      1.16     1.10     6.57     196.0%  
+dw_stitch      32    456    3502.7   398.0    14318.0  250.67   43.36    14318.01 190.3%  
+slao_r64       64    456    15.1     4.1      6.3      1.11     1.04     6.34     190.3%  
+
+====================================================================================================
+AGGREGATED (3 seeds)
+====================================================================================================
+Method         FF(A) μ±σ          FF(B) μ±σ          New PPL μ±σ        Noise% μ  
+--------------------------------------------------------------------------------
+naive          1.517±0.020        1.406±0.022        6.003±0.115        195.6%    
+slao           1.097±0.007        1.065±0.005        6.348±0.112        191.1%    
+fixed_a        1.149±0.005        1.107±0.006        6.437±0.107        196.1%    
+dw_stitch      207.768±54.980     26.442±12.543      9300.733±3548.455  190.2%    
+slao_r64       1.091±0.015        1.057±0.009        6.231±0.090        190.2%    
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+DOMAIN ORDERING (seed=42) — Curriculum bias test
+────────────────────────────────────────────────────────────────────────────────────────────────────
+
+  slao:
+  Order      FF(first)    FF(second)   Noise%    
+  --------------------------------------------
+  A→B→C      1.09         1.06         191.2%    
+  C→B→A      1.19         1.03         190.9%    
+  B→C→A      1.15         1.10         189.4%    
+  A→C→B      1.03         1.05         190.9%    
+  C→A→B      1.19         0.97         190.9%    
+
+  fixed_a:
+  Order      FF(first)    FF(second)   Noise%    
+  --------------------------------------------
+  A→B→C      1.15         1.11         196.1%    
+  C→B→A      1.26         1.06         195.5%    
+  B→C→A      1.22         1.13         194.8%    
+  A→C→B      1.07         1.09         196.2%    
+  C→A→B      1.25         0.99         195.4%    
+
+  dw_stitch:
+  Order      FF(first)    FF(second)   Noise%    
+  --------------------------------------------
+  A→B→C      242.48       13.36        190.4%    
+  C→B→A      226.13       8.91         189.6%    
+  B→C→A      501.54       12.98        188.9%    
+  A→C→B      391.97       43.98        190.4%    
+  C→A→B      516.77       11.07        190.5%    
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+CROSS-TERM NOISE DIAGNOSIS (forward order)
+────────────────────────────────────────────────────────────────────────────────────────────────────
+  naive         : noise/signal = 195.6%
+  slao          : noise/signal = 191.1%
+  fixed_a       : noise/signal = 196.1%
+  dw_stitch     : noise/signal = 190.2%
+  slao_r64      : noise/signal = 190.2%
+
+====================================================================================================
+VERDICT
+====================================================================================================
+  Fixed-A vs SLAO: FF(A) 1.149 vs 1.097 (closed -5% of gap)
+  >> Fixed-A barely helps. B interpolation is also losing info.
+  ΔW-stitch vs SLAO: FF(A) 207.768 vs 1.097 (closed -18836%)
+  >> ΔW-stitch doesn't help much. Capacity may be the real limit.
+  SLAO rank=64: FF(A) = 1.091
+  >> Even rank=64 doesn't reach <1.05x. Merge formula is the bottleneck.
+
+  >> DIAGNOSIS: Capacity > Merge formula (SLAO@r64 beats Fixed-A@r32)
+====================================================================================================
+{'runs': {'naive_fwd_s42': {'method': 'naive',
+   'rank': 32,
+   'seed': 42,
+   'domain_order': ['A', 'B', 'C'],
+   'phases': {'A': {'perplexity': {'A': 16.93542659448787,
+      'B': 6.468003611539699,
+      'C': 11.748379642495486},
+     'avg_loss': 2.8945955103093928},
+    'B': {'perplexity': {'A': 18.97465490508094,
+      'B': 3.8812848368235793,
+      'C': 9.634656791301612},
+     'avg_loss': 1.389775410565463},
+    'C': {'perplexity': {'A': 26.16614681825104,
+      'B': 5.545605184909442,
+      'C': 5.8750281181918895},
+     'avg_loss': 1.8557805727828633}},
+   'cross_term_noise': 1.956860682687341},
+  'slao_fwd_s42': {'method': 'slao',
+   'rank': 32,
+   'seed': 42,
+   'domain_order': ['A', 'B', 'C'],
+   'phases': {'A': {'perplexity': {'A': 16.93542659448787,
+      'B': 6.468003611539699,
+      'C': 11.748379642495486},
+     'avg_loss': 2.8945955103093928},
+    'B': {'perplexity': {'A': 16.854257940026564,
+      'B': 3.956810683773075,
+      'C': 9.217335928003584},
+     'avg_loss': 1.3795119388536974},
+    'C': {'perplexity': {'A': 18.420999470620107,
+      'B': 4.202572546468322,
+      'C': 6.222036951672267},
+     'avg_loss': 1.8449821103702893}},
+   'cross_term_noise': 1.9119679282062922},
+  'fixed_a_fwd_s42': {'method': 'fixed_a',
+   'rank': 32,
+   'seed': 42,
+   'domain_order': ['A', 'B', 'C'],
+   'phases': {'A': {'perplexity': {'A': 16.93542659448787,
+      'B': 6.468003611539699,
+      'C': 11.748379642495486},
+     'avg_loss': 2.8945955103093928},
+    'B': {'perplexity': {'A': 17.47107303185031,
+      'B': 4.004349509494621,
+      'C': 9.40018395354604},
+     'avg_loss': 1.389775410565463},
+    'C': {'perplexity': {'A': 19.39372350666831,
+      'B': 4.436105737266367,
+      'C': 6.312351627386858},
+     'avg_loss': 1.856456963040612}},
+   'cross_term_noise': 1.9614539411277778},
+  'dw_stitch_fwd_s42': {'method': 'dw_stitch',
+   'rank': 32,
+   'seed': 42,
+   'domain_order': ['A', 'B', 'C'],
+   'phases': {'A': {'perplexity': {'A': 16.93542659448787,
+      'B': 6.468003611539699,
+      'C': 11.748379642495486},
+     'avg_loss': 2.8945955103093928},
+    'B': {'perplexity': {'A': 163.13739335267385,
+      'B': 8.888139879986243,
+      'C': 64.91191570394328},
+     'avg_loss': 1.3795119388536974},
+    'C': {'perplexity': {'A': 4106.429233995416,
+      'B': 118.71721991942759,
+      'C': 6878.47461972617},
+     'avg_loss': 1.9132842752066526}},
+   'cross_term_noise': 1.9040623262157055},
+  'slao_r64_fwd_s42': {'method': 'slao_r64',
+   'rank': 64,
+   'seed': 42,
+   'domain_order': ['A', 'B', 'C'],
+   'phases': {'A': {'perplexity': {'A': 16.350783983204607,
+      'B': 6.3664693051221946,
+      'C': 11.314296885358498},
+     'avg_loss': 2.8283077413385564},
+    'B': {'perplexity': {'A': 16.19154771708167,
+      'B': 3.865992813413637,
+      'C': 9.296848974762046},
+     'avg_loss': 1.3549268427220258},
+    'C': {'perplexity': {'A': 17.673594667363247,
+      'B': 4.113245984376362,
+      'C': 6.117530517336158},
+     'avg_loss': 1.8202382678335363}},
+   'cross_term_noise': 1.9021884618582297},
+  'naive_fwd_s123': {'method': 'naive',
+   'rank': 32,
+   'seed': 123,
+   'domain_order': ['A', 'B', 'C'],
+   'phases': {'A': {'perplexity': {'A': 14.51725702189659,
+      'B': 7.109863946227328,
+      'C': 11.913513639127716},
+     'avg_loss': 2.9919711709022523},
+    'B': {'perplexity': {'A': 16.256458199888293,
+      'B': 4.309874312375994,
+      'C': 9.771385818585122},
+     'avg_loss': 1.401502057097175},
+    'C': {'perplexity': {'A': 21.77347630053068,
+      'B': 6.083295842787018,
+      'C': 5.979500358835478},
+     'avg_loss': 1.8568297684192658}},
+   'cross_term_noise': 1.9562486770361627},
+  'slao_fwd_s123': {'method': 'slao',
+   'rank': 32,
+   'seed': 123,
+   'domain_order': ['A', 'B', 'C'],
+   'phases': {'A': {'perplexity': {'A': 14.51725702189659,
+      'B': 7.109863946227328,
+      'C': 11.913513639127716},
+     'avg_loss': 2.9919711709022523},
+    'B': {'perplexity': {'A': 14.68581580679214,
+      'B': 4.390488478506775,
+      'C': 9.6692000889879},
+     'avg_loss': 1.3891769354993646},
+    'C': {'perplexity': {'A': 15.996947109935277,
+      'B': 4.704940604658056,
+      'C': 6.328640118337311},
+     'avg_loss': 1.8467992322011428}},
+   'cross_term_noise': 1.9114943905410244},
+  'fixed_a_fwd_s123': {'method': 'fixed_a',
+   'rank': 32,
+   'seed': 123,
+   'domain_order': ['A', 'B', 'C'],
+   'phases': {'A': {'perplexity': {'A': 14.51725702189659,
+      'B': 7.109863946227328,
+      'C': 11.913513639127716},
+     'avg_loss': 2.9919711709022523},
+    'B': {'perplexity': {'A': 15.07698161982784,
+      'B': 4.446680388446371,
+      'C': 9.510857850887259},
+     'avg_loss': 1.401502057097175},
+    'C': {'perplexity': {'A': 16.64012891466688,
+      'B': 4.953628603295833,
+      'C': 6.425990394703498},
+     'avg_loss': 1.857501713254235}},
+   'cross_term_noise': 1.960926362001088},
+  'dw_stitch_fwd_s123': {'method': 'dw_stitch',
+   'rank': 32,
+   'seed': 123,
+   'domain_order': ['A', 'B', 'C'],
+   'phases': {'A': {'perplexity': {'A': 14.51725702189659,
+      'B': 7.109863946227328,
+      'C': 11.913513639127716},
+     'avg_loss': 2.9919711709022523},
+    'B': {'perplexity': {'A': 107.8209675895304,
+      'B': 11.474388256267508,
+      'C': 70.58612254434489},
+     'avg_loss': 1.3891769354993646},
+    'C': {'perplexity': {'A': 1889.5379237462228,
+      'B': 259.46061545885016,
+      'C': 6705.710205615032},
+     'avg_loss': 1.9192600076848811}},
+   'cross_term_noise': 1.899642999885684},
+  'slao_r64_fwd_s123': {'method': 'slao_r64',
+   'rank': 64,
+   'seed': 123,
+   'domain_order': ['A', 'B', 'C'],
+   'phases': {'A': {'perplexity': {'A': 14.048082018883612,
+      'B': 6.814028299090042,
+      'C': 12.021057659239549},
+     'avg_loss': 2.9251186349175193},
+    'B': {'perplexity': {'A': 14.076731215347657,
+      'B': 4.310701227599496,
+      'C': 9.178969198077635},
+     'avg_loss': 1.3675489674914967},
+    'C': {'perplexity': {'A': 15.15648644521109,
+      'B': 4.5808937339315206,
+      'C': 6.2374296443520105},
+     'avg_loss': 1.8207446027885783}},
+   'cross_term_noise': 1.900963235759329},
+  'naive_fwd_s456': {'method': 'naive',
+   'rank': 32,
+   'seed': 456,
+   'domain_order': ['A', 'B', 'C'],
+   'phases': {'A': {'perplexity': {'A': 13.973220604827027,
+      'B': 6.560936950982741,
+      'C': 12.403020506433775},
+     'avg_loss': 2.9067162286151538},
+    'B': {'perplexity': {'A': 15.925067077421756,
+      'B': 3.9207606153099555,
+      'C': 9.927370283129129},
+     'avg_loss': 1.4475801654837348},
+    'C': {'perplexity': {'A': 21.044303237923515,
+      'B': 5.396052855759966,
+      'C': 6.154920371061688},
+     'avg_loss': 1.853788933428851}},
+   'cross_term_noise': 1.9551857027169703},
+  'slao_fwd_s456': {'method': 'slao',
+   'rank': 32,
+   'seed': 456,
+   'domain_order': ['A', 'B', 'C'],
+   'phases': {'A': {'perplexity': {'A': 13.973220604827027,
+      'B': 6.560936950982741,
+      'C': 12.403020506433775},
+     'avg_loss': 2.9067162286151538},
+    'B': {'perplexity': {'A': 14.235221787271612,
+      'B': 4.003654561995666,
+      'C': 9.397557969517909},
+     'avg_loss': 1.4353676451878115},
+    'C': {'perplexity': {'A': 15.398935983648629,
+      'B': 4.243456943895911,
+      'C': 6.494246239318991},
+     'avg_loss': 1.8416063834320415}},
+   'cross_term_noise': 1.910812222300992},
+  'fixed_a_fwd_s456': {'method': 'fixed_a',
+   'rank': 32,
+   'seed': 456,
+   'domain_order': ['A', 'B', 'C'],
+   'phases': {'A': {'perplexity': {'A': 13.973220604827027,
+      'B': 6.560936950982741,
+      'C': 12.403020506433775},
+     'avg_loss': 2.9067162286151538},
+    'B': {'perplexity': {'A': 14.690301299445013,
+      'B': 4.054585661620054,
+      'C': 9.645693114053637},
+     'avg_loss': 1.4475801654837348},
+    'C': {'perplexity': {'A': 16.156083599971474,
+      'B': 4.454856125786874,
+      'C': 6.5729000886030144},
+     'avg_loss': 1.854789525270462}},
+   'cross_term_noise': 1.9602694049337737},
+  'dw_stitch_fwd_s456': {'method': 'dw_stitch',
+   'rank': 32,
+   'seed': 456,
+   'domain_order': ['A', 'B', 'C'],
+   'phases': {'A': {'perplexity': {'A': 13.973220604827027,
+      'B': 6.560936950982741,
+      'C': 12.403020506433775},
+     'avg_loss': 2.9067162286151538},
+    'B': {'perplexity': {'A': 91.70143069803753,
+      'B': 9.180053593279036,
+      'C': 80.80808306773099},
+     'avg_loss': 1.4353676451878115},
+    'C': {'perplexity': {'A': 3502.6525328409875,
+      'B': 398.0084612377063,
+      'C': 14318.014903396534},
+     'avg_loss': 1.9249500242146578}},
+   'cross_term_noise': 1.9028643156259857},
+  'slao_r64_fwd_s456': {'method': 'slao_r64',
+   'rank': 64,
+   'seed': 456,
+   'domain_order': ['A', 'B', 'C'],
+   'phases': {'A': {'perplexity': {'A': 13.602909483324632,
+      'B': 6.698887485840638,
+      'C': 11.957786016983647},
+     'avg_loss': 2.8447589202360675},
+    'B': {'perplexity': {'A': 13.874906540676225,
+      'B': 3.9337633072733182,
+      'C': 9.44173278075532},
+     'avg_loss': 1.408788058974526},
+    'C': {'perplexity': {'A': 15.128070139794444,
+      'B': 4.108819147915992,
+      'C': 6.337262513423082},
+     'avg_loss': 1.8139994133602488}},
+   'cross_term_noise': 1.9027762314692278},
+  'slao_C→B→A_s42': {'method': 'slao',
+   'rank': 32,
+   'seed': 42,
+   'domain_order': ['C', 'B', 'A'],
+   'phases': {'C': {'perplexity': {'C': 6.08009338602726,
+      'B': 10.643099028418582,
+      'A': 33.93618906407888},
+     'avg_loss': 1.9814914936369115},
+    'B': {'perplexity': {'C': 6.894821155621717,
+      'B': 4.017330029858824,
+      'A': 19.636571612404502},
+     'avg_loss': 1.3975107192993164},
+    'A': {'perplexity': {'C': 7.229992924061799,
+      'B': 4.154349547990886,
+      'A': 15.831602059440119},
+     'avg_loss': 2.7016922224651685}},
+   'cross_term_noise': 1.909141811365562},
+  'fixed_a_C→B→A_s42': {'method': 'fixed_a',
+   'rank': 32,
+   'seed': 42,
+   'domain_order': ['C', 'B', 'A'],
+   'phases': {'C': {'perplexity': {'C': 6.08009338602726,
+      'B': 10.643099028418582,
+      'A': 33.93618906407888},
+     'avg_loss': 1.9814914936369115},
+    'B': {'perplexity': {'C': 7.196632496323624,
+      'B': 4.066574871872885,
+      'A': 19.876559414569922},
+     'avg_loss': 1.4105571093884381},
+    'A': {'perplexity': {'C': 7.641327734621877,
+      'B': 4.317181091973653,
+      'A': 16.140733014017464},
+     'avg_loss': 2.715696398778395}},
+   'cross_term_noise': 1.954769614038647},
+  'dw_stitch_C→B→A_s42': {'method': 'dw_stitch',
+   'rank': 32,
+   'seed': 42,
+   'domain_order': ['C', 'B', 'A'],
+   'phases': {'C': {'perplexity': {'C': 6.08009338602726,
+      'B': 10.643099028418582,
+      'A': 33.93618906407888},
+     'avg_loss': 1.9814914936369115},
+    'B': {'perplexity': {'C': 15.805819626789315,
+      'B': 7.414374616446226,
+      'A': 44.679297627121585},
+     'avg_loss': 1.3975107192993164},
+    'A': {'perplexity': {'C': 1374.8896492699591,
+      'B': 66.08193874537783,
+      'A': 323.07371264017246},
+     'avg_loss': 2.7817753293297507}},
+   'cross_term_noise': 1.8955945582130538},
+  'slao_B→C→A_s42': {'method': 'slao',
+   'rank': 32,
+   'seed': 42,
+   'domain_order': ['B', 'C', 'A'],
+   'phases': {'B': {'perplexity': {'B': 4.032161636985324,
+      'C': 9.521744587463068,
+      'A': 20.698194115670074},
+     'avg_loss': 1.5564994329755957},
+    'C': {'perplexity': {'B': 5.467931113090111,
+      'C': 6.057760187691626,
+      'A': 23.44733814236423},
+     'avg_loss': 1.86090308861299},
+    'A': {'perplexity': {'B': 4.637287495003572,
+      'C': 6.657540321857527,
+      'A': 16.21214280959759},
+     'avg_loss': 2.7152472842823374}},
+   'cross_term_noise': 1.8942673097258302},
+  'fixed_a_B→C→A_s42': {'method': 'fixed_a',
+   'rank': 32,
+   'seed': 42,
+   'domain_order': ['B', 'C', 'A'],
+   'phases': {'B': {'perplexity': {'B': 4.032161636985324,
+      'C': 9.521744587463068,
+      'A': 20.698194115670074},
+     'avg_loss': 1.5564994329755957},
+    'C': {'perplexity': {'B': 6.110206386797609,
+      'C': 6.1394045695088595,
+      'A': 24.284655060433828},
+     'avg_loss': 1.874677577343854},
+    'A': {'perplexity': {'B': 4.93872935982866,
+      'C': 6.915717409336729,
+      'A': 16.533740696626293},
+     'avg_loss': 2.7214181845838374}},
+   'cross_term_noise': 1.9477344686289062},
+  'dw_stitch_B→C→A_s42': {'method': 'dw_stitch',
+   'rank': 32,
+   'seed': 42,
+   'domain_order': ['B', 'C', 'A'],
+   'phases': {'B': {'perplexity': {'B': 4.032161636985324,
+      'C': 9.521744587463068,
+      'A': 20.698194115670074},
+     'avg_loss': 1.5564994329755957},
+    'C': {'perplexity': {'B': 49.470891522743024,
+      'C': 9.097348210496824,
+      'A': 59.082743581883},
+     'avg_loss': 1.86090308861299},
+    'A': {'perplexity': {'B': 2022.2961941454816,
+      'C': 118.09932168870078,
+      'A': 296.5562866249559},
+     'avg_loss': 2.78299295685508}},
+   'cross_term_noise': 1.8885398802014923},
+  'slao_A→C→B_s42': {'method': 'slao',
+   'rank': 32,
+   'seed': 42,
+   'domain_order': ['A', 'C', 'B'],
+   'phases': {'A': {'perplexity': {'A': 16.93542659448787,
+      'C': 11.748379642495486,
+      'B': 6.468003611539699},
+     'avg_loss': 2.8945955103093928},
+    'C': {'perplexity': {'A': 19.46590521547531,
+      'C': 6.083343377944379,
+      'B': 6.580734982061921},
+     'avg_loss': 1.8659739077091217},
+    'B': {'perplexity': {'A': 17.420026153735172,
+      'C': 6.394583140165234,
+      'B': 4.05672817260718},
+     'avg_loss': 1.37233660410751}},
+   'cross_term_noise': 1.9091566599792098},
+  'fixed_a_A→C→B_s42': {'method': 'fixed_a',
+   'rank': 32,
+   'seed': 42,
+   'domain_order': ['A', 'C', 'B'],
+   'phases': {'A': {'perplexity': {'A': 16.93542659448787,
+      'C': 11.748379642495486,
+      'B': 6.468003611539699},
+     'avg_loss': 2.8945955103093928},
+    'C': {'perplexity': {'A': 20.745582905985923,
+      'C': 6.191788903201921,
+      'B': 6.953455662880413},
+     'avg_loss': 1.8808132063258778},
+    'B': {'perplexity': {'A': 18.1322594594954,
+      'C': 6.722122511259753,
+      'B': 4.095051156524206},
+     'avg_loss': 1.3788489211689343}},
+   'cross_term_noise': 1.96214940035673},
+  'dw_stitch_A→C→B_s42': {'method': 'dw_stitch',
+   'rank': 32,
+   'seed': 42,
+   'domain_order': ['A', 'C', 'B'],
+   'phases': {'A': {'perplexity': {'A': 16.93542659448787,
+      'C': 11.748379642495486,
+      'B': 6.468003611539699},
+     'avg_loss': 2.8945955103093928},
+    'C': {'perplexity': {'A': 451.56117651552285,
+      'C': 128.71654406820042,
+      'B': 36.54869207453199},
+     'avg_loss': 1.8659739077091217},
+    'B': {'perplexity': {'A': 6638.201223210688,
+      'C': 5661.56303927565,
+      'B': 708.1586634194254},
+     'avg_loss': 1.4575226480310612}},
+   'cross_term_noise': 1.9040748844819788},
+  'slao_C→A→B_s42': {'method': 'slao',
+   'rank': 32,
+   'seed': 42,
+   'domain_order': ['C', 'A', 'B'],
+   'phases': {'C': {'perplexity': {'C': 6.08009338602726,
+      'A': 33.93618906407888,
+      'B': 10.643099028418582},
+     'avg_loss': 1.9814914936369115},
+    'A': {'perplexity': {'C': 7.386835201347163,
+      'A': 16.477402737032353,
+      'B': 6.095209771995757},
+     'avg_loss': 2.751200398531827},
+    'B': {'perplexity': {'C': 7.219390946878385,
+      'A': 15.994729391571813,
+      'B': 4.0345007222746645},
+     'avg_loss': 1.365266908027909}},
+   'cross_term_noise': 1.9087931101266111},
+  'fixed_a_C→A→B_s42': {'method': 'fixed_a',
+   'rank': 32,
+   'seed': 42,
+   'domain_order': ['C', 'A', 'B'],
+   'phases': {'C': {'perplexity': {'C': 6.08009338602726,
+      'A': 33.93618906407888,
+      'B': 10.643099028418582},
+     'avg_loss': 1.9814914936369115},
+    'A': {'perplexity': {'C': 7.683057985257826,
+      'A': 16.695649557712084,
+      'B': 6.106473506726294},
+     'avg_loss': 2.766591309417378},
+    'B': {'perplexity': {'C': 7.576353032459402,
+      'A': 16.59882218054197,
+      'B': 4.071901196138725},
+     'avg_loss': 1.3691283743489873}},
+   'cross_term_noise': 1.9537252060376091},
+  'dw_stitch_C→A→B_s42': {'method': 'dw_stitch',
+   'rank': 32,
+   'seed': 42,
+   'domain_order': ['C', 'A', 'B'],
+   'phases': {'C': {'perplexity': {'C': 6.08009338602726,
+      'A': 33.93618906407888,
+      'B': 10.643099028418582},
+     'avg_loss': 1.9814914936369115},
+    'A': {'perplexity': {'C': 47.94410953977694,
+      'A': 38.2512841081435,
+      'B': 21.026928245843106},
+     'avg_loss': 2.751200398531827},
+    'B': {'perplexity': {'C': 3142.0344966499274,
+      'A': 423.35223292035465,
+      'B': 118.95867209589296},
+     'avg_loss': 1.445026022195816}},
+   'cross_term_noise': 1.9047549945752726}}}

@@ -1,0 +1,56 @@
+[
+  {
+    "url": "https://arxiv.org/abs/2504.16084",
+    "name": "[2504.16084] TTRL: Test-Time Reinforcement Learning - arXiv",
+    "snippet": "common practices in Test-Time Scaling (TTS), such as majority voting, yield surprisingly effective rewards suitable for driving RL training.",
+    "host_name": "arxiv.org",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://neurips.cc/virtual/2025/poster/117645",
+    "name": "NeurIPS Poster TTRL: Test-Time Reinforcement Learning",
+    "snippet": "A key component of TTRL is its majority voting reward function, which generates rule-based rewards based on consensus among model predictions.",
+    "host_name": "neurips.cc",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://medium.com/@EleventhHourEnthusiast/ttrl-test-time-reinforcement-learning-d78a74e78a28",
+    "name": "TTRL: Test-Time Reinforcement Learning - Medium",
+    "snippet": "TTRL uses majority voting among multiple model predictions to create pseudo-labels, which then serve as reward signals for reinforcement ...",
+    "host_name": "medium.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/prime-rl/ttrl",
+    "name": "PRIME-RL/TTRL - Test-Time Reinforcement Learning - GitHub",
+    "snippet": "] We present TTRL (Test-Time Reinforcement common practices in Test-Time Scaling (TTS), such as majority voting, yield surprisingly effective ...",
+    "host_name": "github.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.researchgate.net/publication/391020470_TTRL_Test-Time_Reinforcement_Learning",
+    "name": "(PDF) TTRL: Test-Time Reinforcement Learning - ResearchGate",
+    "snippet": "Majority voting provides effective reward estimation for TTRL. TRL combines both Test-Time Scaling (TTS) and Test-Time Training (TTT). Test- ...",
+    "host_name": "www.researchgate.net",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.themoonlight.io/en/review/ttrl-test-time-reinforcement-learning",
+    "name": "[Literature Review] TTRL: Test-Time Reinforcement Learning",
+    "snippet": "TTRL enables test-time RL with majority voting for significant, unsupervised model improvement.",
+    "host_name": "www.themoonlight.io",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  }
+]

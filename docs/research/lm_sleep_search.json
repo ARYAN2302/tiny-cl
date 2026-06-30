@@ -1,0 +1,92 @@
+[
+  {
+    "url": "https://arxiv.org/abs/2605.26099",
+    "name": "Do Language Models Need Sleep? Offline Recurrence for Improved",
+    "snippet": "During sleep, the model performs N offline recurrent passes over the accumulated context and updates the fast weights in its state-space model ( ...",
+    "host_name": "arxiv.org",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.alphaxiv.org/abs/2605.26099",
+    "name": "Do Language Models Need Sleep? Offline Recurrence for Improved",
+    "snippet": "that recursively updating fast weights during a sleep-like offline phase improves reasoning over evicted context while preserving a strict prediction-phase ...",
+    "host_name": "www.alphaxiv.org",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://openreview.net/forum?id=iiZy6xyVVE",
+    "name": "Language Models Need Sleep: Learning to Self Modify and",
+    "snippet": "The paper introduces Sleep, a biologically inspired framework that lets language models \"rest, dream, and grow\". During sleep, the model pauses ...",
+    "host_name": "openreview.net",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=SxoF2q8qnv0",
+    "name": "Do Language Models Need Sleep? Offline Recurrence for Improved",
+    "snippet": "Title: Do Language Models Need Sleep? Offline Recurrence for Improved Online Inference (May 2026) Link: http://arxiv.org/abs/2605.26099v2 ...",
+    "host_name": "www.youtube.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.linkedin.com/pulse/continual-learning-llms-why-ai-models-need-sleep-nagesh-nama-nbtee",
+    "name": "Continual Learning in LLMs: Why AI Models Need Sleep - LinkedIn",
+    "snippet": "The 2026 survey on continual learning in LLMs is explicit: current methods still do not achieve smooth learning across tasks and time. The sleep ...",
+    "host_name": "www.linkedin.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.researchgate.net/publication/405852143_Language_Models_Need_Sleep_Learning_to_Self-Modify_and_Consolidate_Memories",
+    "name": "Learning to Self-Modify and Consolidate Memories - ResearchGate",
+    "snippet": "Language Models Need Sleep: Learning to Self-Modify and Consolidate Memories. June 2026 ... fast-weight memories: An alternative to recurrent ...",
+    "host_name": "www.researchgate.net",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://medium.com/mlworks/do-language-models-need-sleep-a27737700ce6",
+    "name": "Do Language Models Need Sleep? - Medium",
+    "snippet": "Do Language Models Need Sleep? Just like humans need sleep to consolidate the experience into memory, LLM needs a sleep phase as well!",
+    "host_name": "medium.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/html/2605.26099v1",
+    "name": "Language Models Need Sleep - arXiv",
+    "snippet": "During the sleep, the model performs N N offline recurrent passes over the accumulated context and updates the fast weights in its state-space ...",
+    "host_name": "arxiv.org",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://x.com/iScienceLuvr/status/2059221770075562113",
+    "name": "Language Models Need Sleep \"Transformer-based large language",
+    "snippet": "To handle this, we study a sleep-like consolidation mechanism in which a model periodically converts recent context into persistent fast weights ...",
+    "host_name": "x.com",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://en.futuroprossimo.it/2026/05/i-modelli-linguistici-hanno-bisogno-di-dormire-non-scherzo",
+    "name": "Language models need sleep (I'm not kidding) - Futuro Prossimo",
+    "snippet": "A CMU study puts language models to sleep: offline steps that transform context into memory. More sleep, more reasoning.",
+    "host_name": "en.futuroprossimo.it",
+    "rank": 9,
+    "date": "",
+    "favicon": ""
+  }
+]

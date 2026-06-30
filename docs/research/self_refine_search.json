@@ -1,0 +1,92 @@
+[
+  {
+    "url": "https://neurips.cc/virtual/2023/poster/71632",
+    "name": "NeurIPS Poster Self-Refine: Iterative Refinement with Self-Feedback",
+    "snippet": "The key idea is that SELF-REFINE uses the same underlying LLM to generate, get feedback, and refine its outputs given its own feedback. It relies only on ...\nThe main idea is to generate an initial output using an LLMs; then, the same LLMs provides *feedback* for its output and uses it to *refine* itself, iteratively ...",
+    "host_name": "neurips.cc",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://openreview.net/forum?id=S37hOerQLB",
+    "name": "Self-Refine: Iterative Refinement with Self-Feedback | OpenReview",
+    "snippet": "Summary: This paper proposes Self-Refine which uses the same LLM to provide feedback for its output and refine itself to improve output quality.",
+    "host_name": "openreview.net",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://papers.nips.cc/paper_files/paper/2023/hash/91edff07232fb1b55a505a9e9f6c0ff3-Abstract-Conference.html",
+    "name": "Self-Refine: Iterative Refinement with Self-Feedback",
+    "snippet": "We introduce Self-Refine, an approach for improving initial outputs from LLMs through iterative feedback and refinement.",
+    "host_name": "papers.nips.cc",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/madaan/self-refine",
+    "name": "Self-Refine: Iterative Refinement with Self-Feedback - GitHub",
+    "snippet": "With Self-Refine, LLMs can generate feedback on their work, use it to improve the output, and repeat this process. Added visual self-refine examples and colabs.",
+    "host_name": "github.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://dl.acm.org/doi/10.5555/3666122.3668141",
+    "name": "SELF-REFINE: iterative refinement with self-feedback",
+    "snippet": "We introduce Self-Refine, an approach for improving initial outputs from llms through iterative feedback and refinement.",
+    "host_name": "dl.acm.org",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.semanticscholar.org/paper/Self-Refine%3A-Iterative-Refinement-with-Madaan-Tandon/3aaf6a2cbad5850ad81ab5c163599cb3d523436f",
+    "name": "[PDF] Self-Refine: Iterative Refinement with Self-Feedback",
+    "snippet": "Self-Refine is introduced, an approach for improving initial outputs from LLMs through iterative feedback and refinement.",
+    "host_name": "www.semanticscholar.org",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://medium.com/@nandanadas88/self-refine-how-language-models-can-improve-their-own-outputs-7a346d14a293",
+    "name": "SELF-REFINE: How Language Models Can Improve Their Own",
+    "snippet": "A comprehensive analysis of the paper “SELF-REFINE: Iterative Refinement with Self-Feedback” by Madaan et al. (2023).",
+    "host_name": "medium.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://selfrefine.info",
+    "name": "Self-Refine: Iterative Refinement with Self-Feedback",
+    "snippet": "Self-Refine is a framework for iteratively improving outputs from LLMs through a process of iterative creation with feedback.",
+    "host_name": "selfrefine.info",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/singularity/comments/12a4s6d/selfrefine_iterative_refinement_with_selffeedback",
+    "name": "a novel approach that allows LLMs to iteratively refine outputs and",
+    "snippet": "A novel approach that allows LLMs to iteratively refine outputs and incorporate feedback along multiple dimensions to improve performance on diverse tasks.",
+    "host_name": "www.reddit.com",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://learnprompting.org/docs/advanced/self_criticism/self_refine?srsltid=AfmBOor7Z3NIlW-dhA1G6fbYUYftYTgFXj__elCwnF1xeiO2i2NIlVbn",
+    "name": "Iterative Refinement with Self-Feedback for LLMs - Learn Prompting",
+    "snippet": "Refining through feedback: Self-Refine enhances Large Language Model outputs by iteratively improving initial results based on model feedback.",
+    "host_name": "learnprompting.org",
+    "rank": 9,
+    "date": "",
+    "favicon": ""
+  }
+]

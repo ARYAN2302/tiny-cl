@@ -1,0 +1,56 @@
+[
+  {
+    "url": "https://github.com/Zesearch/self-improvement-llm",
+    "name": "GitHub - Zesearch/self-improvement-llm: A technical and",
+    "snippet": "We present a system-level framework for self-improving language models, covering the full lifecycle of autonomous model development. We organize existing ...",
+    "host_name": "github.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/html/2509.18133v2",
+    "name": "Self-Evolving LLMs via Continual Instruction Tuning - arXiv",
+    "snippet": "Self-evolution of LLMs is defined as the ability of models to autonomously adapt to dynamic tasks, integrate cross-task knowledge, and sustain ...",
+    "host_name": "arxiv.org",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://openreview.net/forum?id=ScI7IlKGdI",
+    "name": "Spurious Forgetting in Continual Learning of Language Models",
+    "snippet": "Ultimately, we introduce a Freezing strategy that fix the bottom layers of the model, leading to substantial improvements in four continual learning scenarios.",
+    "host_name": "openreview.net",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://neurips.cc/virtual/2025/123881",
+    "name": "Continuous Self-Improvement of Large Language Models by Test",
+    "snippet": "Across three benchmarks and three state-of-the-art LLMs, VDS-TTT achieves up to 32.29% relative improvement over the base model, showing its effectiveness for ...",
+    "host_name": "neurips.cc",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/singularity/comments/1pzg96t/new_paper_on_continual_learning",
+    "name": "New Paper on Continual Learning : r/singularity - Reddit",
+    "snippet": "Recursive self-improvement at model core level is a very fast highway to AGI and ASI.",
+    "host_name": "www.reddit.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://research.google/blog/introducing-nested-learning-a-new-ml-paradigm-for-continual-learning",
+    "name": "Introducing Nested Learning: A new ML paradigm for continual",
+    "snippet": "We introduce Nested Learning, a new approach to machine learning that views models as a set of smaller, nested optimization problems, ...",
+    "host_name": "research.google",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  }
+]

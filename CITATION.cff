@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+title: "tiny-cl: Self-Improving LFM2.5-350M with SLAO + MVA + AVR"
+authors:
+  - family-names: "Thakur"
+    given-names: "Aryan"
+    orcid: "https://github.com/ARYAN2302"
+type: software
+repository-code: "https://github.com/ARYAN2302/tiny-cl"
+license: MIT
+version: "1.0.0"
+date-released: "2026-06-30"
+keywords:
+  - continual-learning
+  - self-improvement
+  - LoRA
+  - LFM2
+  - catastrophic-forgetting
+  - small-language-models
+preferred-citation:
+  type: article
+  title: "tiny-cl: Self-Improving LFM2.5-350M with SLAO + MVA + AVR"
+  authors:
+    - family-names: "Thakur"
+      given-names: "Aryan"
+  year: 2026
+  notes: "Software repository combining SLAO (Qiao & Mahdavi, ICLR 2026) and
+          MVA (inspired by INTUITOR, ICLR 2026) on LiquidAI/LFM2.5-350M."

@@ -1,0 +1,92 @@
+[
+  {
+    "url": "https://arxiv.org/pdf/2505.19590",
+    "name": "[PDF] Learning to Reason without External Rewards - arXiv",
+    "snippet": "We propose. INTUITOR, an RLIF method that uses a model's own confidence—termed self- certainty—as its sole reward signal. INTUITOR replaces external rewards in.",
+    "host_name": "arxiv.org",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://openreview.net/forum?id=OU9nFEYR2M",
+    "name": "Learning to Reason without External Rewards - OpenReview",
+    "snippet": "The paper introduces INTUITOR and RLIF, which train LLMs to improve reasoning without any external rewards or supervision. Instead of verifiable ...",
+    "host_name": "openreview.net",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/Zesearch/self-improvement-llm",
+    "name": "GitHub - Zesearch/self-improvement-llm: A technical and",
+    "snippet": "We present a system-level framework for self-improving language models, covering the full lifecycle of autonomous model development. We organize existing ...",
+    "host_name": "github.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/singularity/comments/1kxe09c/uc_berkeley_learning_to_reason_without_external",
+    "name": "[UC Berkeley] Learning to Reason without External Rewards - Reddit",
+    "snippet": "This paper introduces INTUITOR, an instantiation of Reinforcement Learning from Internal Feedback (RLIF) that uses a model's intrinsic self- ...",
+    "host_name": "www.reddit.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.semanticscholar.org/paper/A-Model-Can-Help-Itself%3A-Reward-Free-Self-Training-Li-Zhao/891290cc2d45e34cbf3145c6b70c727a9140a83c",
+    "name": "[PDF] A Model Can Help Itself: Reward-Free Self-Training for LLM",
+    "snippet": "Can language models improve their reasoning performance without external rewards ... Self-Improvement in Language Models: The Sharpening Mechanism.",
+    "host_name": "www.semanticscholar.org",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://wandb.ai/byyoung3/ml-news/reports/Self-Rewarding-LLM-s-The-Solution-to-AGI---Vmlldzo2Njk4MDc4",
+    "name": "Self-Rewarding LLM's: The Solution to AGI? | ml-news - Wandb",
+    "snippet": "The Self-Rewarding Language Models training process is an iterative approach aimed at creating language models that can improve themselves over time.",
+    "host_name": "wandb.ai",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=uKFvMJUSTDU",
+    "name": "Learning to Reason without External Rewards (May 2025) - YouTube",
+    "snippet": "The authors propose INTUITOR, an RLIF method using a model's self-certainty as the reward ... Large Language Models; Internal Feedback ...",
+    "host_name": "www.youtube.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://medium.com/@anirudhsekar2008/self-rewarding-language-models-can-ai-train-itself-without-human-feedback-62997d57581d",
+    "name": "Self-Rewarding Language Models: Can AI Train Itself Without",
+    "snippet": "Self-Rewarding Language Models significantly outperformed baseline models trained without any reward signals. In many settings, SRLMs achieved ...",
+    "host_name": "medium.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://proceedings.neurips.cc/paper_files/paper/2024/file/639d992f819c2b40387d4d5170b8ffd7-Paper-Conference.pdf",
+    "name": "[PDF] Teaching Language Model Agents How to Self-Improve - NIPS",
+    "snippet": "This highlights the limitation of the self-refine structure in effectively improving model performance without external guidance, which is also observed in [24] ...",
+    "host_name": "proceedings.neurips.cc",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.themoonlight.io/en/review/learning-to-reason-without-external-rewards",
+    "name": "[Literature Review] Learning to Reason without External Rewards",
+    "snippet": "This paper introduces Reinforcement Learning from Internal Feedback (RLIF), a paradigm shift enabling LLMs to learn from intrinsic signals without external ...",
+    "host_name": "www.themoonlight.io",
+    "rank": 9,
+    "date": "",
+    "favicon": ""
+  }
+]

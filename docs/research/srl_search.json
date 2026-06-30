@@ -1,0 +1,56 @@
+[
+  {
+    "url": "https://magazine.sebastianraschka.com/p/state-of-llms-2025",
+    "name": "The State Of LLMs 2025: Progress, Problems, and Predictions",
+    "snippet": "A 2025 review of large language models, from DeepSeek R1 and RLVR to inference-time scaling, benchmarks, architectures, and predictions for ...",
+    "host_name": "magazine.sebastianraschka.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://jedm.educationaldatamining.org/index.php/JEDM/article/view/856",
+    "name": "Large Language Models Generalize SRL Prediction to New",
+    "snippet": "Think-aloud protocols are a standard method to study self-regulated learning (SRL) during learning by problem-solving.",
+    "host_name": "jedm.educationaldatamining.org",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/Zesearch/self-improvement-llm",
+    "name": "GitHub - Zesearch/self-improvement-llm: A technical and",
+    "snippet": "We present a system-level framework for self-improving language models, covering the full lifecycle of autonomous model development. We organize existing ...",
+    "host_name": "github.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/html/2506.10943v1",
+    "name": "Self-Adapting Language Models - arXiv",
+    "snippet": "SEAL can therefore be interpreted as an algorithm with two nested loops: an outer RL loop, which optimizes the self-edit generation, and an ...",
+    "host_name": "arxiv.org",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=R0skNnyiFKU",
+    "name": "LLMs in 2026: What's Real, What's Hype, and What's Coming Next",
+    "snippet": "... Language Models (LLMs) in 2026. As an LLM research engineer, Sebastian bridges deep technical expertise with practical, real-world AI ...",
+    "host_name": "www.youtube.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://rycolab.io/classes/llm-s25",
+    "name": "Large Language Models, Spring 2025 - Rycolab",
+    "snippet": "In this course, we start with the probabilistic foundations of language models, i.e., covering what constitutes a language model from a formal, theoretical ...",
+    "host_name": "rycolab.io",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  }
+]

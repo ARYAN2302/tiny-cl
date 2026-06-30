@@ -1,0 +1,56 @@
+[
+  {
+    "url": "https://arxiv.org/abs/2505.03335",
+    "name": "Absolute Zero: Reinforced Self-play Reasoning with Zero Data - arXiv",
+    "snippet": "AZR achieves overall SOTA performance on coding and mathematical reasoning tasks, outperforming existing zero-setting models that rely on tens ...\nDespite being trained entirely without external data, AZR achieves overall SOTA performance on coding and mathematical reasoning tasks, ...",
+    "host_name": "arxiv.org",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://neurips.cc/virtual/2025/poster/116121",
+    "name": "Absolute Zero: Reinforced Self-play Reasoning with Zero Data",
+    "snippet": "Notably, Absolute Zero Reasoner-Coder-7B achieves state-of-the-art performance in both the 7B overall average and the coding average categories.\nAZR uses a code executor to both validate self-proposed code reasoning tasks and verify answers, serving as an unified source of verifiable ...",
+    "host_name": "neurips.cc",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/LeapLabTHU/Absolute-Zero-Reasoner",
+    "name": "LeapLabTHU/Absolute-Zero-Reasoner - GitHub",
+    "snippet": "Our approach achieves strong performance across both code and math reasoning benchmarks without using any external data: during AZR Self-play python\nOur approach achieves strong performance across both code and math reasoning benchmarks without using any external data.",
+    "host_name": "github.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://andrewzh112.github.io/absolute-zero-reasoner",
+    "name": "Absolute Zero Reasoner - Andrew Zhao",
+    "snippet": "AZR uses a code executor to validate self-generated tasks. AZR achieves state-of-the-art results on diverse coding and math reasoning benchmarks, even ...\nAZR uses a code executor to validate self-generated tasks (covering deduction, abduction, and induction) and verify solutions, providing reliable rewards for ...",
+    "host_name": "andrewzh112.github.io",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/singularity/comments/1kgr5h3/selfimproving_ai_unlocked",
+    "name": "Self-improving AI unlocked? : r/singularity - Reddit",
+    "snippet": "AZR achieves overall SOTA performance on coding and mathematical reasoning tasks, outperforming existing zero-setting models\nWe propose a new RLVR paradigm called Absolute Zero, in which a single model learns to propose tasks that maximize its own learning progress and improves ...",
+    "host_name": "www.reddit.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.facebook.com/groups/595424764221375/posts/2172639736499862",
+    "name": "Brilliant idea proposed in this paper for LLM reasoning. Absolute",
+    "snippet": "The Absolute Zero Reasoner (AZR) autonomously generates its own tasks, solves them, and improves through self-play with no coding and math ...\nUsing a unique self- play framework, AZR generates its own tasks, solves them through reasoning (deduction, abduction, and induction), and ...",
+    "host_name": "www.facebook.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  }
+]

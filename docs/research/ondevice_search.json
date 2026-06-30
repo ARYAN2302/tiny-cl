@@ -1,0 +1,92 @@
+[
+  {
+    "url": "https://arxiv.org/html/2311.12275v4",
+    "name": "Enabling On-Device Large Language Model Personalization  - arXiv",
+    "snippet": "In this paper, we present a novel framework for on-device personalization of a large language model (LLM) on edge devices. Our approach addresses privacy ...",
+    "host_name": "arxiv.org",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://dl.acm.org/doi/10.1145/3774906.3802769",
+    "name": "EdgeTune: Efficient On-Device LLM Personalization at the Edge",
+    "snippet": "Together, they reduce the amortized cost of continual on-device LLM personalization by up to 79%. ... Published: 10 May 2026. Check for updates.",
+    "host_name": "dl.acm.org",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://v-chandra.github.io/on-device-llms",
+    "name": "On-Device LLMs: State of the Union, 2026 - Vikas Chandra",
+    "snippet": "Fine-tuning on-device would enable personalization without sending data to the cloud for training or providing extensive context via a prompt to ...",
+    "host_name": "v-chandra.github.io",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.qualcomm.com/news/onq/2023/10/getting-personal-with-on-device-ai",
+    "name": "Getting personal with on-device AI | Qualcomm",
+    "snippet": "Personalized AI offers many benefits, including tailored experiences, intuitive interactions, improved accessibility and increased productivity.",
+    "host_name": "www.qualcomm.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.researchgate.net/publication/404694091_EdgeTune_Efficient_On-Device_LLM_Personalization_at_the_Edge",
+    "name": "EdgeTune: Efficient On-Device LLM Personalization at the Edge",
+    "snippet": "Personalization of Large Language Models (LLMs) is important in practical applications to accommodate the individual needs of different mobile users.",
+    "host_name": "www.researchgate.net",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://scand.com/company/blog/on-device-llms",
+    "name": "On-Device LLMs: What It Takes to Run an LLM on a Device - SCAND",
+    "snippet": "Learn what on-device LLMs are, how they differ from cloud LLMs, where businesses can use them, and what to consider before building private, ...",
+    "host_name": "scand.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://dl.acm.org/doi/10.1145/3711875.3729132",
+    "name": "Expediting On-Device LLM Personalization via Explainable Model",
+    "snippet": "In this paper, we address these constraints by fine-tuning an already personalized LLM with user's personal data, and present XPerT, a new ...",
+    "host_name": "dl.acm.org",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.mdpi.com/2673-2688/7/1/15",
+    "name": "Deploying LLM Transformer on Edge Computing Devices - MDPI",
+    "snippet": "Recent advancements in compact LLMs have shown promise in enhancing their deployment on edge devices, enabling improved performance while addressing the ...",
+    "host_name": "www.mdpi.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://sensory.com/edge-ai-2026",
+    "name": "10 predictions for Edge AI in 2026: LLMs gain Efficiency | Sensory",
+    "snippet": "Edge AI predictions for 2026: on-device agents, specialized SLMs, hybrid AI ... Boost usability and battery life with low-power, on-device AI solutions.",
+    "host_name": "sensory.com",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.edge-ai-vision.com/2026/01/on-device-llms-in-2026-what-changed-what-matters-whats-next",
+    "name": "On-Device LLMs in 2026: What Changed, What Matters, What's Next",
+    "snippet": "On-device personalization via local fine-tuning could deliver user-specific behavior without shipping private data off-device. Bottom line.",
+    "host_name": "www.edge-ai-vision.com",
+    "rank": 9,
+    "date": "",
+    "favicon": ""
+  }
+]
