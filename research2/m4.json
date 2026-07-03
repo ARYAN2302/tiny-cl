@@ -1,0 +1,74 @@
+[
+  {
+    "url": "https://neurips.cc/virtual/2024/poster/97786",
+    "name": "NeurIPS Poster CoIN: A Benchmark of Continual Instruction Tuning",
+    "snippet": "A novel benchmark for MLLMs in continual instruction tuning is proposed, namely CoIN, which consists of 10 datasets spanning 8 different tasks ...",
+    "host_name": "neurips.cc",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/abs/2403.08350",
+    "name": "CoIN: A Benchmark of Continual Instruction tuNing for Multimodel",
+    "snippet": "CoIN comprises 10 commonly used datasets spanning 8 task categories, ensuring a diverse range of instructions and tasks. Besides, the ...",
+    "host_name": "arxiv.org",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://openreview.net/forum?id=EpnsUQavJA",
+    "name": "CoIN: A Benchmark of Continual Instruction Tuning for Multimodel",
+    "snippet": "This paper introduces the CoIN benchmark to assess Multimodal Large Language Models (MLLMs) using vision-language datasets across various tasks.",
+    "host_name": "openreview.net",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/zackschen/CoIN",
+    "name": "zackschen/CoIN: Instruction Tuning in Continual Learning paradigm",
+    "snippet": "In this paper, we present CoIN, a comprehensive benchmark tailored for assessing the behavior of existing MLLMs under continual instruction tunning.",
+    "host_name": "github.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://dl.acm.org/doi/10.5555/3737916.3739760",
+    "name": "CoIN: a benchmark of continual instruction tuning for multimodal",
+    "snippet": "CoIN comprises 10 meticulously crafted datasets spanning 8 tasks, ensuring diversity and serving as a robust evaluation framework to assess ...",
+    "host_name": "dl.acm.org",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://proceedings.neurips.cc/paper_files/paper/2024/hash/6a45500d9eda640deed90d8a62742be5-Abstract-Datasets_and_Benchmarks_Track.html",
+    "name": "CoIN: A Benchmark of Continual Instruction Tuning for Multimodel",
+    "snippet": "In this paper, we present CoIN, a comprehensive benchmark tailored for assessing the behavior of existing MLLMs under continual instruction tuning.",
+    "host_name": "proceedings.neurips.cc",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.semanticscholar.org/paper/CoIN%3A-A-Benchmark-of-Continual-Instruction-tuNing-Chen-Zhu/e198314dbbe1c98957b6e6eea3c91ab47f7decfd",
+    "name": "CoIN: A Benchmark of Continual Instruction tuNing for Multimodel",
+    "snippet": "A comprehensive benchmark is presented, namely Continual Instruction tuNing (CoIN), to assess existing MLLMs in the sequential instruction tuning paradigm ...",
+    "host_name": "www.semanticscholar.org",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://icml.cc/virtual/2025/poster/44960",
+    "name": "ICML Poster Large Continual Instruction Assistant",
+    "snippet": "We follow the datasets and tuning orders of the CoIN benchmark (Chen et al., 2024a), including ScienceQA (Lu et al., 2022), TextVQA (Singh et al., 2019) ...",
+    "host_name": "icml.cc",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  }
+]

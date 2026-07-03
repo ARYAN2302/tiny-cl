@@ -1,0 +1,74 @@
+[
+  {
+    "url": "https://ai.google.dev/gemma/docs/core/huggingface_text_full_finetune",
+    "name": "Full Model Fine-Tune using Hugging Face Transformers | Gemma",
+    "snippet": "This guide walks you through how to fine-tune Gemma on a mobile game NPC dataset using Hugging Face Transformers and TRL.",
+    "host_name": "ai.google.dev",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://huggingface.co/blog/gemma4",
+    "name": "Welcome Gemma 4: Frontier multimodal intelligence on device",
+    "snippet": "The Gemma 4 family of multimodal models by Google DeepMind is out on Hugging Face, with support for your favorite agents, inference engines, ...",
+    "host_name": "huggingface.co",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://huggingface.co/google/gemma-3-1b-it",
+    "name": "google/gemma-3-1b-it - Hugging Face",
+    "snippet": "Gemma 3 models are well-suited for a variety of text generation and image understanding tasks, including question answering, summarization, and reasoning.",
+    "host_name": "huggingface.co",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=gZvYIU4fnzc",
+    "name": "Fine Tuning A Gemma 1B Model - YouTube",
+    "snippet": "Ultimate Gemma 3 Ollama Guide — Testing 1b, 4b, 12b and 27b ... Google Gemma 3 270M First Test - Is This The SMALLEST Usable LLM?",
+    "host_name": "www.youtube.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/LocalLLaMA/comments/1jhl6jp/gemma3_is_outperforming_a_ton_of_models_on",
+    "name": "Gemma3 is outperforming a ton of models on fine-tuning / world",
+    "snippet": "Gemma 3 is working extremely well! Outperforming any other to my taste. Even the tiny models like gemma-3-1b-it-Q4_K_M.gguf work pretty well ...",
+    "host_name": "www.reddit.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://huggingface.co/blog/gemma3",
+    "name": "Gemma 3: Google's all new multimodal, multilingual, long context",
+    "snippet": "Gemma 3 is Google's latest iteration of open weight LLMs. It comes in four sizes, 1 billion, 4 billion, 12 billion, and 27 billion parameters.",
+    "host_name": "huggingface.co",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://medium.com/@sabaybiometzger/gemma-3-fine-tuning-for-classification-tasks-06e04eb6d0f6",
+    "name": "Gemma 3: Fine-Tuning for Classification Tasks | by Sabaybiometzger",
+    "snippet": "This article will guide you through a practical, step-by-step approach to overcome this current gap. We'll demonstrate how you can adapt a causal Gemma 3 model ...",
+    "host_name": "medium.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=2hoNAr-id-E",
+    "name": "End-to-End (small) LLM Fine-tuning Tutorial (from data to  - YouTube",
+    "snippet": "In this video we fully fine-tune Google's Gemma 3 270M Small Language Model to do structured data extraction. Because the Gemma 3 270M is ...",
+    "host_name": "www.youtube.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  }
+]
