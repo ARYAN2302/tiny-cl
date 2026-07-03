@@ -31,7 +31,7 @@ verify:
 repair:
   operator: snapshot_interp
   alpha: 0.1
-  alpha_decay: sqrt
+  alpha_decay: none  # v23 used fixed α=0.1, no decay
   max_steps: 100
   max_steps_mode: adaptive
 

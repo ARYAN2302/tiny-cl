@@ -73,32 +73,10 @@ class SnapshotInterp(RepairOperator):
         needed = math.ceil(math.log(worst_ratio) / math.log(1.0 / (1.0 - alpha_eff)))
         return min(self.max_steps, max(1, needed))
 
-    def repair(self, model: nn.Module, state: StreamState,
-               drift: DriftInfo) -> int:
-        """Apply snapshot interpolation until drift resolves. Returns step count."""
-        if state.snapshot is None:
-            return 0
-
-        alpha_eff = self._effective_alpha(state.task_index)
-        max_steps_eff = self._effective_max_steps(drift)
-
-        # We need a way to re-verify after each step. The repair operator
-        # doesn't own the detector, so we do a fixed number of steps here
-        # based on the drift ratio. The strategy (see avr/strategy.py)
-        # handles the verify-repair loop if it wants tighter convergence.
-        steps_taken = 0
-        for step in range(max_steps_eff):
-            n_adj = self._interp_step(model, state.snapshot, alpha_eff)
-            steps_taken += 1
-            # The strategy will re-verify after this returns; if we hit
-            # max_steps the strategy checks again and may call repair again.
-
-        return steps_taken
-
-    def _interp_step(self, model: nn.Module,
+    def repair_step(self, model: nn.Module,
                      snapshot: Dict[str, torch.Tensor],
                      alpha: float) -> int:
-        """One closed-form interpolation step. Returns n params adjusted."""
+        """ONE closed-form interpolation step. Returns n params adjusted."""
         n_adj = 0
         for n, p in model.named_parameters():
             if "lora_" in n and n in snapshot:
@@ -106,6 +84,16 @@ class SnapshotInterp(RepairOperator):
                 p.data.copy_((1.0 - alpha) * p.data + alpha * snap_val)
                 n_adj += 1
         return n_adj
+
+    def repair(self, model: nn.Module, state: StreamState,
+               drift: DriftInfo) -> int:
+        """Legacy interface — framework now calls repair_step in a loop.
+        Kept for backwards compatibility."""
+        if state.snapshot is None:
+            return 0
+        alpha_eff = self._effective_alpha(state.task_index)
+        self.repair_step(model, state.snapshot, alpha_eff)
+        return 1
 
 
 class SubspaceSnapshotInterp(RepairOperator):
@@ -147,6 +135,13 @@ class SubspaceSnapshotInterp(RepairOperator):
         self.n_probe_samples = n_probe_samples
         self.alpha = alpha
         self.device = device
+
+    def repair_step(self, model: nn.Module,
+                     snapshot: Dict[str, torch.Tensor],
+                     alpha: float) -> int:
+        raise NotImplementedError(
+            "SubspaceSnapshotInterp is v2 research. Use SnapshotInterp for v1."
+        )
 
     def repair(self, model: nn.Module, state: StreamState,
                drift: DriftInfo) -> int:

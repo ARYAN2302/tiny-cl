@@ -105,13 +105,25 @@ class RepairOperator(ABC):
 
     v1: SnapshotInterp — global closed-form interpolation.
     v2: SubspaceSnapshotInterp — load-bearing-subspace repair (research).
+
+    The operator does ONE repair step per call. The framework handles
+    the verify-repair loop (re-check PPL after each step, stop when
+    drift resolves). This matches v23's behavior exactly.
     """
 
     @abstractmethod
-    def repair(self, model: nn.Module, state: StreamState,
-               drift: DriftInfo) -> int:
-        """Apply repair. Return number of repair steps taken."""
+    def repair_step(self, model: nn.Module, snapshot: Dict[str, torch.Tensor],
+                    alpha: float) -> int:
+        """Apply ONE repair step. Return number of params adjusted."""
         ...
+
+    def repair(self, model: nn.Module, state: StreamState,
+               drift: DriftInfo, max_steps: int = 100) -> int:
+        """Default repair loop: step + re-check is handled by the framework.
+        Override only if you need custom loop logic."""
+        # This is overridden by the framework's run_stream which does
+        # the verify-repair loop. Kept for backwards compatibility.
+        return 1
 
 
 # ────────────────────────────────────────────────────────────────────
@@ -270,8 +282,31 @@ class ContinualPostTrainer:
                         print(f"    {t}: PPL={info['current']:.2f} / "
                               f"best={info['best']:.2f} = {info['ratio']:.2f}x")
 
-                    # ── Phase 3: REPAIR ──
-                    n_steps = self.repair.repair(model, state, drift)
+                    # ── Phase 3: REPAIR (verify-repair loop, matches v23) ──
+                    # Get effective alpha from the repair operator
+                    if hasattr(self.repair, '_effective_alpha'):
+                        alpha_eff = self.repair._effective_alpha(state.task_index)
+                    else:
+                        alpha_eff = getattr(self.repair, 'alpha', 0.1)
+
+                    n_steps = 0
+                    still_drifted = drift
+                    for step in range(max_steps if hasattr(self, '_max_repair_steps')
+                                     else 100):
+                        self.repair.repair_step(model, state.snapshot, alpha_eff)
+                        n_steps += 1
+
+                        # Re-verify after each step
+                        still_drifted = self.verify.check(
+                            model, tokenizer, state, tasks)
+                        if not still_drifted.drifted_tasks:
+                            print(f"  [REPAIR] Converged at step {step+1}")
+                            break
+
+                    if still_drifted.drifted_tasks:
+                        print(f"  [REPAIR] Max steps reached, drift remains "
+                              f"on {still_drifted.drifted_tasks}")
+
                     state.total_repair_steps += n_steps
                     state.repair_log.append({
                         "task": task.name, "repair_steps": n_steps,
