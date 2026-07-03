@@ -91,6 +91,8 @@ class SFTStrategy(LearnStrategy):
         loader = DataLoader(dataset, batch_size=self.batch_size,
                             shuffle=True, drop_last=False)
 
+        import time as _time
+        t0 = _time.time()
         gs, tl = 0, 0.0
         for epoch in range(self.epochs):
             for batch in loader:
@@ -105,8 +107,11 @@ class SFTStrategy(LearnStrategy):
                 opt.step()
                 tl += out.loss.item()
                 gs += 1
-                if gs % 100 == 0:
-                    print(f"      step {gs} | loss={tl/gs:.4f}")
+                if gs % 50 == 0:
+                    elapsed = _time.time() - t0
+                    print(f"      step {gs} | loss={tl/gs:.4f} | {elapsed:.0f}s")
+        if gs % 50 != 0:
+            print(f"      step {gs} | loss={tl/gs:.4f} | done")
 
 
 class ReplaySFTStrategy(LearnStrategy):
@@ -172,6 +177,8 @@ class ReplaySFTStrategy(LearnStrategy):
         loader = DataLoader(dataset, batch_size=self.batch_size,
                             shuffle=True, drop_last=False)
 
+        import time as _time
+        t0 = _time.time()
         gs, tl = 0, 0.0
         for epoch in range(self.epochs):
             for batch in loader:
@@ -186,8 +193,11 @@ class ReplaySFTStrategy(LearnStrategy):
                 opt.step()
                 tl += out.loss.item()
                 gs += 1
-                if gs % 100 == 0:
-                    print(f"      step {gs} | loss={tl/gs:.4f}")
+                if gs % 50 == 0:
+                    elapsed = _time.time() - t0
+                    print(f"      step {gs} | loss={tl/gs:.4f} | {elapsed:.0f}s")
+        if gs % 50 != 0:
+            print(f"      step {gs} | loss={tl/gs:.4f} | done")
 
         # After training, add this task's data to the replay buffer
         if self.replay_buffer_per_task < len(task.train_pairs):
