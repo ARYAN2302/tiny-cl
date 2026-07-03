@@ -1,12 +1,12 @@
 """
-Kaggle REST API client — bypasses the broken Python SDK.
-
-The SDK's gRPC-style endpoints reject the new KGAT_ token format.
-We use the REST API directly with Bearer auth, which works.
+Kaggle automation via the kaggle CLI (the REST endpoint is broken for pushes,
+but the CLI works).
 
 Usage:
     python scripts/kaggle_runner.py --config avr/configs/trace_lfm350m.yaml --no-poll
+    python scripts/kaggle_runner.py --config avr/configs/trace_lfm350m.yaml --seed 123
     python scripts/kaggle_runner.py --list
+    python scripts/kaggle_runner.py --status <kernel_slug>
     python scripts/kaggle_runner.py --pull <kernel_slug>
 """
 
@@ -16,19 +16,21 @@ import os
 import time
 import sys
 import shutil
-import base64
-import requests
+import subprocess
 from pathlib import Path
 from datetime import datetime
 
-KAGGLE_USERNAME = "Aryan111123"
-KAGGLE_TOKEN = os.environ.get("KAGGLE_KEY", "KGAT_d0ce57c26cc6a601cc439857df913ff1")
-KAGGLE_API = "https://www.kaggle.com/api/v1"
+KAGGLE_USERNAME = "aryan111123"
+KAGGLE_KEY = os.environ.get("KAGGLE_KEY", "3dd3ca5514175b9eb32dae8773b8750d")
 REPO_URL = "https://github.com/ARYAN2302/tiny-cl.git"
+KAGGLE_CLI = "/home/z/.venv/bin/kaggle"
 
 
-def kaggle_headers():
-    return {"Authorization": f"Bearer {KAGGLE_TOKEN}"}
+def kaggle_env():
+    env = os.environ.copy()
+    env["KAGGLE_USERNAME"] = KAGGLE_USERNAME
+    env["KAGGLE_KEY"] = KAGGLE_KEY
+    return env
 
 
 def generate_notebook(config_path: str, seed: int = None):
@@ -85,157 +87,112 @@ print(f"\\nResults saved to: {{results_file}}")
 
 
 def push_kernel(notebook_code: str, config_name: str) -> str:
-    """Push kernel via REST API. Returns slug."""
-    slug = f"{KAGGLE_USERNAME}/{config_name}"
+    """Push kernel via kaggle CLI. Returns slug."""
+    kernel_dir = Path(f"/tmp/kaggle_kernel_{config_name}")
+    if kernel_dir.exists():
+        shutil.rmtree(kernel_dir)
+    kernel_dir.mkdir(parents=True)
 
-    # Kaggle expects the code as base64
-    code_b64 = base64.b64encode(notebook_code.encode()).decode()
+    (kernel_dir / f"{config_name}.py").write_text(notebook_code)
 
-    payload = {
-        "text": "",
-        "newTitle": config_name,
-        "languageId": "python",
-        "code": notebook_code,
-        "kernelType": "script",
-        "isPrivate": True,
-        "enableGpu": True,
-        "enableInternet": True,
-        "datasetDataSources": [],
-        "competitionDataSources": [],
-        "kernelDataSources": [],
-        "categoryIds": [],
+    meta = {
+        "id": f"{KAGGLE_USERNAME}/{config_name}",
+        "title": config_name,
+        "code_file": f"{config_name}.py",
+        "language": "python",
+        "kernel_type": "script",
+        "is_private": True,
+        "enable_gpu": True,
+        "enable_internet": True,
+        "dataset_sources": [],
+        "competition_sources": [],
+        "kernel_sources": [],
     }
+    (kernel_dir / "kernel-metadata.json").write_text(json.dumps(meta, indent=2))
 
     print(f"Pushing kernel: {config_name}")
-    # Try the push endpoint
-    resp = requests.post(
-        f"{KAGGLE_API}/kernels/push",
-        headers={**kaggle_headers(), "Content-Type": "application/json"},
-        json=payload,
+    result = subprocess.run(
+        [KAGGLE_CLI, "kernels", "push", "-p", str(kernel_dir)],
+        capture_output=True, text=True, env=kaggle_env(),
     )
-
-    if resp.status_code != 200:
-        # Fall back to multipart form (older API)
-        print(f"  JSON push failed ({resp.status_code}), trying multipart...")
-        import io
-        files = {
-            "newTitle": (None, config_name),
-            "languageId": (None, "python"),
-            "code": (None, notebook_code),
-            "kernelType": (None, "script"),
-            "isPrivate": (None, "true"),
-            "enableGpu": (None, "true"),
-            "enableInternet": (None, "true"),
-        }
-        resp = requests.post(
-            f"{KAGGLE_API}/kernels/push",
-            headers=kaggle_headers(),
-            files=files,
-        )
-
-    if resp.status_code == 200:
-        data = resp.json()
-        print(f"  Pushed: {data}")
-        return slug
-    else:
-        print(f"  Push failed: {resp.status_code} {resp.text[:500]}")
+    print(f"  {result.stdout.strip()}")
+    if result.returncode != 0:
+        print(f"  ERROR: {result.stderr[:300]}")
         sys.exit(1)
 
+    slug = f"{KAGGLE_USERNAME}/{config_name}"
+    return slug
 
-def get_kernel_status(slug: str) -> str:
-    """Get kernel status via REST."""
-    resp = requests.get(
-        f"{KAGGLE_API}/kernels/status",
-        headers=kaggle_headers(),
-        params={"user": KAGGLE_USERNAME, "kernelSlug": slug.split("/")[-1]},
+
+def get_status(slug: str) -> str:
+    """Get kernel status via CLI."""
+    kernel_slug = slug.split("/")[-1]
+    result = subprocess.run(
+        [KAGGLE_CLI, "kernels", "status", slug],
+        capture_output=True, text=True, env=kaggle_env(),
     )
-    if resp.status_code == 200:
-        return resp.json()
-    return {"status": "unknown", "error": resp.text[:200]}
+    return result.stdout.strip() + " " + result.stderr.strip()
 
 
 def poll_kernel(slug: str, timeout: int = 43200) -> str:
     """Poll until kernel completes."""
     start = time.time()
     last_status = None
-    kernel_slug = slug.split("/")[-1]
     while time.time() - start < timeout:
-        try:
-            resp = requests.get(
-                f"{KAGGLE_API}/kernels/status",
-                headers=kaggle_headers(),
-                params={"user": KAGGLE_USERNAME, "kernelSlug": kernel_slug},
-            )
-            if resp.status_code == 200:
-                data = resp.json()
-                status = data.get("status", "unknown")
-                if status != last_status:
-                    elapsed = int(time.time() - start)
-                    print(f"  [{elapsed}s] {slug}: {status}")
-                    last_status = status
-                if status in ["complete", "error", "cancelled"]:
-                    return status
-            else:
-                print(f"  poll error: {resp.status_code}")
-        except Exception as e:
-            print(f"  poll error: {e}")
-        time.sleep(60)
+        status_str = get_status(slug)
+        if status_str != last_status:
+            elapsed = int(time.time() - start)
+            print(f"  [{elapsed}s] {status_str}")
+            last_status = status_str
+        # Statuses: "running", "complete", "error", "cancelled"
+        if "complete" in status_str.lower():
+            return "complete"
+        if "error" in status_str.lower() or "cancel" in status_str.lower():
+            return "error"
+        time.sleep(120)  # check every 2 min
     return "timeout"
 
 
 def pull_results(slug: str, config_name: str):
     """Pull kernel output."""
     output_dir = Path(f"/tmp/kaggle_output_{config_name}")
-    output_dir.mkdir(exist_ok=True)
-    kernel_slug = slug.split("/")[-1]
+    if output_dir.exists():
+        shutil.rmtree(output_dir)
+    output_dir.mkdir(parents=True)
+
     print(f"Pulling output for {slug}...")
-
-    # Download as a zip
-    resp = requests.get(
-        f"{KAGGLE_API}/kernels/output",
-        headers=kaggle_headers(),
-        params={"user": KAGGLE_USERNAME, "kernelSlug": kernel_slug},
-        stream=True,
+    result = subprocess.run(
+        [KAGGLE_CLI, "kernels", "output", slug, "-p", str(output_dir)],
+        capture_output=True, text=True, env=kaggle_env(),
     )
-    if resp.status_code == 200:
-        zip_path = output_dir / "output.zip"
-        with open(zip_path, "wb") as f:
-            for chunk in resp.iter_content(chunk_size=8192):
-                f.write(chunk)
-        import zipfile
-        with zipfile.ZipFile(zip_path, "r") as z:
-            z.extractall(output_dir)
-        print(f"  Extracted to {output_dir}")
+    if result.returncode != 0:
+        print(f"  Pull failed: {result.stderr[:300]}")
+        return None
 
-        results_dir = Path("avr/results")
-        results_dir.mkdir(parents=True, exist_ok=True)
-        for f in output_dir.glob("*.json"):
-            dest = results_dir / f.name
-            shutil.copy(f, dest)
-            print(f"  Saved: {dest}")
-            return dest
-        print("  No results JSON found in output")
-    else:
-        print(f"  Pull failed: {resp.status_code} {resp.text[:200]}")
+    results_dir = Path("avr/results")
+    results_dir.mkdir(parents=True, exist_ok=True)
+    for f in output_dir.glob("*.json"):
+        dest = results_dir / f.name
+        shutil.copy(f, dest)
+        print(f"  Saved: {dest}")
+        return dest
+    print("  No results JSON found in output")
+    # List what we got
+    for f in output_dir.iterdir():
+        print(f"  Found: {f.name}")
     return None
 
 
 def list_kernels():
     """List user's kernels."""
-    resp = requests.get(
-        f"{KAGGLE_API}/kernels/list",
-        headers=kaggle_headers(),
-        params={"user": KAGGLE_USERNAME, "page_size": 20},
+    result = subprocess.run(
+        [KAGGLE_CLI, "kernels", "list", "--user", KAGGLE_USERNAME,
+         "--page-size", "20"],
+        capture_output=True, text=True, env=kaggle_env(),
     )
-    if resp.status_code == 200:
-        kernels = resp.json()
-        if isinstance(kernels, list):
-            for k in kernels:
-                print(f"  {k.get('ref','?')} | {k.get('status','?')} | {k.get('title','?')}")
-        else:
-            print(json.dumps(kernels, indent=2)[:500])
-    else:
-        print(f"List failed: {resp.status_code} {resp.text[:300]}")
+    print(result.stdout)
+    if result.stderr:
+        print(result.stderr[:300], file=sys.stderr)
 
 
 def main():
@@ -243,12 +200,18 @@ def main():
     parser.add_argument("--config", help="Path to YAML config")
     parser.add_argument("--seed", type=int, default=None)
     parser.add_argument("--list", action="store_true")
+    parser.add_argument("--status", help="Get status for a kernel slug")
     parser.add_argument("--pull", help="Pull results for a kernel slug")
-    parser.add_argument("--no-poll", action="store_true")
+    parser.add_argument("--no-poll", action="store_true",
+                        help="Push and exit, don't wait")
     args = parser.parse_args()
 
     if args.list:
         list_kernels()
+        return
+
+    if args.status:
+        print(get_status(args.status))
         return
 
     if args.pull:
@@ -257,24 +220,38 @@ def main():
         return
 
     if not args.config:
-        parser.error("--config required (or use --list / --pull)")
+        parser.error("--config required (or use --list / --status / --pull)")
 
     notebook_code, config_name = generate_notebook(args.config, args.seed)
     print(f"Generated notebook for: {config_name}")
 
     slug = push_kernel(notebook_code, config_name)
+    print(f"Slug: {slug}")
+    print(f"Monitor: https://www.kaggle.com/code/{slug}")
 
     if args.no_poll:
-        print(f"\nKernel pushed: {slug}")
-        print(f"Poll: python {sys.argv[0]} --pull {slug}")
+        print(f"\nKernel pushed. Check status with:")
+        print(f"  python {sys.argv[0]} --status {slug}")
+        print(f"Pull results with:")
+        print(f"  python {sys.argv[0]} --pull {slug}")
         return
 
-    print(f"\nPolling {slug}...")
+    print(f"\nPolling {slug} (up to 12h)...")
     status = poll_kernel(slug)
 
     if status == "complete":
         print(f"\n✓ Complete. Pulling results...")
-        pull_results(slug, config_name)
+        results_path = pull_results(slug, config_name)
+        if results_path:
+            print(f"\nResults: {results_path}")
+            with open(results_path) as f:
+                data = json.load(f)
+            print(f"\n=== SUMMARY ===")
+            print(json.dumps({
+                "metrics": data.get("metrics"),
+                "total_repair_steps": data.get("total_repair_steps"),
+                "seed": data.get("seed"),
+            }, indent=2))
     else:
         print(f"\n✗ Status: {status}")
 
