@@ -1,0 +1,66 @@
+# AVR on MMLU stream T=16 — the scaling test.
+# 16 MMLU subjects in sequence. Tests whether AVR's repair step count
+# grows linearly, plateaus, or blows up at T=16.
+#
+# The critique: "At T=4 you can't distinguish 'AVR works' from 'AVR works
+# for short streams.' Does it scale to T=16, T=32?"
+#
+# This is T=16. Run T=32 next.
+
+model:
+  id: LiquidAI/LFM2.5-350M
+  lora_targets: [in_proj, out_proj]
+  lora_rank: 32
+  lora_alpha: 32
+  lora_dropout: 0.05
+
+stream:
+  benchmark: mmlu_stream
+  tasks:
+    - abstract_algebra
+    - anatomy
+    - astronomy
+    - business_ethics
+    - clinical_knowledge
+    - college_chemistry
+    - college_physics
+    - computer_security
+    - conceptual_physics
+    - econometrics
+    - electrical_engineering
+    - formal_logic
+    - global_facts
+    - high_school_biology
+    - high_school_chemistry
+    - jurisprudence
+  seed: 42
+  n_train: 300
+  n_eval: 100
+
+learn:
+  method: sft
+  epochs: 2
+  lr: 0.0002
+  weight_decay: 0.01
+  max_grad_norm: 1.0
+  batch_size: 8
+  context_length: 512
+
+verify:
+  detector: ppl_ratio
+  threshold: 1.15
+  threshold_mode: fixed
+  probe_samples: 100
+
+repair:
+  operator: snapshot_interp
+  alpha: 0.1
+  alpha_decay: sqrt
+  max_steps: 100
+  max_steps_mode: adaptive
+
+oracle: noop
+consolidator: noop
+
+output:
+  results_dir: results

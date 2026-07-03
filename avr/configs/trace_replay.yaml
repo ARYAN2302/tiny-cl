@@ -1,0 +1,42 @@
+# Replay baseline on TRACE, LFM2.5-350M.
+# 10% replay buffer, 200 samples per task. The baseline AVR must beat.
+
+model:
+  id: LiquidAI/LFM2.5-350M
+  lora_targets: [in_proj, out_proj]
+  lora_rank: 32
+  lora_alpha: 32
+  lora_dropout: 0.05
+
+stream:
+  benchmark: trace
+  tasks: [C-STANCE, FOMC, NumGLUE-cm, NumGLUE-ds]
+  seed: 42
+
+learn:
+  method: replay_sft
+  epochs: 3
+  lr: 0.0002
+  weight_decay: 0.01
+  max_grad_norm: 1.0
+  batch_size: 8
+  context_length: 512
+  replay_ratio: 0.1
+  replay_buffer_per_task: 200
+
+# No verify/repair — replay is a learn-only baseline
+verify:
+  detector: ppl_ratio
+  threshold: 1.15
+  probe_samples: 200
+
+repair:
+  operator: snapshot_interp
+  alpha: 0.1
+  max_steps: 0  # disabled
+
+oracle: noop
+consolidator: noop
+
+output:
+  results_dir: results

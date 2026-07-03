@@ -1,0 +1,46 @@
+# AVR on real-world domain stream — 5 domains, real data.
+# Medical → Code → Creative → Legal → Finance.
+# Tests AVR on genuinely different domains (not just MMLU subjects).
+# Each domain = 1M tokens, similar to the original tiny-cl setup.
+
+model:
+  id: LiquidAI/LFM2.5-350M
+  lora_targets: [in_proj, out_proj]
+  lora_rank: 32
+  lora_alpha: 32
+  lora_dropout: 0.05
+
+stream:
+  benchmark: realworld_stream
+  tasks: [medical, code, creative, legal, finance]
+  seed: 42
+  n_train: 1000
+  n_eval: 200
+
+learn:
+  method: sft
+  epochs: 2
+  lr: 0.0002
+  weight_decay: 0.01
+  max_grad_norm: 1.0
+  batch_size: 8
+  context_length: 512
+
+verify:
+  detector: ppl_ratio
+  threshold: 1.15
+  threshold_mode: fixed
+  probe_samples: 100
+
+repair:
+  operator: snapshot_interp
+  alpha: 0.1
+  alpha_decay: sqrt
+  max_steps: 100
+  max_steps_mode: adaptive
+
+oracle: noop
+consolidator: noop
+
+output:
+  results_dir: results

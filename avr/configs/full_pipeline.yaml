@@ -1,0 +1,52 @@
+# Full post-training pipeline: SFT → stream of domains, all under AVR.
+# The breakthrough demo — no other framework can do this without forgetting.
+#
+# Stage 1: SFT on UltraChat (general chat capability)
+# Stage 2: Stream TRACE 4 tasks under AVR protection
+# Stage 3: Evaluate MT-Bench + AlpacaEval at each stage
+#
+# This config is a placeholder — the full pipeline needs multi-stage
+# orchestration that the v1 CLI doesn't support yet. For now, run the
+# stages separately and compare.
+#
+# TODO (Phase 2): implement multi-stage pipeline in cli.py
+
+model:
+  id: LiquidAI/LFM2.5-350M
+  lora_targets: [in_proj, out_proj]
+  lora_rank: 32
+  lora_alpha: 32
+  lora_dropout: 0.05
+
+stages:
+  - name: sft_base
+    learn:
+      method: sft
+      data: ultrachat_200k
+      epochs: 1
+      lr: 0.0002
+    verify: {detector: noop}
+    repair: {operator: noop}
+
+  - name: trace_stream
+    stream:
+      benchmark: trace
+      tasks: [C-STANCE, FOMC, NumGLUE-cm, NumGLUE-ds]
+    learn:
+      method: sft
+      epochs: 3
+      lr: 0.0002
+    verify:
+      detector: ppl_ratio
+      threshold: 1.15
+    repair:
+      operator: snapshot_interp
+      alpha: 0.1
+      alpha_decay: sqrt
+
+eval:
+  - mt_bench
+  - alpaca_eval_2
+
+output:
+  results_dir: results

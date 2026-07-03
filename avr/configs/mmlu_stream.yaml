@@ -1,0 +1,50 @@
+# AVR on MMLU subject stream — second benchmark, longer stream (T=8).
+# Tests whether AVR is TRACE-specific or general.
+
+model:
+  id: LiquidAI/LFM2.5-350M
+  lora_targets: [in_proj, out_proj]
+  lora_rank: 32
+  lora_alpha: 32
+  lora_dropout: 0.05
+
+stream:
+  benchmark: mmlu_stream
+  tasks:
+    - abstract_algebra
+    - college_physics
+    - jurisprudence
+    - global_facts
+    - anatomy
+    - business_ethics
+    - clinical_knowledge
+    - college_chemistry
+  seed: 42
+
+learn:
+  method: sft
+  epochs: 3
+  lr: 0.0002
+  weight_decay: 0.01
+  max_grad_norm: 1.0
+  batch_size: 8
+  context_length: 512
+
+verify:
+  detector: ppl_ratio
+  threshold: 1.15
+  threshold_mode: fixed
+  probe_samples: 200
+
+repair:
+  operator: snapshot_interp
+  alpha: 0.1
+  alpha_decay: sqrt
+  max_steps: 100
+  max_steps_mode: adaptive
+
+oracle: noop
+consolidator: noop
+
+output:
+  results_dir: results
