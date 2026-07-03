@@ -45,43 +45,73 @@ def generate_notebook(config_path: str, seed: int = None):
 # Seed: {seed}
 # Generated: {datetime.now().isoformat()}
 
-import subprocess, sys, os, json, shutil
+import subprocess, sys, os, json, shutil, traceback
 from pathlib import Path
 
-print("=== Installing dependencies ===")
-subprocess.run([sys.executable, "-m", "pip", "install", "-q",
-                "transformers>=4.40", "peft>=0.10", "datasets>=2.14",
-                "gdown>=4.7", "pyyaml>=6.0"], check=True)
+LOG_FILE = Path("/kaggle/working/run_log.txt")
+LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
 
-print("=== Cloning tiny-cl ===")
-if not os.path.exists("tiny-cl"):
-    subprocess.run(["git", "clone", "-q", "{REPO_URL}"], check=True)
-os.chdir("tiny-cl")
-subprocess.run(["git", "pull", "-q"], check=False)
+def log(msg):
+    print(msg, flush=True)
+    with open(LOG_FILE, "a") as f:
+        f.write(msg + "\\n")
 
-sys.path.insert(0, ".")
+try:
+    log("=== Installing dependencies ===")
+    # Don't upgrade torch — Kaggle's pre-installed torch is compiled for the T4's
+    # CUDA driver. Upgrading pulls a torch built for a different CUDA, causing
+    # "no kernel image available" errors. Only install what's missing.
+    subprocess.run([sys.executable, "-m", "pip", "install", "-q",
+                    "peft>=0.10", "datasets>=2.14",
+                    "gdown>=4.7", "pyyaml>=6.0"], check=True)
+    # torchao needs to be compatible with Kaggle's torch — install the version
+    # that matches, or skip it if PEFT can work without it
+    subprocess.run([sys.executable, "-m", "pip", "install", "-q",
+                    "torchao>=0.16.0",
+                    "--no-deps"], check=False)  # no-deps so it doesn't touch torch
 
-print("=== Running AVR config: {config_name} ===")
-from avr.cli import run_from_config
+    log("=== Cloning tiny-cl ===")
+    if not os.path.exists("tiny-cl"):
+        subprocess.run(["git", "clone", "-q", "{REPO_URL}"], check=True)
+    os.chdir("tiny-cl")
+    subprocess.run(["git", "pull", "-q"], check=False)
 
-config_path = "avr/configs/{Path(config_path).name}"
-seed = {seed if seed else "None"}
+    sys.path.insert(0, ".")
 
-results = run_from_config(config_path, seed)
+    log("=== Verifying avr package imports ===")
+    from avr.cli import run_from_config
+    from avr.framework import ContinualPostTrainer
+    from avr.strategy import AVRStrategy
+    log("  all imports OK")
 
-print("\\n=== RESULTS ===")
-print(json.dumps({{
-    "metrics": results["metrics"],
-    "total_repair_steps": results["total_repair_steps"],
-    "tasks": results["tasks"],
-    "seed": results["seed"],
-}}, indent=2))
+    log("=== Running AVR config: {config_name} ===")
+    config_path = "avr/configs/{Path(config_path).name}"
+    seed = {seed if seed else "None"}
 
-output_dir = Path("/kaggle/working/")
-results_file = output_dir / "{config_name}_results.json"
-src = f"results/{{Path(config_path).stem}}{{'_s' + str(seed) if seed else ''}}.json"
-shutil.copy(src, results_file)
-print(f"\\nResults saved to: {{results_file}}")
+    results = run_from_config(config_path, seed)
+
+    log("\\n=== RESULTS ===")
+    log(json.dumps({{
+        "metrics": results["metrics"],
+        "total_repair_steps": results["total_repair_steps"],
+        "tasks": results["tasks"],
+        "seed": results["seed"],
+    }}, indent=2))
+
+    output_dir = Path("/kaggle/working/")
+    results_file = output_dir / "{config_name}_results.json"
+    src = f"results/{{Path(config_path).stem}}{{'_s' + str(seed) if seed else ''}}.json"
+    shutil.copy(src, results_file)
+    log(f"\\nResults saved to: {{results_file}}")
+
+except Exception as e:
+    log(f"\\n=== FATAL ERROR ===")
+    log(f"{{type(e).__name__}}: {{e}}")
+    log("\\nFull traceback:")
+    log(traceback.format_exc())
+    # Still write the log file so we can pull it
+    shutil.copy(LOG_FILE, Path("/kaggle/working/run_log.txt"))
+    raise
 '''
     return notebook_code, config_name
 
