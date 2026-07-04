@@ -289,14 +289,16 @@ class ContinualPostTrainer:
                     else:
                         alpha_eff = getattr(self.repair, 'alpha', 0.1)
 
+                    # Max steps from the repair operator (default 10 — v23's shipped cap)
+                    max_steps = getattr(self.repair, 'max_steps', 10)
+
                     n_steps = 0
                     still_drifted = drift
-                    for step in range(max_steps if hasattr(self, '_max_repair_steps')
-                                     else 100):
+                    for step in range(max_steps):
                         self.repair.repair_step(model, state.snapshot, alpha_eff)
                         n_steps += 1
 
-                        # Re-verify after each step
+                        # Re-verify after each step (matches v23's loop)
                         still_drifted = self.verify.check(
                             model, tokenizer, state, tasks)
                         if not still_drifted.drifted_tasks:
@@ -304,8 +306,8 @@ class ContinualPostTrainer:
                             break
 
                     if still_drifted.drifted_tasks:
-                        print(f"  [REPAIR] Max steps reached, drift remains "
-                              f"on {still_drifted.drifted_tasks}")
+                        print(f"  [REPAIR] Max steps ({max_steps}) reached, "
+                              f"drift remains on {still_drifted.drifted_tasks}")
 
                     state.total_repair_steps += n_steps
                     state.repair_log.append({

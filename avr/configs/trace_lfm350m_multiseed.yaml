@@ -34,8 +34,8 @@ repair:
   operator: snapshot_interp
   alpha: 0.1
   alpha_decay: sqrt
-  max_steps: 100
-  max_steps_mode: adaptive
+  max_steps: 10
+  max_steps_mode: fixed
 
 oracle: noop
 consolidator: noop
