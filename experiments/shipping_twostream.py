@@ -48,7 +48,7 @@ TRAIN_LR = 2e-4
 CONSOLIDATION_LR = 1e-4
 TRAIN_WD = 0.01
 TRAIN_MAX_GRAD_NORM = 1.0
-TASK_EPOCHS = 2
+TASK_EPOCHS = 3          # matches v34
 CONSOLIDATION_EPOCHS = 1
 BATCH_SIZE = 8
 CONTEXT_LENGTH = 512
@@ -472,16 +472,22 @@ def run_twostream_avr_pipeline(stages, mmlu_pairs):
                 for s, info in drifted.items():
                     print(f"    {s}: {info['current']:.2f} / {info['best']:.2f} = {info['ratio']:.2f}x")
 
+                # Adaptive step cap — matches v34
+                max_ratio = max(info['ratio'] for info in drifted.values())
+                adaptive_steps = max(MAX_REPAIR_STEPS, int(math.log(max_ratio) / math.log(1/0.9)) + 2)
+                print(f"  [AVR] Adaptive step cap: {adaptive_steps} (max ratio {max_ratio:.2f})")
+
                 still_drifted = drifted
-                for step in range(MAX_REPAIR_STEPS):
-                    repair_toward_snapshot(model, neo_snapshot)
+                for step in range(adaptive_steps):
+                    n_adj = repair_toward_snapshot(model, neo_snapshot)
                     repair_ppls = eval_domain_ppls(model, tokenizer, stages, i+1)
                     still_drifted = verify_drift(repair_ppls, best_ppls, completed_stages[:-1])
+                    print(f"    [AVR] Repair step {step+1}: {n_adj} params, still drifted: {list(still_drifted.keys()) if still_drifted else 'none'}", flush=True)
                     if not still_drifted:
                         print(f"  [AVR] Converged at step {step+1}")
                         break
                 if still_drifted:
-                    print(f"  [AVR] Max steps ({MAX_REPAIR_STEPS}) reached, drift remains")
+                    print(f"  [AVR] Max steps ({adaptive_steps}) reached, drift remains")
                 neo_state = get_lora_state(model)
                 total_repairs += step + 1
             else:
