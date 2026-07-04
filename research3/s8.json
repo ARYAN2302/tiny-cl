@@ -1,0 +1,92 @@
+[
+  {
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6944509",
+    "name": "Continual Learning Through Synaptic Intelligence - PMC - NIH",
+    "snippet": "The importance of a parameter θk for a single task is determined by two quantities: 1) how much an individual parameter contributed to a drop in the loss ...",
+    "host_name": "pmc.ncbi.nlm.nih.gov",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://openreview.net/pdf?id=rkWhb3-uWr",
+    "name": "[PDF] Continual Learning Through Synaptic Intelligence - OpenReview",
+    "snippet": "In our model, the synap- tic state tracks the past and current parameter value, and maintains an online estimate of the synapse's “importance” toward solving ...",
+    "host_name": "openreview.net",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/abs/1703.04200",
+    "name": "[1703.04200] Continual Learning Through Synaptic Intelligence - arXiv",
+    "snippet": "In this study, we introduce intelligent synapses that bring some of this biological complexity into artificial neural networks. Each synapse ...",
+    "host_name": "arxiv.org",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.researchgate.net/publication/314943144_Continual_Learning_Through_Synaptic_Intelligence",
+    "name": "Continual Learning Through Synaptic Intelligence - ResearchGate",
+    "snippet": "Most regularization-based continual learning methods protect knowledge at the parameter level. ... Synaptic Intelligence (SI) accumulates parameter importance ...",
+    "host_name": "www.researchgate.net",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://mbrenndoerfer.com/writing/regularization-methods-ewc-synaptic-intelligence-continual-learning",
+    "name": "Regularization Methods: EWC and Synaptic Intelligence - Interactive",
+    "snippet": "A high importance value means the parameter is critical and should be protected; a low value means the parameter can be repurposed for new tasks ...",
+    "host_name": "mbrenndoerfer.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://zenkelab.org/wp-content/uploads/2018/03/icml_15min_v1.0_web.pdf",
+    "name": "[PDF] Continual Learning Through Synaptic Intelligence - Zenke Lab",
+    "snippet": "Our approach: Parameter importance on-line from learning trajectory. From learning trajectory. Page 16. ICML 2017 - fzenke.net. 16. Total change in loss is ...",
+    "host_name": "zenkelab.org",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.isca-archive.org/interspeech_2025/ahadzi25_interspeech.pdf",
+    "name": "[PDF] Continuous Learning for Children's ASR: Overcoming Catastrophic",
+    "snippet": "Synaptic intelligence is another regularization technique. Un- like EWC, which is a second-order method relying on FIM,. SI uses a first-order ...",
+    "host_name": "www.isca-archive.org",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/ganguli-lab/pathint",
+    "name": "Code to accompany our paper \"Continual Learning Through",
+    "snippet": "Continual Learning Through Synaptic Intelligence. This repository contains code to reproduce the key findings of our path integral approach to prevent ...",
+    "host_name": "github.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://proceedings.mlr.press/v70/zenke17a/zenke17a-supp.pdf",
+    "name": "[PDF] Continual Learning Through Synaptic Intelligence",
+    "snippet": "As an additional experiment, we trained a CNN (4 convo- lutional, followed by 2 dense layers with dropout; cf. main text) on the split CIFAR-10 benchmark.",
+    "host_name": "proceedings.mlr.press",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.semanticscholar.org/paper/Continual-Learning-Through-Synaptic-Intelligence-Zenke-Poole/a99d857ecc78316a0d9a774972b775058d5644ca",
+    "name": "Continual Learning Through Synaptic Intelligence - Semantic Scholar",
+    "snippet": "This study introduces intelligent synapses that bring some of this biological complexity into artificial neural networks, and shows that it dramatically ...",
+    "host_name": "www.semanticscholar.org",
+    "rank": 9,
+    "date": "",
+    "favicon": ""
+  }
+]

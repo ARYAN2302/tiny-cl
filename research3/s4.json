@@ -1,0 +1,92 @@
+[
+  {
+    "url": "https://papers.neurips.cc/paper_files/paper/2025/file/1663fba7b56da1e96bed6e30546a07b0-Paper-Conference.pdf",
+    "name": "[PDF] Continuous Subspace Optimization for Continual Learning - NIPS",
+    "snippet": "By projecting gradients onto these low-dimensional subspaces for Adam. [Kingma, 2014] optimization and then projecting back for parameter updates, CoSO achieves.",
+    "host_name": "papers.neurips.cc",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/html/2603.26671v1",
+    "name": "Mitigating Forgetting in Continual Learning with Selective Gradient",
+    "snippet": "The root cause lies in gradient-induced interference, whereby updates for new tasks disrupt previously consolidated knowledge, causing subspace ...",
+    "host_name": "arxiv.org",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.sciencedirect.com/science/article/abs/pii/S0951832024005003",
+    "name": "A core space gradient projection-based continual learning",
+    "snippet": "A novel continual learning framework is proposed for RUL prediction of machinery under variable operating conditions.",
+    "host_name": "www.sciencedirect.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://openreview.net/forum?id=3AOj0RCNC2",
+    "name": "Gradient Projection Memory for Continual Learning - OpenReview",
+    "snippet": "The key idea is to learn new tasks by taking gradient steps in directions orthogonal to the gradient subspaces marked as crucial for previous ...",
+    "host_name": "openreview.net",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://proceedings.mlr.press/v108/farajtabar20a.html",
+    "name": "Orthogonal Gradient Descent for Continual Learning",
+    "snippet": "We present the Orthogonal Gradient Descent (OGD) method, which accomplishes this goal by projecting the gradients from new tasks onto a subspace in which the ...",
+    "host_name": "proceedings.mlr.press",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://ojs.aaai.org/index.php/AAAI/article/view/26157/25929",
+    "name": "[PDF] Continual Learning with Scaled Gradient Projection",
+    "snippet": "To improve new learn- ing while minimizing forgetting, in this paper we propose a. Scaled Gradient Projection (SGP) method, where we com- bine the orthogonal ...",
+    "host_name": "ojs.aaai.org",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://openaccess.thecvf.com/content/CVPR2023/papers/Zhao_Rethinking_Gradient_Projection_Continual_Learning_Stability__Plasticity_Feature_Space_CVPR_2023_paper.pdf",
+    "name": "[PDF] Rethinking Gradient Projection Continual Learning: Stability",
+    "snippet": "In this paper, we propose a space decoupling (SD) algorithm to decouple the feature space into a pair of complementary subspaces, i.e., the stability space 그, ...",
+    "host_name": "openaccess.thecvf.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.semanticscholar.org/paper/Orthogonal-Gradient-Descent-for-Continual-Learning-Farajtabar-Azizan/841c970f7ef35e28dbbe054d0a7c5df252533a4e",
+    "name": "Orthogonal Gradient Descent for Continual Learning",
+    "snippet": "The Orthogonal Gradient Descent (OGD) method is presented, which accomplishes this goal by projecting the gradients from new tasks onto a subspace in which ...",
+    "host_name": "www.semanticscholar.org",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://aclanthology.org/2025.ijcnlp-srw.25.pdf",
+    "name": "[PDF] Mitigating Forgetting in Continual Learning with Selective Gradient",
+    "snippet": "We propose Selective Forgetting-Aware Optimiza- tion (SFAO), a dynamic method that regulates gradient directions via cosine similarity and per-layer gating, ...",
+    "host_name": "aclanthology.org",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.researchgate.net/publication/358422989_TRGP_Trust_Region_Gradient_Projection_for_Continual_Learning",
+    "name": "TRGP: Trust Region Gradient Projection for Continual Learning",
+    "snippet": "To tackle this challenge, we propose Trust Region Gradient Projection (TRGP) for continual learning to facilitate the forward knowledge transfer based on an ...",
+    "host_name": "www.researchgate.net",
+    "rank": 9,
+    "date": "",
+    "favicon": ""
+  }
+]

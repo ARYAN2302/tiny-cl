@@ -1,0 +1,92 @@
+[
+  {
+    "url": "https://arxiv.org/html/2603.26671v1",
+    "name": "Mitigating Forgetting in Continual Learning with Selective Gradient",
+    "snippet": "Instead of storing data or penalizing parameter shifts, methods like OGD proposed projecting gradients onto subspaces orthogonal to prior tasks, ...",
+    "host_name": "arxiv.org",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://neurips.cc/virtual/2025/poster/118548",
+    "name": "Orthogonal Updates for Stable and Efficient Deep Networks",
+    "snippet": "We demonstrate that our orthogonal update strategy improves generalization accuracy and training stability across diverse architectures ( ...",
+    "host_name": "neurips.cc",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://pubmed.ncbi.nlm.nih.gov/40031774",
+    "name": "Revisiting Flatness-Aware Optimization in Continual Learning With",
+    "snippet": "To avoid catastrophic forgetting of old tasks, orthogonal gradient projection (OGP) based CL methods constrain the gradients of new tasks to be orthogonal to ...",
+    "host_name": "pubmed.ncbi.nlm.nih.gov",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.researchgate.net/publication/344964853_Orthogonal_Gradient_Descent_for_Continual_Learning",
+    "name": "Orthogonal Gradient Descent for Continual Learning | Request PDF",
+    "snippet": "We present the Orthogonal Gradient Descent (OGD) method, which accomplishes this goal by projecting the gradients from new tasks onto a subspace ...",
+    "host_name": "www.researchgate.net",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://proceedings.mlr.press/v77/pan17a/pan17a.pdf",
+    "name": "[PDF] Learning Convolutional Neural Networks using Hybrid Orthogonal",
+    "snippet": "Specifically, we force the convolution filter in the projection layer becomes orthogonal during the weight updating process, then with the moving of the ...",
+    "host_name": "proceedings.mlr.press",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.biorxiv.org/content/10.1101/2022.02.25.481890v1.full-text",
+    "name": "Memory Consolidation with Orthogonal Gradients for avoiding",
+    "snippet": "Several biologically inspired deep neural network models have been proposed to explain this memory retention behavior in the long-term memory.",
+    "host_name": "www.biorxiv.org",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://dl.acm.org/doi/10.1145/3597503.3623334",
+    "name": "Responsible UNfair NEuron Repair for Enhancing Deep Neural",
+    "snippet": "Our extensive experiments across 5 datasets show that RUUNER can effectively and efficiently diagnose and repair the DNNs regarding unfairness.",
+    "host_name": "dl.acm.org",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://aclanthology.org/2025.ijcnlp-srw.25.pdf",
+    "name": "[PDF] Mitigating Forgetting in Continual Learning with Selective Gradient",
+    "snippet": "We propose Selective Forgetting-Aware Optimiza- tion (SFAO), a dynamic method that regulates gradient directions via cosine similarity and per-layer gating, ...",
+    "host_name": "aclanthology.org",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://cdn.aaai.org/ojs/20634/20634-13-24647-1-2-20220628.pdf",
+    "name": "[PDF] Adaptive Orthogonal Projection for Batch and Online Continual",
+    "snippet": "OWM deals with CF in learning each new task by using an orthogonal projector to make the parameter updates occur only in the direction ...",
+    "host_name": "cdn.aaai.org",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.computer.org/csdl/journal/ai/2024/06/10341211/1SBLcY4UbdK",
+    "name": "Continual Learning: A Review of Techniques, Challenges, and",
+    "snippet": "Upon exposure to a new task, neural network optimizers overwrite the already learned parameter values with new ones that reflect the current data distribution.",
+    "host_name": "www.computer.org",
+    "rank": 9,
+    "date": "",
+    "favicon": ""
+  }
+]

@@ -1,0 +1,92 @@
+[
+  {
+    "url": "https://www.sciencedirect.com/science/article/abs/pii/S0306261923008450",
+    "name": "Large-scale comparison and demonstration of continual learning for",
+    "snippet": "This paper conducted a comprehensive investigation on the performance of three conventional model update methods and five emerging continual learning methods",
+    "host_name": "www.sciencedirect.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/html/2507.02310v2",
+    "name": "Holistic Continual Learning under Concept Drift with Adaptive  - arXiv",
+    "snippet": "We introduce a holistic framework for continual learning under concept drift that simulates realistic scenarios by evolving task distributions.",
+    "host_name": "arxiv.org",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/xialeiliu/awesome-incremental-learning",
+    "name": "xialeiliu/Awesome-Incremental-Learning - GitHub",
+    "snippet": "Improving Continual Learning Performance and Efficiency. Task Adaptation (NeurIPS 2024)",
+    "host_name": "github.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://link.springer.com/article/10.1007/s11042-021-11219-x",
+    "name": "Concept drift detection and adaptation for federated and continual",
+    "snippet": "Our proposal is an extension of the most popular federated algorithm, Federated Averaging (FedAvg), enhancing it for continual adaptation under concept drift.",
+    "host_name": "link.springer.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://d-nb.info/135892659X/34",
+    "name": "[PDF] A Novel Framework for Continual Machine Learning in Industrial",
+    "snippet": "Abstract This paper is dedicated to solving the problem of concept drift in industrial plants using artificial intelligence methods.",
+    "host_name": "d-nb.info",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.nature.com/articles/s44387-025-00028-4",
+    "name": "Building adaptive knowledge bases for evolving continual learning",
+    "snippet": "This section details a new method for adapter-based, task-free continual learning utilizing a policy optimization approach to decide tasks.",
+    "host_name": "www.nature.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://upcommons.upc.edu/bitstreams/0101177e-ade9-4548-a710-1f9eb1b3c326/download",
+    "name": "[PDF] CONCEPT DRIFT-AWARE FEDERATED CONTINUAL LEARNING",
+    "snippet": "Early detection of anomalies allows mission operators to take corrective actions, sched- ule maintenance, or adjust operational parameters to prevent system ...",
+    "host_name": "upcommons.upc.edu",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.mdpi.com/2079-9292/14/22/4480",
+    "name": "Federated Learning Under Concept Drift: A Systematic Survey of",
+    "snippet": "Concept Drift (CD) is the phenomenon of data changing/evolving over time. detecting and adapting to concept drift. This study specifically addresses this gap ...\nSudden Drift: This is when there is a clear moment in time where the old way of understanding the data changes to a new way. It is like flipping a switch from ...",
+    "host_name": "www.mdpi.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://medium.com/@adnanmasood/continual-learning-the-missing-capability-for-reliable-ai-at-scale-c225e1a523de",
+    "name": "Continual Learning: The Missing Capability for Reliable AI at Scale",
+    "snippet": "Why today's models regress, what actually works, and how to de-risk updates without retraining from scratch. Adnan Masood, PhD.",
+    "host_name": "medium.com",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://openreview.net/forum?id=1drDlt0CLM",
+    "name": "Holistic Continual Learning under Concept Drift with Adaptive",
+    "snippet": "We introduce a holistic framework for continual learning under concept drift that simulates realistic scenarios by evolving task distributions.",
+    "host_name": "openreview.net",
+    "rank": 9,
+    "date": "",
+    "favicon": ""
+  }
+]
