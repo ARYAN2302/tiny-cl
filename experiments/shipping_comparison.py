@@ -89,14 +89,37 @@ def load_dataset_sample(dataset_id, field, n_samples, split="train"):
         return []
 
 def build_pairs_from_text(texts):
-    """Split each text into (prompt, answer) pair at midpoint."""
+    """Split each text into multiple (prompt, answer) pairs by chunking.
+
+    Long texts (medical guidelines) get split into many pairs.
+    Short texts (code snippets) stay as one pair.
+    This balances training data across domains with different text lengths.
+    """
     pairs = []
     for text in texts:
-        mid = len(text) // 2
-        prompt = text[:mid].strip()
-        answer = text[mid:].strip()
-        if prompt and answer and len(prompt) > 20 and len(answer) > 20:
-            pairs.append((prompt, answer))
+        if not text or len(text.strip()) < 40:
+            continue
+        text = text.strip()
+        # If text is short (< 1000 chars), one pair (midpoint split)
+        if len(text) < 1000:
+            mid = len(text) // 2
+            prompt = text[:mid].strip()
+            answer = text[mid:].strip()
+            if prompt and answer and len(prompt) > 20 and len(answer) > 20:
+                pairs.append((prompt, answer))
+        else:
+            # Long text: split into overlapping chunks of ~800 chars
+            # Each chunk becomes a (first_half, second_half) pair
+            chunk_size = 800
+            for i in range(0, len(text) - 100, chunk_size // 2):  # 50% overlap
+                chunk = text[i:i + chunk_size]
+                if len(chunk) < 100:
+                    break
+                mid = len(chunk) // 2
+                prompt = chunk[:mid].strip()
+                answer = chunk[mid:].strip()
+                if prompt and answer and len(prompt) > 20 and len(answer) > 20:
+                    pairs.append((prompt, answer))
     return pairs
 
 def load_mmlu_eval(n_subjects=20, n_per_subject=5):
