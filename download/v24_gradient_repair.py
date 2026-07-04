@@ -57,14 +57,16 @@ BATCH_SIZE = 8
 CONTEXT_LENGTH = 512
 
 DRIFT_THRESHOLD = 1.15
-MAX_REPAIR_STEPS = 100
+MAX_REPAIR_STEPS = 50      # increased from 15 — severe drift needs budget
 
 # Gradient repair config
-REPAIR_LR = 1e-4          # lower than training LR — surgical, not full retrain
+REPAIR_LR = 1e-4          # keep — losses declining, no overshoot risk
 REPAIR_LAMBDA = 0.5       # new-task loss weight at START (balanced)
 REPAIR_LAMBDA_END = 0.1   # new-task loss weight at END (old-task recovery dominates)
 REPAIR_BATCH_SIZE = 4     # small batches for repair
 REPAIR_PROBE_SIZE = 50    # samples per drifted task per repair step
+REPAIR_CHECK_EVERY = 5    # check convergence/new-task PPL every N steps
+REPAIR_NEW_TASK_THRESHOLD = 1.15  # stop if new-task PPL degrades beyond this ratio
 
 BENCH_MAX_NEW_TOKENS = 20
 SEED = 42  # ← change to 123 or 7 for other seeds
@@ -185,12 +187,16 @@ def compute_loss_on_pairs(model, tokenizer, pairs, max_samples=REPAIR_PROBE_SIZE
     return total_loss / max(total_tokens, 1)
 
 def gradient_repair(model, tokenizer, drifted_tasks, train_data, current_task,
-                    current_task_pairs, snapshot_state, max_steps=MAX_REPAIR_STEPS):
-    """Gradient-based repair: optimize old-task probe + new-task loss simultaneously.
+                    current_task_pairs, snapshot_state, best_ppls=None, max_steps=MAX_REPAIR_STEPS):
+    """Gradient-based repair with bidirectional stop.
 
-    Unlike v23's blind interpolation (theta = 0.9*theta + 0.1*snapshot), this
-    runs actual gradient steps on a mixed objective. The gradient finds
-    directions that recover old tasks with minimal new-task damage.
+    Two stopping conditions (checked every REPAIR_CHECK_EVERY steps):
+    1. CONVERGENCE: all old tasks drop below DRIFT_THRESHOLD (1.15×) → stop
+    2. NEW-TASK SAFEGUARD: new-task PPL rises above REPAIR_NEW_TASK_THRESHOLD
+       of its post-training best → stop immediately
+
+    This lets repair run long enough to fix severe drift (30-40 steps on
+    seed 123) while stopping early on mild drift (5-10 steps on seed 42).
 
     Args:
         model: the LoRA-wrapped model
@@ -199,8 +205,9 @@ def gradient_repair(model, tokenizer, drifted_tasks, train_data, current_task,
         train_data: {task_name: [(prompt, answer), ...]} for all tasks
         current_task: name of the task just trained
         current_task_pairs: training pairs for the current task
-        snapshot_state: the pre-training LoRA snapshot (UNUSED in gradient repair,
-                       kept for interface compatibility)
+        snapshot_state: unused (kept for interface compatibility)
+        best_ppls: dict of best PPL per task (for convergence check).
+                   If None, convergence check is skipped.
 
     Returns:
         number of repair steps taken
@@ -228,6 +235,12 @@ def gradient_repair(model, tokenizer, drifted_tasks, train_data, current_task,
         else: p.requires_grad = False
     trainable = [p for p in model.parameters() if p.requires_grad]
     opt = torch.optim.AdamW(trainable, lr=REPAIR_LR, weight_decay=TRAIN_WD)
+
+    # Capture new-task PPL at repair start — this is the safeguard baseline.
+    # If new-task PPL rises above 1.15× of this, we stop repair immediately.
+    new_task_ppl_start = compute_ppl(model, tokenizer, current_task_pairs, 50)
+    new_task_ppl_best = new_task_ppl_start
+    print(f"    new-task PPL at repair start: {new_task_ppl_start:.2f} (safeguard threshold: {new_task_ppl_start * REPAIR_NEW_TASK_THRESHOLD:.2f})")
 
     # Pre-tokenize probe data into batches to avoid OOM
     # Process in small batches instead of one-at-a-time
@@ -303,24 +316,44 @@ def gradient_repair(model, tokenizer, drifted_tasks, train_data, current_task,
                   f"old_avg={old_loss.item():.4f} | new={new_loss.item():.4f} | "
                   f"per-task: {per_task_str}", flush=True)
 
-        # Check convergence every 5 steps (PPL eval is expensive)
-        if (step + 1) % 5 == 0:
-            # Re-verify old tasks
-            current_ppls = {}
-            for task in drifted_tasks:
-                current_ppls[task] = compute_ppl(model, tokenizer, train_data[task], 50)
-            # Check if all drifted tasks are back below threshold
-            all_fixed = True
-            for task in drifted_tasks:
-                # We need best_ppls to compare — pass it in or recompute
-                # For now, just check if PPL stopped improving
-                pass
-            # Simpler convergence: check if old_loss is below a fraction of initial
-            # We'll just run a fixed number and check at the end
-            # (Full convergence check adds complexity — keep it simple for first test)
+        # === BIDIRECTIONAL STOP — checked every REPAIR_CHECK_EVERY steps ===
+        if (step + 1) % REPAIR_CHECK_EVERY == 0:
+            stop_reason = None
 
-        if steps_taken >= 15:  # cap at 15 for first test — matches v23's effective range
-            break
+            # Check 1: CONVERGENCE — all old tasks below drift threshold
+            if best_ppls is not None:
+                current_old_ppls = {}
+                for task in drifted_tasks:
+                    current_old_ppls[task] = compute_ppl(
+                        model, tokenizer, train_data[task], 50)
+                all_fixed = True
+                for task in drifted_tasks:
+                    ratio = current_old_ppls[task] / best_ppls.get(task, current_old_ppls[task])
+                    if ratio > DRIFT_THRESHOLD:
+                        all_fixed = False
+                        break
+                if all_fixed:
+                    stop_reason = f"converged (all old tasks < {DRIFT_THRESHOLD}×)"
+                    print(f"    [CHECK] Old-task PPLs: " +
+                          " | ".join(f"{t}: {p:.2f}" for t, p in current_old_ppls.items()))
+
+            # Check 2: NEW-TASK SAFEGUARD — new task degrading
+            if stop_reason is None:
+                current_new_ppl = compute_ppl(
+                    model, tokenizer, current_task_pairs, 50)
+                if current_new_ppl < new_task_ppl_best:
+                    new_task_ppl_best = current_new_ppl
+                new_ratio = current_new_ppl / new_task_ppl_best
+                if new_ratio > REPAIR_NEW_TASK_THRESHOLD:
+                    stop_reason = (f"new-task safeguard (PPL {current_new_ppl:.2f} > "
+                                   f"{new_task_ppl_best:.2f} × {REPAIR_NEW_TASK_THRESHOLD})")
+                print(f"    [CHECK] step {step+1} | old PPLs checked: "
+                      f"{'converged' if (best_ppls and all_fixed) else 'not yet'} | "
+                      f"new PPL: {current_new_ppl:.2f} (ratio {new_ratio:.2f}×)")
+
+            if stop_reason:
+                print(f"  [STOP] {stop_reason} at step {step+1}")
+                break
 
     print(f"  [GRADIENT-REPAIR] Done: {steps_taken} steps")
     return steps_taken
@@ -473,6 +506,7 @@ def run_avr(train_data, test_data, task_order):
                     current_task=task,
                     current_task_pairs=current_task_pairs,
                     snapshot_state=merged_snapshot,  # unused but kept for interface
+                    best_ppls=best_ppls,  # for convergence check
                 )
 
                 # Re-eval PPLs after repair
@@ -511,9 +545,10 @@ def run_avr(train_data, test_data, task_order):
 
 def main():
     print("=" * 70)
-    print(f"V24: AVR with GRADIENT REPAIR on TRACE")
+    print(f"V25: AVR with GRADIENT REPAIR + BIDIRECTIONAL STOP on TRACE")
     print(f"Seed: {SEED} | Tasks: {TRACE_TASKS}")
-    print(f"Repair: gradient steps, lambda={REPAIR_LAMBDA}, lr={REPAIR_LR}")
+    print(f"Repair: gradient, lambda={REPAIR_LAMBDA}->{REPAIR_LAMBDA_END}, lr={REPAIR_LR}, max_steps={MAX_REPAIR_STEPS}")
+    print(f"Stops: convergence (old < {DRIFT_THRESHOLD}x) OR new-task safeguard (>{REPAIR_NEW_TASK_THRESHOLD}x)")
     print("=" * 70)
 
     print("\nDownloading TRACE data...")
