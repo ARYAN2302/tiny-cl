@@ -61,7 +61,8 @@ MAX_REPAIR_STEPS = 100
 
 # Gradient repair config
 REPAIR_LR = 1e-4          # lower than training LR — surgical, not full retrain
-REPAIR_LAMBDA = 0.5       # weight on new-task loss (0.5 = balance old and new)
+REPAIR_LAMBDA = 0.5       # new-task loss weight at START (balanced)
+REPAIR_LAMBDA_END = 0.1   # new-task loss weight at END (old-task recovery dominates)
 REPAIR_BATCH_SIZE = 4     # small batches for repair
 REPAIR_PROBE_SIZE = 50    # samples per drifted task per repair step
 
@@ -205,12 +206,16 @@ def gradient_repair(model, tokenizer, drifted_tasks, train_data, current_task,
         number of repair steps taken
     """
     print(f"  [GRADIENT-REPAIR] Drifted: {drifted_tasks}")
-    print(f"    lambda={REPAIR_LAMBDA} (new-task weight), lr={REPAIR_LR}")
+    print(f"    lambda_start={REPAIR_LAMBDA} (decays to {REPAIR_LAMBDA_END}), lr={REPAIR_LR}")
 
     # Collect probe data: 50 samples from each drifted old task
-    old_probe_pairs = []
+    # Store per-task so we can log per-task loss
+    per_task_probe_pairs = {}
     for task in drifted_tasks:
-        old_probe_pairs.extend(train_data[task][:REPAIR_PROBE_SIZE])
+        per_task_probe_pairs[task] = train_data[task][:REPAIR_PROBE_SIZE]
+    old_probe_pairs = []
+    for pairs in per_task_probe_pairs.values():
+        old_probe_pairs.extend(pairs)
     # Sample from current task to maintain new-task performance
     if len(current_task_pairs) > REPAIR_PROBE_SIZE:
         new_sample_pairs = random.sample(current_task_pairs, REPAIR_PROBE_SIZE)
@@ -246,11 +251,20 @@ def gradient_repair(model, tokenizer, drifted_tasks, train_data, current_task,
     old_batches = make_batch(old_probe_pairs, REPAIR_BATCH_SIZE)
     new_batches = make_batch(new_sample_pairs, REPAIR_BATCH_SIZE)
 
+    # Also make per-task batches for logging
+    per_task_batches = {}
+    for task, pairs in per_task_probe_pairs.items():
+        per_task_batches[task] = make_batch(pairs, REPAIR_BATCH_SIZE)
+
     steps_taken = 0
     for step in range(max_steps):
         model.train()
 
-        # --- Old-task loss (one random batch per step) ---
+        # --- Lambda decay: start at REPAIR_LAMBDA, decay to REPAIR_LAMBDA_END ---
+        # Linear decay over max_steps. Old-task recovery dominates late.
+        lam = REPAIR_LAMBDA - (REPAIR_LAMBDA - REPAIR_LAMBDA_END) * (step / max(max_steps - 1, 1))
+
+        # --- Old-task loss (one random batch from combined old pool) ---
         old_batch = random.choice(old_batches)
         old_out = model(input_ids=old_batch, labels=old_batch)
         old_loss = old_out.loss
@@ -261,7 +275,7 @@ def gradient_repair(model, tokenizer, drifted_tasks, train_data, current_task,
         new_loss = new_out.loss
 
         # --- Combined loss ---
-        loss = old_loss + REPAIR_LAMBDA * new_loss
+        loss = old_loss + lam * new_loss
 
         opt.zero_grad()
         loss.backward()
@@ -274,10 +288,20 @@ def gradient_repair(model, tokenizer, drifted_tasks, train_data, current_task,
         if steps_taken % 3 == 0:
             torch.cuda.empty_cache()
 
-        if step % 5 == 0 or step < 5:
-            print(f"    [GRADIENT-REPAIR] step {step+1} | "
-                  f"old_loss={old_loss.item():.4f} | new_loss={new_loss.item():.4f} | "
-                  f"total={(old_loss + REPAIR_LAMBDA * new_loss).item():.4f}", flush=True)
+        # --- Log every step with per-task old loss (no grad, just forward) ---
+        if step < 20 or step % 5 == 0:  # log every step for first 20, then every 5
+            per_task_losses = {}
+            model.eval()
+            with torch.no_grad():
+                for task, batches in per_task_batches.items():
+                    batch = random.choice(batches)
+                    out = model(input_ids=batch, labels=batch)
+                    per_task_losses[task] = out.loss.item()
+            model.train()
+            per_task_str = " | ".join(f"{t[:6]}={l:.3f}" for t, l in per_task_losses.items())
+            print(f"    [GRADIENT-REPAIR] step {step+1:2d} | λ={lam:.3f} | "
+                  f"old_avg={old_loss.item():.4f} | new={new_loss.item():.4f} | "
+                  f"per-task: {per_task_str}", flush=True)
 
         # Check convergence every 5 steps (PPL eval is expensive)
         if (step + 1) % 5 == 0:
