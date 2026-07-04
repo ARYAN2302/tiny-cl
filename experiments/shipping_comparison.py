@@ -128,55 +128,100 @@ def load_mmlu_eval(n_subjects=20, n_per_subject=5):
             pass
     return eval_pairs, subjects
 
-def load_pipeline_data():
-    """Load the 4-stage post-training pipeline data."""
+MAX_TOKENS_PER_STAGE = 200000  # cap each stage so no single domain dominates
+
+def load_dataset_sample(dataset_id, field, n_samples, split="train"):
+    """Load n_samples from a HF dataset, extract field. Uses data_rng for sampling."""
+    from datasets import load_dataset
+    try:
+        ds = load_dataset(dataset_id, split=split)
+        texts = [t for t in ds[field] if t and (isinstance(t, str) and len(t.strip()) > 20)]
+        data_rng.shuffle(texts)
+        return texts[:n_samples]
+    except Exception as e:
+        print(f"    WARNING: {dataset_id} field '{field}' failed: {e}")
+        return []
+
+def load_ultrachat(n_samples=800):
+    """Load UltraChat 200k — messages column is list of {role, content} dicts."""
+    from datasets import load_dataset
+    try:
+        ds = load_dataset("HuggingFaceH4/ultrachat_200k", split="train_sft")
+        texts = []
+        for convo in ds:
+            messages = convo.get("messages", [])
+            if not messages: continue
+            # Flatten messages into one text block
+            parts = []
+            for m in messages:
+                role = m.get("role", "user")
+                content = m.get("content", "")
+                parts.append(f"{role}: {content}")
+            text = "\n".join(parts)
+            if len(text.strip()) > 50:
+                texts.append(text)
+        data_rng.shuffle(texts)
+        return texts[:n_samples]
+    except Exception as e:
+        print(f"    WARNING: ultrachat_200k failed: {e}")
+        return []
+
+def cap_pairs_by_tokens(pairs, tokenizer, max_tokens=MAX_TOKENS_PER_STAGE):
+    """Cap the number of pairs so total tokens ≈ max_tokens. Keeps stages balanced."""
+    total_tokens = 0
+    capped = []
+    for prompt, answer in pairs:
+        text = prompt + " " + answer
+        n_tokens = len(tokenizer.encode(text, add_special_tokens=False))
+        if total_tokens + n_tokens > max_tokens:
+            break
+        capped.append((prompt, answer))
+        total_tokens += n_tokens
+    return capped
+
+def load_pipeline_data(tokenizer):
+    """Load the 4-stage post-training pipeline data. Each stage capped to ~200k tokens."""
     print("\n=== Loading pipeline data ===")
     stages = []
 
     # Stage 1: UltraChat (general chat)
     print("  Stage 1: UltraChat...")
-    texts = load_dataset_sample("stingning/ultrachat", "content", 2000)
-    # ultrachat content is a list of messages — flatten
+    texts = load_ultrachat(800)
     pairs = []
-    for item in texts[:1000]:
-        if isinstance(item, list):
-            # Join messages into one text
-            text = " ".join(str(m) for m in item)
-        else:
-            text = str(item)
+    for text in texts:
         mid = len(text) // 2
-        if mid > 20:
-            pairs.append((text[:mid].strip()[:1000], text[mid:].strip()[:1000]))
-    stages.append(("ultrachat", pairs, pairs[:50]))  # train, eval
-    print(f"    {len(pairs)} train pairs, 50 eval pairs")
+        if mid > 50:
+            pairs.append((text[:mid].strip()[:1500], text[mid:].strip()[:1500]))
+    pairs = cap_pairs_by_tokens(pairs, tokenizer, MAX_TOKENS_PER_STAGE)
+    stages.append(("ultrachat", pairs, pairs[:50]))
+    print(f"    {len(pairs)} train pairs (~{MAX_TOKENS_PER_STAGE//1000}k tokens), 50 eval pairs")
 
     # Stage 2: Medical
     print("  Stage 2: Medical...")
-    texts = load_dataset_sample("epfl-llm/guidelines", "clean_text", 1000)
+    texts = load_dataset_sample("epfl-llm/guidelines", "clean_text", 800)
     pairs = build_pairs_from_text(texts)
+    pairs = cap_pairs_by_tokens(pairs, tokenizer, MAX_TOKENS_PER_STAGE)
     stages.append(("medical", pairs, pairs[:50]))
     print(f"    {len(pairs)} train pairs, 50 eval pairs")
 
     # Stage 3: Code
     print("  Stage 3: Code...")
-    texts = load_dataset_sample("iamtarun/python_code_instructions_18k_alpaca", "output", 1000)
+    texts = load_dataset_sample("iamtarun/python_code_instructions_18k_alpaca", "output", 800)
     pairs = build_pairs_from_text(texts)
+    pairs = cap_pairs_by_tokens(pairs, tokenizer, MAX_TOKENS_PER_STAGE)
     stages.append(("code", pairs, pairs[:50]))
     print(f"    {len(pairs)} train pairs, 50 eval pairs")
 
-    # Stage 4: Legal
-    print("  Stage 4: Legal...")
-    texts = load_dataset_sample("nguha/legalbench", "text", 500)
-    if not texts:
-        # Fallback: use a different legal dataset
-        texts = load_dataset_sample("daniel-saeedi/legal-qa", "question", 500)
-    pairs = build_pairs_from_text(texts) if texts else []
-    if len(pairs) < 100:
-        # Fallback: use more code data as a 4th domain
-        print("    Legal data insufficient, using Finance instead")
-        texts = load_dataset_sample("gbharti/finance-alpaca", "output", 500)
-        pairs = build_pairs_from_text(texts) if texts else []
-    stages.append(("domain4", pairs, pairs[:50]))
+    # Stage 4: Finance (legal datasets on HF are inconsistent)
+    print("  Stage 4: Finance...")
+    texts = load_dataset_sample("gbharti/finance-alpaca", "output", 800)
+    if not texts or len(texts) < 100:
+        # Fallback: use more code data
+        print("    Finance data insufficient, using additional Code instead")
+        texts = load_dataset_sample("iamtarun/python_code_instructions_18k_alpaca", "output", 800)
+    pairs = build_pairs_from_text(texts)
+    pairs = cap_pairs_by_tokens(pairs, tokenizer, MAX_TOKENS_PER_STAGE)
+    stages.append(("finance", pairs, pairs[:50]))
     print(f"    {len(pairs)} train pairs, 50 eval pairs")
 
     return stages
@@ -252,7 +297,8 @@ def train_on_pairs(model, tokenizer, pairs, epochs=TASK_EPOCHS):
 # ============================================================================
 
 def compute_ppl(model, tokenizer, pairs, max_samples=50):
-    if not pairs: return float('inf')
+    if not pairs or len(pairs) == 0:
+        return float('nan')  # NaN instead of inf — signals "no data", not "infinite loss"
     model.eval()
     total_loss, total_tokens = 0.0, 0
     for prompt, answer in pairs[:max_samples]:
@@ -263,7 +309,9 @@ def compute_ppl(model, tokenizer, pairs, max_samples=50):
         total_loss += outputs.loss.item() * inputs["input_ids"].shape[1]
         total_tokens += inputs["input_ids"].shape[1]
     model.train()
-    return math.exp(total_loss / max(total_tokens, 1))
+    if total_tokens == 0:
+        return float('nan')
+    return math.exp(total_loss / total_tokens)
 
 def verify_drift(current_ppls, best_ppls, completed_stages, threshold=DRIFT_THRESHOLD):
     drifted = {}
@@ -326,7 +374,10 @@ def eval_all(model, tokenizer, mmlu_pairs, stages, trained_so_far, label=""):
     domain_ppls = eval_domain_ppls(model, tokenizer, stages, trained_so_far)
     print(f"    MMLU: {mmlu_acc:.3f}")
     for name, ppl in domain_ppls.items():
-        print(f"    {name} PPL: {ppl:.2f}")
+        if math.isnan(ppl):
+            print(f"    {name} PPL: N/A (no eval data)")
+        else:
+            print(f"    {name} PPL: {ppl:.2f}")
     return {"mmlu": mmlu_acc, "domain_ppls": domain_ppls}
 
 # ============================================================================
@@ -476,8 +527,14 @@ def main():
     print("logs to see if they land in a similar range.")
     print("=" * 70)
 
-    # Load data
-    stages = load_pipeline_data()
+    # Load tokenizer first (needed for token capping)
+    print("\n  Loading tokenizer for data prep...")
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+
+    # Load data — each stage capped to ~200k tokens
+    stages = load_pipeline_data(tokenizer)
     print("\n  Loading MMLU eval set...")
     mmlu_pairs, mmlu_subjects = load_mmlu_eval(n_subjects=20, n_per_subject=5)
     print(f"    MMLU: {len(mmlu_pairs)} questions across {len(mmlu_subjects)} subjects")
@@ -492,28 +549,33 @@ def main():
     print("SHIPPING COMPARISON TABLE")
     print(f"{'='*70}")
 
-    print(f"\n{'Method':<20} {'MMLU':<10} {'Chat PPL':<12} {'Med PPL':<12} {'Code PPL':<12} {'D4 PPL':<12}")
-    print("-" * 78)
+    # Use actual stage names
+    domain_names = [s[0] for s in stages]
+    header = f"{'Method':<15} {'MMLU':<8} " + " ".join(f"{n[:10]:<11}" for n in domain_names)
+    print(f"\n{header}")
+    print("-" * (15 + 8 + 12 * len(domain_names)))
+
+    def fmt(v):
+        if v is None or (isinstance(v, float) and math.isnan(v)):
+            return "N/A"
+        return f"{v:.1f}"
 
     # Base
     base_ppls = base_result["domain_ppls"]
-    print(f"{'Base model':<20} {base_result['mmlu']:<10.3f} "
-          f"{base_ppls.get('ultrachat', 0):<12.2f} {base_ppls.get('medical', 0):<12.2f} "
-          f"{base_ppls.get('code', 0):<12.2f} {base_ppls.get('domain4', 0):<12.2f}")
+    row = f"{'Base':<15} {base_result['mmlu']:<8.3f} " + " ".join(f"{fmt(base_ppls.get(n, float('nan'))):<11}" for n in domain_names)
+    print(row)
 
     # Naive (after all stages)
     naive_final = naive_results[-1]["result"]
     naive_ppls = naive_final["domain_ppls"]
-    print(f"{'Naive SFT':<20} {naive_final['mmlu']:<10.3f} "
-          f"{naive_ppls.get('ultrachat', 0):<12.2f} {naive_ppls.get('medical', 0):<12.2f} "
-          f"{naive_ppls.get('code', 0):<12.2f} {naive_ppls.get('domain4', 0):<12.2f}")
+    row = f"{'Naive SFT':<15} {naive_final['mmlu']:<8.3f} " + " ".join(f"{fmt(naive_ppls.get(n, float('nan'))):<11}" for n in domain_names)
+    print(row)
 
     # AVR (after all stages)
     avr_final = avr_results[-1]["result"]
     avr_ppls = avr_final["domain_ppls"]
-    print(f"{'AVR-cl':<20} {avr_final['mmlu']:<10.3f} "
-          f"{avr_ppls.get('ultrachat', 0):<12.2f} {avr_ppls.get('medical', 0):<12.2f} "
-          f"{avr_ppls.get('code', 0):<12.2f} {avr_ppls.get('domain4', 0):<12.2f}")
+    row = f"{'AVR-cl':<15} {avr_final['mmlu']:<8.3f} " + " ".join(f"{fmt(avr_ppls.get(n, float('nan'))):<11}" for n in domain_names)
+    print(row)
 
     # Per-stage trajectory
     print(f"\n{'='*70}")
@@ -535,11 +597,21 @@ def main():
     print(f"{'='*70}")
     print(f"\n{'Domain':<15} {'Base':<12} {'Naive':<12} {'AVR':<12} {'Naive Δ':<12} {'AVR Δ':<12}")
     print("-" * 75)
-    for name in ["ultrachat", "medical", "code", "domain4"]:
-        b = base_ppls.get(name, 0)
-        n = naive_ppls.get(name, 0)
-        a = avr_ppls.get(name, 0)
-        print(f"{name:<15} {b:<12.2f} {n:<12.2f} {a:<12.2f} {n-b:<+12.2f} {a-b:<+12.2f}")
+    def fmt_ppl(v):
+        if v is None or (isinstance(v, float) and math.isnan(v)):
+            return "N/A"
+        return f"{v:.2f}"
+    def fmt_delta(v, base):
+        if v is None or base is None or (isinstance(v, float) and math.isnan(v)) or (isinstance(base, float) and math.isnan(base)):
+            return "N/A"
+        return f"{v-base:+.2f}"
+    domain_names = [s[0] for s in stages]  # use actual stage names
+    for name in domain_names:
+        b = base_ppls.get(name, float('nan'))
+        n = naive_ppls.get(name, float('nan'))
+        a = avr_ppls.get(name, float('nan'))
+        print(f"{name:<15} {fmt_ppl(b):<12} {fmt_ppl(n):<12} {fmt_ppl(a):<12} "
+              f"{fmt_delta(n, b):<12} {fmt_delta(a, b):<12}")
 
     print(f"\n  AVR total repair steps: {total_repairs}")
 
