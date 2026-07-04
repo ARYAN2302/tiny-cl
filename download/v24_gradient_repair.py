@@ -224,31 +224,41 @@ def gradient_repair(model, tokenizer, drifted_tasks, train_data, current_task,
     trainable = [p for p in model.parameters() if p.requires_grad]
     opt = torch.optim.AdamW(trainable, lr=REPAIR_LR, weight_decay=TRAIN_WD)
 
+    # Pre-tokenize probe data into batches to avoid OOM
+    # Process in small batches instead of one-at-a-time
+    def make_batch(pairs, batch_size=REPAIR_BATCH_SIZE):
+        """Tokenize pairs and return as batches of (input_ids, labels)."""
+        all_input_ids = []
+        for prompt, answer in pairs:
+            text = prompt + " " + answer + tokenizer.eos_token
+            ids = tokenizer.encode(text, add_special_tokens=False)[:CONTEXT_LENGTH]
+            if len(ids) < 10: continue
+            # Pad to CONTEXT_LENGTH
+            ids = ids + [tokenizer.pad_token_id] * (CONTEXT_LENGTH - len(ids))
+            all_input_ids.append(ids)
+        all_input_ids = torch.tensor(all_input_ids, dtype=torch.long)
+        batches = []
+        for i in range(0, len(all_input_ids), batch_size):
+            batch = all_input_ids[i:i+batch_size].to(DEVICE)
+            batches.append(batch)
+        return batches
+
+    old_batches = make_batch(old_probe_pairs, REPAIR_BATCH_SIZE)
+    new_batches = make_batch(new_sample_pairs, REPAIR_BATCH_SIZE)
+
     steps_taken = 0
     for step in range(max_steps):
         model.train()
 
-        # --- Old-task loss (recover drifted tasks) ---
-        old_loss = 0.0
-        old_count = 0
-        for prompt, answer in old_probe_pairs:
-            text = prompt + " " + answer + tokenizer.eos_token
-            inputs = tokenizer(text, return_tensors="pt", truncation=True, max_length=512).to(DEVICE)
-            out = model(**inputs, labels=inputs["input_ids"])
-            old_loss = old_loss + out.loss
-            old_count += 1
-        old_loss = old_loss / max(old_count, 1)
+        # --- Old-task loss (one random batch per step) ---
+        old_batch = random.choice(old_batches)
+        old_out = model(input_ids=old_batch, labels=old_batch)
+        old_loss = old_out.loss
 
-        # --- New-task loss (maintain current task) ---
-        new_loss = 0.0
-        new_count = 0
-        for prompt, answer in new_sample_pairs:
-            text = prompt + " " + answer + tokenizer.eos_token
-            inputs = tokenizer(text, return_tensors="pt", truncation=True, max_length=512).to(DEVICE)
-            out = model(**inputs, labels=inputs["input_ids"])
-            new_loss = new_loss + out.loss
-            new_count += 1
-        new_loss = new_loss / max(new_count, 1)
+        # --- New-task loss (one random batch per step) ---
+        new_batch = random.choice(new_batches)
+        new_out = model(input_ids=new_batch, labels=new_batch)
+        new_loss = new_out.loss
 
         # --- Combined loss ---
         loss = old_loss + REPAIR_LAMBDA * new_loss
@@ -259,10 +269,15 @@ def gradient_repair(model, tokenizer, drifted_tasks, train_data, current_task,
         opt.step()
         steps_taken += 1
 
+        # Free intermediate tensors
+        del old_out, new_out, loss
+        if steps_taken % 3 == 0:
+            torch.cuda.empty_cache()
+
         if step % 5 == 0 or step < 5:
             print(f"    [GRADIENT-REPAIR] step {step+1} | "
                   f"old_loss={old_loss.item():.4f} | new_loss={new_loss.item():.4f} | "
-                  f"total={loss.item():.4f}", flush=True)
+                  f"total={(old_loss + REPAIR_LAMBDA * new_loss).item():.4f}", flush=True)
 
         # Check convergence every 5 steps (PPL eval is expensive)
         if (step + 1) % 5 == 0:
