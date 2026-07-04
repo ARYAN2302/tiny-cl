@@ -1,0 +1,92 @@
+[
+  {
+    "url": "https://www.reddit.com/r/LocalLLaMA/comments/1ilkamr/a_comprehensive_overview_of_everything_i_know",
+    "name": "A comprehensive overview of everything I know about fine-tuning.",
+    "snippet": "I've compiled a small collection of everything I know about fine-tuning LLMs or transformer models for specific use cases.",
+    "host_name": "www.reddit.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/irthomasthomas/undecidability/issues/665",
+    "name": "Best way to add knowledge to a llm : r/LocalLLaMA #665 - GitHub",
+    "snippet": "All in all, I would try first prompt engineering, then RAG, then finetuning, then RAG + finetuning as the final step.",
+    "host_name": "github.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/html/2601.18699v1",
+    "name": "Mechanistic Analysis of Catastrophic Forgetting in Large Language",
+    "snippet": "Here we present a mechanistic analysis of catastrophic forgetting in transformer LLMs during sequential fine-tuning across models from 109B to ...",
+    "host_name": "arxiv.org",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://aashaysachdeva.substack.com/p/rlocalllama-is-the-real-benchmark",
+    "name": "r/LocalLLaMA is the real benchmark of LLM's usability",
+    "snippet": "Fine-Tuning and Specialization: Users are excited about the prospects of more effectively fine-tuning models for specific industries or tasks, ...",
+    "host_name": "aashaysachdeva.substack.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.cognizant.com/us/en/ai-lab/blog/overcoming-forgetting-in-llm-fine-tuning",
+    "name": "How to Prevent Catastrophic Forgetting in LLM Fine-Tuning",
+    "snippet": "In some configurations, GRPO produces accuracy drops on prior tasks that are comparable to or worse than ES, including a substantial degradation ...",
+    "host_name": "www.cognizant.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.facebook.com/groups/595424764221375/posts/1981400218957149",
+    "name": "Hello , I am workin gon finetuning Llama3.1. For now Idon't have",
+    "snippet": "Finetuning allows the LLM to learn task-specific patterns while transferring general knowledge from the original broad pretraining corpus.",
+    "host_name": "www.facebook.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://teetracker.medium.com/fine-tuning-llms-9fe553a514d0",
+    "name": "Fine-tuning LLMs. Tasks to finetune | by TeeTracker - Medium",
+    "snippet": "Catastrophic forgetting occurs when a machine learning model forgets previously learned information as it learns new information.",
+    "host_name": "teetracker.medium.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://ai.rundatarun.io/emerging-trends/the-hidden-crisis-in-llm-fine-tuning-catastrophic-forgetting",
+    "name": "Catastrophic Forgetting: When Fine-Tuning Silently Breaks | AIXplore",
+    "snippet": "Catastrophic forgetting in LLM fine-tuning is silent: zero-token outputs, no errors, no warnings. What causes it, and how to catch it early.",
+    "host_name": "ai.rundatarun.io",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.legionintel.com/blog/navigating-the-challenges-of-fine-tuning-and-catastrophic-forgetting",
+    "name": "Fine-Tuning LLMs: Overcoming Catastrophic Forgetting",
+    "snippet": "Learn to fine-tune LLMs with FIP & LoRA methods to beat 'Catastrophic Forgetting' for robust AI applications across industries.",
+    "host_name": "www.legionintel.com",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=p6VFHLTwe1A",
+    "name": "MIT Made AI That Never Forgets - YouTube",
+    "snippet": "MIT researchers just solved one of AI's biggest problems: catastrophic forgetting. Their new Self-Distillation Fine-Tuning method lets a ...",
+    "host_name": "www.youtube.com",
+    "rank": 9,
+    "date": "",
+    "favicon": ""
+  }
+]

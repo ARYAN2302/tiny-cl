@@ -1,0 +1,92 @@
+[
+  {
+    "url": "https://dl.acm.org/doi/10.1145/3774906.3802769",
+    "name": "EdgeTune: Efficient On-Device LLM Personalization at the Edge",
+    "snippet": "We focus on edge-scale LLMs (up to ∼ 1.2B parameters) on devices with ∼ 4–8 GB RAM—sufficient for adapter-based fine-tuning here. The decision ...",
+    "host_name": "dl.acm.org",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/html/2409.00088v1",
+    "name": "On-Device Language Models: A Comprehensive Review - arXiv",
+    "snippet": "This comprehensive review examines the challenges of deploying computationally expensive LLMs on resource-constrained devices and explores innovative solutions ...",
+    "host_name": "arxiv.org",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://scand.com/company/blog/on-device-llms",
+    "name": "On-Device LLMs: What It Takes to Run an LLM on a Device - SCAND",
+    "snippet": "An on-device LLM is a language model that runs directly on a user's device, such as a smartphone, tablet, laptop, desktop computer, or edge ...",
+    "host_name": "scand.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.linkedin.com/posts/andrewyng_learn-to-deploy-ai-models-to-edge-devices-activity-7198685657064460289-G1kP",
+    "name": "Learn to deploy AI models to edge devices in our new short course",
+    "snippet": "Learn to deploy AI models to edge devices in our new short course \"Introduction to On-Device AI,\" created with Qualcomm and taught by Senior ...",
+    "host_name": "www.linkedin.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://v-chandra.github.io/on-device-llms",
+    "name": "On-Device LLMs: State of the Union, 2026 - Vikas Chandra",
+    "snippet": "Fine-tuning on-device would enable personalization without sending data to the cloud for training or providing extensive context via a prompt to ...",
+    "host_name": "v-chandra.github.io",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/singularity/comments/1q6attw/continual_learning_in_2026_what_does_continual",
+    "name": "r/singularity on Reddit: Continual Learning In 2026. What does",
+    "snippet": "When talking about continual learning we are usually talking about recursive memory. The LLM takes in information, reviews it, consolidates it ...",
+    "host_name": "www.reddit.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.cst.cam.ac.uk/seminars/list/223354",
+    "name": "Paying Attention to Efficiency: LLM Deployment on Mobile and Edge",
+    "snippet": "As edge and mobile devices are integrating increasingly powerful System-On-Chips (SoCs), deploying these models locally becomes viable, thus enabling new use- ...",
+    "host_name": "www.cst.cam.ac.uk",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/singularity/comments/1pu9og6/continual_learning_is_solved_in_2026",
+    "name": "Continual Learning is Solved in 2026 : r/singularity - Reddit",
+    "snippet": "Yeah there tends something akin to a network effect with these types of problems. You get much more eyes on a particular area and all it takes ...",
+    "host_name": "www.reddit.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.devopsschool.com/blog/top-10-edge-llm-deployment-toolkits-features-pros-cons-comparison-guide",
+    "name": "Top 10 Edge LLM Deployment Toolkits: Features, Pros, Cons",
+    "snippet": "Edge LLM Deployment Toolkits are platforms and frameworks that help developers deploy, manage, and optimize large language models (LLMs) ...",
+    "host_name": "www.devopsschool.com",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.mdpi.com/2673-2688/7/1/15",
+    "name": "Deploying LLM Transformer on Edge Computing Devices - MDPI",
+    "snippet": "Recent advancements in compact LLMs have shown promise in enhancing their deployment on edge devices, enabling improved performance while addressing the ...",
+    "host_name": "www.mdpi.com",
+    "rank": 9,
+    "date": "",
+    "favicon": ""
+  }
+]

@@ -1,0 +1,92 @@
+[
+  {
+    "url": "https://www.reddit.com/r/singularity/comments/1q6attw/continual_learning_in_2026_what_does_continual",
+    "name": "r/singularity on Reddit: Continual Learning In 2026. What does",
+    "snippet": "A lot of AGI discourse assumes future systems will \"learn continuously from experience\" the way humans do, but the mechanism matters enormously.",
+    "host_name": "www.reddit.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://cameronrwolfe.substack.com/p/rl-continual-learning",
+    "name": "Continual Learning with RL for LLMs",
+    "snippet": "In the real world, continual learning is messy—the LLM will be constantly exposed to new data from various sources—but a more organized proxy ...",
+    "host_name": "cameronrwolfe.substack.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/html/2606.24901v1",
+    "name": "LLM Evolution as an Industry-Scale Ecosystem: A Lifecycle  - arXiv",
+    "snippet": "In this survey, we reformulate Industrial Continual Learning (ICL) for LLMs as a closed-loop update-and-release problem in a versioned ecosystem ...",
+    "host_name": "arxiv.org",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=FyRwcYXAWGg",
+    "name": "Real-Time Continual Learning Has Been Unlocked - YouTube",
+    "snippet": "... Practical implications for AI systems This could change how AI systems learn and adapt in production environments. Link to Arxiv Paper ...",
+    "host_name": "www.youtube.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.zenml.io/blog/llmops-in-production-287-more-case-studies-of-what-actually-works",
+    "name": "LLMOps in Production: 287 More Case Studies of What Actually Works",
+    "snippet": "287 latest curated summaries of LLMOps use cases in industry, from tech to healthcare to finance and more. This blog also highlights some of ...",
+    "host_name": "www.zenml.io",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://futureagi.com/blog/real-time-learning-in-large-language-models-llms",
+    "name": "Real-Time Learning in LLMs 2026: Methods Compared - Future AGI",
+    "snippet": "Continual learning is the broader research program: train a model on a sequence of tasks or distributions while avoiding catastrophic forgetting. Online ...",
+    "host_name": "futureagi.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://gripo.io/Article/ai-model-deployment-challenges-in-production-the-devops-playbook-for-2026",
+    "name": "AI Model Deployment Challenges in Production - Gripo",
+    "snippet": "According to a 2025 Gartner report, more than 85% of AI and machine learning projects never reach production, and even among those that do, ...",
+    "host_name": "gripo.io",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.kernshell.com/best-practices-for-scalable-machine-learning-deployment",
+    "name": "MLOps in 2026: Best Practices for Scalable ML Deployment",
+    "snippet": "The goal is to deploy ML models reliably, monitor their performance in production, and keep them accurate as real-world data changes over time.",
+    "host_name": "www.kernshell.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=GteGII2e7ro",
+    "name": "ContinualAI Meetup: \"Real-World Applications of Continual Learning\"",
+    "snippet": "[April 29th 2020] ContinualAI Meetup: \"Real-World Applications of Continual Learning\" Description: In this meeting we discussed about how ...",
+    "host_name": "www.youtube.com",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://medium.com/@natepatel.np/how-llms-are-transforming-industries-real-world-use-cases-in-2026-c575afeb65e5",
+    "name": "How LLMs Are Transforming Industries: Real-World Use Cases in",
+    "snippet": "In 2026, their capabilities have evolved far beyond simple chat interactions. They now support reasoning, decision-making, summarization, coding ...",
+    "host_name": "medium.com",
+    "rank": 9,
+    "date": "",
+    "favicon": ""
+  }
+]

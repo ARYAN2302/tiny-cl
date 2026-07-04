@@ -1,0 +1,47 @@
+[
+  {
+    "url": "https://arxiv.org/abs/2310.06762",
+    "name": "TRACE: A Comprehensive Benchmark for Continual Learning in",
+    "snippet": "In this paper, we introduce TRACE, a novel benchmark designed to evaluate continual learning in LLMs. TRACE consists of 8 distinct datasets ...",
+    "host_name": "arxiv.org",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/html/2506.13045v4",
+    "name": "Continual Learning for Generative AI: From LLMs to MLLMs  - arXiv",
+    "snippet": "Trace: A comprehensive benchmark for continual learning in large language models. arXiv preprint arXiv:2310.06762 (2023). Wang et al. (2024b)",
+    "host_name": "arxiv.org",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/Wang-ML-Lab/llm-continual-learning-survey",
+    "name": "GitHub - Wang-ML-Lab/llm-continual-learning-survey",
+    "snippet": "This is an updating survey for Continual Learning of Large Language Models (CL-LLMs), a constantly updated and extended version for the manuscript \"Continual ...\nThis is an updating survey for Continual Learning of Large Language Models (CL-LLMs), been released on arXiv. TRACE: A Comprehensive Benchmark for Continual ...",
+    "host_name": "github.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.semanticscholar.org/paper/TRACE%3A-A-Comprehensive-Benchmark-for-Continual-in-Wang-Zhang/a64067c6c4286fc60f4430829ae6b18519c088e3",
+    "name": "TRACE: A Comprehensive Benchmark for Continual Learning in",
+    "snippet": "TRACE is introduced, a novel benchmark designed to evaluate continual learning in LLMs and the Reasoning-augmented Continual Learning (RCL) approach, ...",
+    "host_name": "www.semanticscholar.org",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/html/2508.08275v1",
+    "name": "MLLM-CTBench:A Comprehensive Benchmark for Continual  - arXiv",
+    "snippet": "Our key findings include: i) Models with stronger general capabilities exhibit greater robustness to forgetting during continual learning; ii) ...\nOur benchmark introduces three key -expansion-based (Wang et al. 2022) TRACE (Wang et al. 2023b) TRACE: A Comprehensive Benchmark for Continual ...",
+    "host_name": "arxiv.org",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  }
+]

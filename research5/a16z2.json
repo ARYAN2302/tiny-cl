@@ -1,0 +1,47 @@
+[
+  {
+    "url": "https://a16z.com/why-we-need-continual-learning",
+    "name": "Why We Need Continual Learning | Andreessen Horowitz",
+    "snippet": "In-context learning (ICL) is sufficient for problems where ... On the weight updates, researchers are pursuing genuine parametric learning ...",
+    "host_name": "a16z.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.linkedin.com/posts/thomashazel_why-we-need-continual-learning-activity-7452724657826402304-Rrqn",
+    "name": "Andreessen Horowitz Discusses AI Continual Learning Challenges",
+    "snippet": "It requires persistent state, incremental weight updates, and mechanisms to avoid catastrophic forgetting while integrating new evidence. We've ...",
+    "host_name": "www.linkedin.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://podcasts.apple.com/us/podcast/why-we-need-continual-learning/id1740178076?i=1000764007235",
+    "name": "Why We Need Continual Learning - AI + a16z - Apple Podcasts",
+    "snippet": "They discuss the limits of in-context learning, the case for continual learning ... April 28, 2026 at 10:00 AM UTC. Length. 19 min. Episode. 95.",
+    "host_name": "podcasts.apple.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.letta.com/blog/continual-learning",
+    "name": "Continual Learning in Token Space - Letta",
+    "snippet": "BRIEFThe continual learning problem in LLM agents is best viewed through the lens of learning in token space: updates to learned context, not ...",
+    "host_name": "www.letta.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/singularity/comments/1q6attw/continual_learning_in_2026_what_does_continual",
+    "name": "r/singularity on Reddit: Continual Learning In 2026. What does",
+    "snippet": "Continual learning is absolutely NOT adding a database that updates and that the LLM can search. That already exists. That's just lying to ...",
+    "host_name": "www.reddit.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  }
+]

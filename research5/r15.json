@@ -1,0 +1,92 @@
+[
+  {
+    "url": "https://www.reddit.com/r/mlops/comments/1rnhoa6/how_are_you_handling_catastrophic_forgetting_in",
+    "name": "How are you handling catastrophic forgetting in multi-domain LLM",
+    "snippet": "Handling catastrophic forgetting in multi-domain LLM fine-tuning is definitely a tricky beast! One strategy I've found useful is using a form of ...",
+    "host_name": "www.reddit.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://ai.rundatarun.io/emerging-trends/the-hidden-crisis-in-llm-fine-tuning-catastrophic-forgetting",
+    "name": "Catastrophic Forgetting: When Fine-Tuning Silently Breaks | AIXplore",
+    "snippet": "Catastrophic forgetting in LLM fine-tuning is silent: zero-token outputs, no errors, no warnings. What causes it, and how to catch it early.",
+    "host_name": "ai.rundatarun.io",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.cognizant.com/us/en/ai-lab/blog/overcoming-forgetting-in-llm-fine-tuning",
+    "name": "How to Prevent Catastrophic Forgetting in LLM Fine-Tuning",
+    "snippet": "Researchers call this catastrophic forgetting, or prior-task forgetting, and it has been one of the stubborn challenges in machine learning ...",
+    "host_name": "www.cognizant.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=2GkdGP3P3w4",
+    "name": "Catastrophic Forgetting can NOT be avoided in Finetuned LLMs",
+    "snippet": "... tuning a fewer (or greater) number of parameters. Paper - \"Parameter-Efficient Fine-Tuning for Overcoming Catastrophic Forgetting\" Paper ...",
+    "host_name": "www.youtube.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/abs/2308.08747",
+    "name": "[2308.08747] An Empirical Study of Catastrophic Forgetting in Large",
+    "snippet": "This study empirically evaluates the forgetting phenomenon in LLMs' knowledge during continual instruction tuning from the perspectives of ...",
+    "host_name": "arxiv.org",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://neurips.cc/virtual/2025/poster/120200",
+    "name": "Mitigating Forgetting in LLM Fine-Tuning via Low-Perplexity Token",
+    "snippet": "Following our findings, we showed that masking high perplexity tokens in ground truth training data achieves similar non-target task performance ...",
+    "host_name": "neurips.cc",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.ibm.com/think/topics/catastrophic-forgetting",
+    "name": "What is Catastrophic Forgetting? - IBM",
+    "snippet": "Catastrophic forgetting occurs when neural networks forget previously learned tasks after being trained on new data or undergoing fine-tuning for specific ...",
+    "host_name": "www.ibm.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.sitepoint.com/fine-tune-local-llms-2026",
+    "name": "Fine-Tune Local LLMs 2026 | Practical Guide - SitePoint",
+    "snippet": "Full fine-tuning also carries the highest risk of catastrophic forgetting, where the model loses general capabilities while specializing. Full ...",
+    "host_name": "www.sitepoint.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.legionintel.com/blog/navigating-the-challenges-of-fine-tuning-and-catastrophic-forgetting",
+    "name": "Fine-Tuning LLMs: Overcoming Catastrophic Forgetting",
+    "snippet": "Learn to fine-tune LLMs with FIP & LoRA methods to beat 'Catastrophic Forgetting' for robust AI applications across industries.",
+    "host_name": "www.legionintel.com",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://gist.github.com/av/5e4820a48210600a458deee0f3385d4f",
+    "name": "r/LocalLLaMA - a year in review - GitHub Gist",
+    "snippet": "Let me take you back to the most notable things happened here this year. This isn't a log of model releases or research, rather things that were discussed and ...",
+    "host_name": "gist.github.com",
+    "rank": 9,
+    "date": "",
+    "favicon": ""
+  }
+]

@@ -1,0 +1,92 @@
+[
+  {
+    "url": "https://www.databricks.com/blog/llm-fine-tuning",
+    "name": "A Practical Guide to LLM Fine Tuning | Databricks Blog",
+    "snippet": "Learn how LLM fine tuning works, when to use it vs. RAG, and how to choose the right method — from supervised fine-tuning to PEFT and LoRA.",
+    "host_name": "www.databricks.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.superannotate.com/blog/llm-fine-tuning",
+    "name": "Fine-tuning large language models (LLMs) in 2026 - SuperAnnotate",
+    "snippet": "Dive into LLM fine-tuning: its importance, types, methods, and best practices for optimizing language model performance.",
+    "host_name": "www.superannotate.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/mlops/comments/1rnhoa6/how_are_you_handling_catastrophic_forgetting_in",
+    "name": "How are you handling catastrophic forgetting in multi-domain LLM",
+    "snippet": "Handling catastrophic forgetting in multi-domain LLM fine-tuning is definitely a tricky beast! One strategy I've found useful is using a form of ...",
+    "host_name": "www.reddit.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.sitepoint.com/fine-tune-local-llms-2026",
+    "name": "Fine-Tune Local LLMs 2026 | Practical Guide - SitePoint",
+    "snippet": "This guide walks through the entire workflow: deciding whether fine-tuning is the right approach, preparing datasets, configuring and running ...",
+    "host_name": "www.sitepoint.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://labelyourdata.com/articles/llm-fine-tuning",
+    "name": "LLM Fine Tuning: The 2026 Guide for ML Teams | Label Your Data",
+    "snippet": "By fine-tuning an LLM on domain-specific data, you can significantly improve the model's accuracy and relevance. For example, GPT-4 was trained ...",
+    "host_name": "labelyourdata.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.nature.com/articles/s41524-025-01564-y",
+    "name": "Fine-tuning large language models for domain adaptation - Nature",
+    "snippet": "In this work, we explore the effects of Continued Pretraining (CPT), Supervised Fine-Tuning (SFT), and various preference-based optimization approaches.",
+    "host_name": "www.nature.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://bigdataboutique.com/blog/fine-tuning-llms-when-rag-isnt-enough",
+    "name": "Fine-Tuning LLMs in 2026: When RAG Isn't Enough (and When It",
+    "snippet": "The right sequence in 2026 is Prompt -> RAG -> Fine-tune -> Distill, and the highest-ROI fine-tuning is a thin LoRA or QLoRA adapter on top of a ...",
+    "host_name": "bigdataboutique.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://medium.com/@knish5790/fine-tuning-large-language-models-llms-in-2025-623567db84e9",
+    "name": "Fine‑tuning large language models (LLMs) in 2026 - Medium",
+    "snippet": "1. Set up a fine‑tuning workflow · 1.1 Identify the use case · 1.2 Prepare the dataset · 1.3 Choose a base model · 1.4 Choose a fine‑tuning method.",
+    "host_name": "medium.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://latitude.so/blog/checklist-for-domain-specific-llm-fine-tuning",
+    "name": "Checklist for Domain-Specific LLM Fine-Tuning - Latitude.so",
+    "snippet": "Learn how to fine-tune large language models for specific domains with this comprehensive checklist covering goals, data preparation, ...",
+    "host_name": "latitude.so",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.spheron.network/blog/how-to-fine-tune-llm-2026",
+    "name": "How to Fine-Tune LLMs in 2026: Costs, GPUs, and Code - Spheron",
+    "snippet": "Fine-tuning a 7B model costs under $5 in 2026. Real costs, GPU requirements, and step-by-step workflows for Llama, Qwen, and DeepSeek.",
+    "host_name": "www.spheron.network",
+    "rank": 9,
+    "date": "",
+    "favicon": ""
+  }
+]

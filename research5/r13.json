@@ -1,0 +1,92 @@
+[
+  {
+    "url": "https://www.reddit.com/r/mlops/comments/1rnhoa6/how_are_you_handling_catastrophic_forgetting_in",
+    "name": "How are you handling catastrophic forgetting in multi-domain LLM",
+    "snippet": "- How are you handling multi-domain fine-tuning in production without constantly retraining from scratch or spawning a new model per domain? - ...",
+    "host_name": "www.reddit.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://pub.towardsai.net/a-guide-to-fine-tuning-large-language-models-llms-without-catastrophic-forgetting-4b2c926f14a4",
+    "name": "Fine-Tuning Large Language Models (LLMs) Without Catastrophic",
+    "snippet": "Fine-tuning is the process of adapting these models so they: Understand your domain (medical, legal, finance, etc.) Perform specific tasks ...",
+    "host_name": "pub.towardsai.net",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.superannotate.com/blog/llm-fine-tuning",
+    "name": "Fine-tuning large language models (LLMs) in 2026 - SuperAnnotate",
+    "snippet": "Fine-tuning enables you to adapt a general-purpose LLM to specialized use cases such as customer service, medical diagnosis, or legal analysis.",
+    "host_name": "www.superannotate.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/html/2501.13669v2",
+    "name": "How to Alleviate Catastrophic Forgetting in LLMs Finetuning  - arXiv",
+    "snippet": "This paper addresses the critical issue of catastrophic forgetting in large language models (LLMs) during domain-specific fine-tuning.",
+    "host_name": "arxiv.org",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=-82YJQy9wcM",
+    "name": "Grow, Don't Overwrite: Fine-tuning Without Forgetting (Mar 2026)",
+    "snippet": "... PRODUCTION - https://www.pexels.com/@mart-production - Max Fischer - https://www.pexels.com/@max-fischer - Ketut Subiyanto - https://www ...",
+    "host_name": "www.youtube.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://discuss.huggingface.co/t/your-fine-tuned-model-forgot-everything-it-knew-here-s-why/174133",
+    "name": "Your Fine-Tuned Model Forgot Everything It Knew. Here's Why",
+    "snippet": "Separate models per domain — One fine-tuned model for medical, one for legal, one for finance. Works, but N domains = N models = N deployments.",
+    "host_name": "discuss.huggingface.co",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://ai.rundatarun.io/Emerging+Trends/the-hidden-crisis-in-llm-fine-tuning-catastrophic-forgetting",
+    "name": "the-hidden-crisis-in-llm-fine-tuning-catastrophic-forgetting - AIXplore",
+    "snippet": "The Hidden Crisis in LLM Fine-Tuning: When Your Model Silently Forgets Everything I thought I had a successful fine-tuning experiment.",
+    "host_name": "ai.rundatarun.io",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://ai.meta.com/blog/when-to-fine-tune-llms-vs-other-techniques",
+    "name": "To fine-tune or not to fine-tune - Meta AI",
+    "snippet": "In this post, we'll discuss the following question: “When should we fine-tune, and when should we consider other techniques?”",
+    "host_name": "ai.meta.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://medium.com/@yashwanths_29644/llm-finetuning-series-01-fine-tuning-large-language-models-for-domain-specific-use-cases-88cbc7c80834",
+    "name": "LLM Finetuning Series 01:- Why Fine-Tuning Large Language",
+    "snippet": "Fine-tuning is the bridge between general-purpose LLMs and domain-specific applications. It empowers organizations to harness the power of AI for real-world ...",
+    "host_name": "medium.com",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.cognizant.com/us/en/ai-lab/blog/overcoming-forgetting-in-llm-fine-tuning",
+    "name": "How to Prevent Catastrophic Forgetting in LLM Fine-Tuning",
+    "snippet": "New research demonstrates how Evolution Strategies can continuously fine-tune LLMs while preserving existing capabilities and reducing ...",
+    "host_name": "www.cognizant.com",
+    "rank": 9,
+    "date": "",
+    "favicon": ""
+  }
+]
