@@ -46,7 +46,7 @@ CONTEXT_LENGTH = 512
 # AVR config (from v11 — PPL-ratio, NOT hidden-state)
 DRIFT_THRESHOLD = 1.15   # fire repair if PPL > 1.15x best
 REPAIR_ALPHA = 0.1       # pull strength per repair step
-MAX_REPAIR_STEPS = 100   # no practical cap — repair until drift is fixed
+MAX_REPAIR_STEPS = 10   # no practical cap — repair until drift is fixed
 
 BENCH_MAX_NEW_TOKENS = 20
 SEED = 42
