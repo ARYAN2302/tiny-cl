@@ -1,0 +1,74 @@
+[
+  {
+    "url": "https://arxiv.org/html/2601.18699v2",
+    "name": "Mechanistic Analysis of Catastrophic Forgetting in Large Language",
+    "snippet": "This paper presents a systematic comparative study of catastrophic forgetting across twenty premier models representing the state-of-the-art in mid-2026.",
+    "host_name": "arxiv.org",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.ibm.com/think/topics/catastrophic-forgetting",
+    "name": "What is Catastrophic Forgetting? - IBM",
+    "snippet": "Catastrophic forgetting occurs when neural networks forget previously learned tasks after being trained on new data or undergoing fine-tuning for specific ...",
+    "host_name": "www.ibm.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/learnmachinelearning/comments/1rq3sf4/your_finetuned_model_forgot_everything_it_knew",
+    "name": "Your Fine-Tuned Model Forgot Everything It Knew - Reddit",
+    "snippet": "I've spent the last 6 months trying to solve catastrophic forgetting for sequential fine-tuning of LLMs. Wanted to share what I've learned ...",
+    "host_name": "www.reddit.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://mbrenndoerfer.com/writing/catastrophic-forgetting-fine-tuning-mitigation",
+    "name": "Catastrophic Forgetting in Fine-Tuning: Causes & Mitigation",
+    "snippet": "Learn why neural networks forget prior capabilities during fine-tuning and discover mitigation strategies like EWC, L2-SP regularization, and ...",
+    "host_name": "mbrenndoerfer.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://iclr.cc/media/iclr-2026/Slides/10006812.pdf",
+    "name": "[PDF] Constrained Full Fine-Tuning in LLMs for Continual Learning",
+    "snippet": "Sequential full-model fine-tuning (SeqFT): serves as a lower-bound baseline, prone to catastrophic forgetting. ○. Parameter-efficient LoRA variants ...",
+    "host_name": "iclr.cc",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.emergentmind.com/topics/catastrophic-forgetting-cf",
+    "name": "Catastrophic Forgetting in Continual Learning - Emergent Mind",
+    "snippet": "Catastrophic Forgetting is the loss of previously learned knowledge when models update on new tasks without revisiting old data.",
+    "host_name": "www.emergentmind.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://aisecurityandsafety.org/en/guides/catastrophic-forgetting-guide",
+    "name": "Catastrophic Forgetting in AI: Why Models Unlearn & How to Fix It",
+    "snippet": "This guide explains the mechanisms behind catastrophic forgetting, its implications for AI safety, and state-of-the-art mitigation techniques. ...",
+    "host_name": "aisecurityandsafety.org",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.researchgate.net/publication/395308608_An_Empirical_Study_of_Catastrophic_Forgetting_in_Large_Language_Models_During_Continual_Fine-Tuning",
+    "name": "An Empirical Study of Catastrophic Forgetting in Large Language",
+    "snippet": "Continual fine-tuning produces catastrophic forgetting-knowledge drops to as low as 26% on benchmarks, with safety alignment particularly ...",
+    "host_name": "www.researchgate.net",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  }
+]

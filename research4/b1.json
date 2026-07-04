@@ -1,0 +1,92 @@
+[
+  {
+    "url": "https://ai-checker.webcoda.com.au/articles/llama-4-benchmark-scandal-meta-yann-lecun-2026",
+    "name": "Llama 4 Benchmarks Were 'Fudged'. Yann LeCun Confirmed It. | Webcoda",
+    "snippet": "Yann LeCun confirmed in January 2026 that Llama 4's benchmark results were manipulated. Different models were submitted for different ...",
+    "host_name": "ai-checker.webcoda.com.au",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.sciencedirect.com/science/article/pii/S2666827026000885",
+    "name": "Performance evaluation of large language models for automated",
+    "snippet": "Few-Shot learning achieved the best overall performance in our evaluation, with LLaMA achieving a 99.35% F1 score and 100% valid RDF output",
+    "host_name": "www.sciencedirect.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://hai.stanford.edu/assets/files/ai_index_report_2026_chapter_2_technical.pdf",
+    "name": "[PDF] Technical Performance - Stanford HAI",
+    "snippet": "AI models improved rapidly in 2025, with benchmark scores rising across language, reasoning, coding, and math.",
+    "host_name": "hai.stanford.edu",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.researchgate.net/publication/384198697_LlamaFactory_Unified_Efficient_Fine-Tuning_of_100_Language_Models",
+    "name": "Unified Efficient Fine-Tuning of 100+ Language Models - ResearchGate",
+    "snippet": "The implementation was carried out with the LLaMA-Factory framework, which was designed as a unified efficient fine-tuning platform for large ...\nUpon publication, we will make publicly available the training and evaluation code, LLaMA ... evaluation benchmark. SFT is conducted using ...",
+    "host_name": "www.researchgate.net",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://theaiengineer.substack.com/p/unsloth-vs-axolotl-vs-llama-factory",
+    "name": "Unsloth vs Axolotl vs LLaMA-Factory - by Paolo Perrone - The AI Engineer",
+    "snippet": "In benchmarks, this brings LLaMA-Factory's training time within 6% of native Unsloth. The LLaMA-Factory paper was accepted at ACL 2024. It ...\nIn benchmarks, this brings LLaMA-Factory's training time within 6% of native Unsloth (3.4 hours vs 3.2 hours for Llama-3.1 8B QLoRA on A100 40GB) ...",
+    "host_name": "theaiengineer.substack.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://techjacksolutions.com/ai-tools/meta-llama/llm-benchmark-landscape",
+    "name": "The LLM Benchmark Landscape: Saturation, Contamination, and",
+    "snippet": "Key Stats ~93% MMLU score reported for a frontier system (GPT-5.3 Codex, Feb 2026), near GSM8K, measured accuracy dropped by up to 13 ... Missing: Factory paper",
+    "host_name": "techjacksolutions.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/pdf/2606.01338",
+    "name": "[PDF] Benchmarking Local LLMs for Natural-Language-to-SQL Querying",
+    "snippet": "The AscentCore benchmark [AscentCore, 2026] reports ROUGE-L scores of 0.454–0.509 and JSON compliance of 65–96% for Q8_0 quantised variants of ...",
+    "host_name": "arxiv.org",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/FellouAI/LLaMA-Factory",
+    "name": "GitHub - FellouAI/LLaMA-Factory: Unified Efficient Fine-Tuning of 100",
+    "snippet": "more benchmarks can be found in this page. Our paper \"LlamaFactory: Unified Efficient Fine-Tuning of 100+ Language Models\" for training, evaluation and ...",
+    "host_name": "github.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.kaggle.com/datasets/uzmaakhtar/llm-benchmark-comparison",
+    "name": "LLM Benchmark Comparison . - Kaggle",
+    "snippet": "... 2026. Each row is one model. Scores are reported as percentages (0–100). Missing values indicate the benchmark was not officially reported for that model.\nBenchmark evaluation scores for NASA's INDUS encoder language models, developed in partnership with IBM. Data sourced from the NASA Science Blog (science.nasa.",
+    "host_name": "www.kaggle.com",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.jenova.ai/en/resources/llama-factory-complete-guide-to-llm-fine-tuning",
+    "name": "LLaMA Factory: Complete Guide to LLM Fine-Tuning in 2026 - Jenova.ai",
+    "snippet": "LLaMA Factory is an open-source framework for fine-tuning 100+ large language models and vision-language models without writing training code.",
+    "host_name": "www.jenova.ai",
+    "rank": 9,
+    "date": "",
+    "favicon": ""
+  }
+]

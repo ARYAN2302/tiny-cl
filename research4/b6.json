@@ -1,0 +1,74 @@
+[
+  {
+    "url": "https://www.youtube.com/watch?v=mmsa4wDsiy0",
+    "name": "Fine-Tuning with Axolotl - YouTube",
+    "snippet": "Join the AI Evals September 2026 cohort: https://maven.com/parlance-labs/evals?promoCode=yt-2026 . This lesson illustrates an end-to-end ...",
+    "host_name": "www.youtube.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.spheron.network/blog/axolotl-vs-unsloth-vs-torchtune",
+    "name": "Axolotl vs Unsloth vs TorchTune: Best LLM Fine-Tuning Frameworks",
+    "snippet": "We tested Axolotl, Unsloth, TorchTune, and LLaMA-Factory head-to-head on real fine-tuning jobs. Here is what actually matters when choosing ...",
+    "host_name": "www.spheron.network",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://docs.axolotl.ai",
+    "name": "Axolotl",
+    "snippet": "Axolotl is a free and open-source tool designed to streamline post-training and fine-tuning for the latest large language models (LLMs). Features: Multiple ...",
+    "host_name": "docs.axolotl.ai",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/LocalLLaMA/comments/1mltobj/axolotl_vs_unsloth_performance_and_everything",
+    "name": "axolotl vs unsloth [performance and everything] : r/LocalLLaMA",
+    "snippet": "Axolotl has example where you can finetune, with LoRA , 20B on 48GB of VRAM, and 120B on 8xH100 setup (though I guess 2xH100 could be enough ...",
+    "host_name": "www.reddit.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://parlance-labs.com/education/fine_tuning_course/workshop_2.html",
+    "name": "Fine-Tuning with Axolotl - Parlance Labs",
+    "snippet": "A lesson illustrating an end-to-end example of fine-tuning a model using Axolotl to enhance the understanding of a domain-specific query language.",
+    "host_name": "parlance-labs.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://theaiengineer.substack.com/p/unsloth-vs-axolotl-vs-llama-factory",
+    "name": "Unsloth vs Axolotl vs LLaMA-Factory - The AI Engineer",
+    "snippet": "Unsloth vs Axolotl vs LLaMA-Factory compared on speed, VRAM, multi-GPU, and ease of use. Benchmarks, code snippets, and a decision flowchart ...",
+    "host_name": "theaiengineer.substack.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://x.com/hyperbolic_labs/status/1910497498826989831",
+    "name": "Hyperbolic (@hyperbolic_labs) on X",
+    "snippet": "Axolotl delivers solid performance for fine-tuning LLMs but tends to be slightly slower compared to Torchtune and Unsloth due to its ...",
+    "host_name": "x.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://christianjmills.com/posts/mastering-llms-course-notes/workshop-002",
+    "name": "Workshop 2: Fine-Tuning with Axolotl - Christian Mills",
+    "snippet": "Axolotl abstracts away the complexities of transformers, enabling users to focus on data and model training without needing in-depth technical ...",
+    "host_name": "christianjmills.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  }
+]

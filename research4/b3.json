@@ -1,0 +1,92 @@
+[
+  {
+    "url": "https://openreview.net/forum?id=3qa4YLkcEw",
+    "name": "TRACE: A Comprehensive Benchmark for Continual Learning in",
+    "snippet": "The authors introduce a benchmark TRACE to assess the continual learning capabilities of existing LLMs. The dataset designed to evaluate models ...",
+    "host_name": "openreview.net",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/abs/2310.06762",
+    "name": "TRACE: A Comprehensive Benchmark for Continual Learning in",
+    "snippet": "In this paper, we introduce TRACE, a novel benchmark designed to evaluate continual learning in LLMs. TRACE consists of 8 distinct datasets ...",
+    "host_name": "arxiv.org",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://magazine.sebastianraschka.com/p/llm-research-papers-2026-part1",
+    "name": "LLM Research Papers: The 2026 List (January to May) - Ahead of AI",
+    "snippet": "A January-May 2026 list of notable LLM research papers, covering new models, training methods, agents, reasoning, and efficiency ...",
+    "host_name": "magazine.sebastianraschka.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.semanticscholar.org/paper/TRACE%3A-A-Comprehensive-Benchmark-for-Continual-in-Wang-Zhang/a64067c6c4286fc60f4430829ae6b18519c088e3",
+    "name": "TRACE: A Comprehensive Benchmark for Continual Learning in",
+    "snippet": "TRACE is introduced, a novel benchmark designed to evaluate continual learning in LLMs and the Reasoning-augmented Continual Learning (RCL) approach, ...",
+    "host_name": "www.semanticscholar.org",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://neurips.cc/virtual/2024/poster/97786",
+    "name": "NeurIPS Poster CoIN: A Benchmark of Continual Instruction Tuning",
+    "snippet": "Instruction tuning demonstrates impressive performance in adapting Multimodal Large Language Models (MLLMs) to follow task instructions and ...\nIn this paper, we present CoIN, a comprehensive benchmark tailored for assessing the behavior of existing MLLMs under continual instruction ...",
+    "host_name": "neurips.cc",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://cameronrwolfe.substack.com/p/rl-continual-learning",
+    "name": "Continual Learning with RL for LLMs",
+    "snippet": "In this overview, we will study a variety of continual learning papers in the LLM domain. Most of these papers adopt some variation of batch ...",
+    "host_name": "cameronrwolfe.substack.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/Wang-ML-Lab/llm-continual-learning-survey",
+    "name": "GitHub - Wang-ML-Lab/llm-continual-learning-survey",
+    "snippet": "[CSUR 2025] Continual Learning of Large Language Models: A Comprehensive Survey - Wang-ML-Lab/llm-continual-learning-survey.",
+    "host_name": "github.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://iclr.cc/virtual/2026/papers.html",
+    "name": "ICLR 2026 Papers",
+    "snippet": "Orak: A Foundational Benchmark for Training and Evaluating LLM ... Understanding and Improving Continuous LLM Adversarial Training via In-context Learning Theory ...",
+    "host_name": "iclr.cc",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.nature.com/articles/s41586-025-09962-4",
+    "name": "A benchmark of expert-level academic questions to assess AI",
+    "snippet": "However, benchmarks are not keeping pace in difficulty: LLMs now achieve more than 90% accuracy on popular benchmarks such as Measuring Massive ...",
+    "host_name": "www.nature.com",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://kili-technology.com/blog/domain-specific-llm-benchmarks-guide",
+    "name": "Domain-Specific LLM Benchmarks: 2026 Vertical AI Map",
+    "snippet": "A 2026 map of domain-specific LLM benchmarks across medicine, law, finance, science, code, cybersecurity, multilingual, and multimodal evaluations.",
+    "host_name": "kili-technology.com",
+    "rank": 9,
+    "date": "",
+    "favicon": ""
+  }
+]

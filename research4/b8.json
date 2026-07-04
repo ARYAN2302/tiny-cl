@@ -1,0 +1,74 @@
+[
+  {
+    "url": "https://neurips.cc/virtual/2025/papers.html",
+    "name": "NeurIPS 2025 Papers",
+    "snippet": "Exploiting Task Relationships in Continual Learning via Transferability-Aware Task Embeddings · Reward Reasoning Models · Efficient Multi-bit Quantization ...\nEnabling Differentially Private Federated Learning for Speech Recognition: Benchmarks, Adaptive Optimizers, and Gradient Clipping ... Continuous Subspace ...\nContinuous Subspace Optimization for Continual Learning ... Breaking the Performance Ceiling in Reinforcement Learning requires Inference Strategies ...",
+    "host_name": "neurips.cc",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/MachineLearning/comments/1t1393a/icml_final_decisions_rant_d",
+    "name": "ICML final decisions rant [D] : r/MachineLearning - Reddit",
+    "snippet": "So, ICML accepted ~6.5K of ~24K; obviously, it doesn't mean that all the rejected papers are \"bad,\" and these rejected papers would cascade ...",
+    "host_name": "www.reddit.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://openreview.net/forum?id=xelrLobW0n",
+    "name": "TRACE: A Comprehensive Benchmark for Continual Learning in",
+    "snippet": "In this paper, we introduce TRACE, a novel benchmark designed to evaluate continual learning in LLMs. TRACE consists of 8 distinct datasets spanning challenging ...",
+    "host_name": "openreview.net",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://intuitionlabs.ai/articles/neurips-2025-conference-summary-trends",
+    "name": "NeurIPS 2025: A Guide to Key Papers, Trends & Stats | IntuitionLabs",
+    "snippet": "The Datasets track reported that 84% of accepted datasets introduced new successor benchmarks (rather than repackaging old tasks), often ...",
+    "host_name": "intuitionlabs.ai",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://medium.com/@adnanmasood/continual-learning-the-missing-capability-for-reliable-ai-at-scale-c225e1a523de",
+    "name": "Continual Learning: The Missing Capability for Reliable AI at Scale",
+    "snippet": "Benchmarks like TRACE and CoIN made the pain visible by showing that even strong aligned models can experience dramatic regression under ...",
+    "host_name": "medium.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/abs/2310.06762",
+    "name": "TRACE: A Comprehensive Benchmark for Continual Learning in",
+    "snippet": "In this paper, we introduce TRACE, a novel benchmark designed to evaluate continual learning in LLMs. TRACE consists of 8 distinct datasets ...",
+    "host_name": "arxiv.org",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/ContinualAI/continual-learning-papers",
+    "name": "ContinualAI/continual-learning-papers - GitHub",
+    "snippet": "Benchmarks. 12 papers. In this section we list all the papers related to new benchmarks proposals for continual learning and related topics.",
+    "host_name": "github.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://nips.cc/Conferences/2021/DatasetsBenchmarks/AcceptedPapers",
+    "name": "Datasets and Benchmarks Accepted Papers - NeurIPS 2026",
+    "snippet": "Below is the list of the 163 accepted submissions. We are really excited about their quality and potential impact.",
+    "host_name": "nips.cc",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  }
+]

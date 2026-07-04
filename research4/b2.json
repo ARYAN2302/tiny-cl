@@ -1,0 +1,92 @@
+[
+  {
+    "url": "https://unsloth.ai/docs/basics/unsloth-benchmarks",
+    "name": "Unsloth Benchmarks",
+    "snippet": "We padded all sequences to a certain maximum sequence length to mimic long context finetuning workloads. GPU VRAM. Unsloth context length.",
+    "host_name": "unsloth.ai",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/html/2402.04833v2",
+    "name": "A Simple but Tough-to-Beat Baseline for Instruction Fine-Tuning",
+    "snippet": "Table 2: Single-score evaluation results on MT-Bench across different base LLMs and fine-tuning datasets. MT-Bench assesses the quality of generated answers ...",
+    "host_name": "arxiv.org",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.spheron.network/blog/axolotl-vs-unsloth-vs-torchtune",
+    "name": "Axolotl vs Unsloth vs TorchTune: Best LLM Fine-Tuning Frameworks",
+    "snippet": "Unsloth in 2026: The Speed King with New Tricks. Unsloth's dominance in single-GPU training is now even more pronounced. The latest version ...",
+    "host_name": "www.spheron.network",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/LocalLLaMA/comments/1jofuyc/how_good_unsloth_fine_tuned_models_can_actually",
+    "name": "How good unsloth fine tuned models can actually get - Reddit",
+    "snippet": "I've been reading a bit about Unsloth fine-tuning and wondering how good these models can actually get. I know a lot depends on the dataset.",
+    "host_name": "www.reddit.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://unsloth.ai/docs/models/qwen3.5/gguf-benchmarks",
+    "name": "Qwen3.5 GGUF Benchmarks | Unsloth Documentation",
+    "snippet": "We updated all Qwen3.5 Unsloth Dynamic quants being SOTA on nearly all bits. We did over 150 KL Divergence benchmarks, totally 9TB of GGUFs.",
+    "host_name": "unsloth.ai",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/tatsu-lab/alpaca_eval",
+    "name": "GitHub - tatsu-lab/alpaca_eval: An automatic evaluator for",
+    "snippet": "AlpacaEval in an LLM-based automatic evaluation that is fast, cheap, replicable, and validated against 20K human annotations.",
+    "host_name": "github.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://pub.towardsai.net/fine-tuning-llms-in-2026-lora-qlora-unsloth-and-everything-in-between-929eaf94aea2",
+    "name": "Fine-Tuning LLMs in 2026: LoRA, QLoRA, Unsloth, and Everything",
+    "snippet": "Fine-Tuning LLMs in 2026: LoRA, QLoRA, Unsloth, and Everything In Between A complete guide to making Llama 3, from theory to working code, ...",
+    "host_name": "pub.towardsai.net",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://dev523.medium.com/fine-tuning-large-language-models-on-diverse-textual-data-b8d534465971",
+    "name": "Fine-Tuning Large Language Models on Diverse Textual Data",
+    "snippet": "Performance Optimization. Unsloth achieves 117% speed improvement and 50% memory reduction through manual autograd engine implementation and ...",
+    "host_name": "dev523.medium.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://unslothai.substack.com/p/unsloth-2026-update-faster-moe",
+    "name": "Unsloth 2026 Update - Faster MoE",
+    "snippet": "Embedding models now train 2× faster. Fine-tuning embedding models can largely improve retrieval and RAG performance on ...",
+    "host_name": "unslothai.substack.com",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://dev.to/ultraduneai/eval-003-fine-tuning-in-2026-axolotl-vs-unsloth-vs-trl-vs-llama-factory-2ohg",
+    "name": "EVAL #003: Fine-Tuning in 2026 - Axolotl vs Unsloth vs TRL vs",
+    "snippet": "Documentation quality is inconsistent. Some pages are excellent, others feel auto-translated; The web UI can be a crutch — when something ...",
+    "host_name": "dev.to",
+    "rank": 9,
+    "date": "",
+    "favicon": ""
+  }
+]

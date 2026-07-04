@@ -1,0 +1,92 @@
+[
+  {
+    "url": "https://www.confident-ai.com/blog/llm-benchmarks-mmlu-hellaswag-and-beyond",
+    "name": "Top LLM Benchmarks Explained: MMLU, HellaSwag, BBH, and",
+    "snippet": "LLM benchmarks such as MMLU, HellaSwag, and DROP, are a set of standardized tests designed to evaluate the performance of LLMs on various skills.",
+    "host_name": "www.confident-ai.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.lxt.ai/blog/llm-benchmarks",
+    "name": "LLM Benchmarks Compared: MMLU, HumanEval, GSM8K and More",
+    "snippet": "LLM benchmarks are standardised tests that measure model capability across reasoning, coding, mathematics, language understanding, ...",
+    "host_name": "www.lxt.ai",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://labelyourdata.com/articles/llm-fine-tuning/llm-evaluation",
+    "name": "LLM Evaluation: Benchmarks to Test Model Quality",
+    "snippet": "Benchmarks like MT-Bench, AlpacaEval, and the LMSYS Chatbot Arena assess models on their ability to follow instructions and engage in dialogue.",
+    "host_name": "labelyourdata.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://alopatenko.github.io/LLMEvaluation",
+    "name": "Awesome LLM Evaluation | LLMEvaluation - GitHub Pages",
+    "snippet": "The aim of this compendium is to assist academics and industry professionals in creating effective evaluation suites tailored to their specific needs.",
+    "host_name": "alopatenko.github.io",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://datavlab.ai/post/llm-benchmarks-2026-which-model-for-which-job",
+    "name": "LLM Benchmarks 2026: Which Model for Which Job - DataVLab",
+    "snippet": "LLM benchmarks 2026 explained: MMLU, GPQA, SWE-Bench, Arena Elo. How to choose models for your job and build custom evaluations.",
+    "host_name": "datavlab.ai",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/html/2607.01740v1",
+    "name": "1 Introduction - arXiv",
+    "snippet": "Aggregating LLM performance into composite scores has been approached from several angles. The Holistic Evaluation of Language Models (HELM) ...",
+    "host_name": "arxiv.org",
+    "rank": 5,
+    "date": "Jul 3, 2026",
+    "favicon": ""
+  },
+  {
+    "url": "https://iternal.ai/llm-selection-guide",
+    "name": "Which LLM to Choose in 2026? Selection Guide + Benchmarks",
+    "snippet": "Side-by-side LLM comparison for 2026: GPT, Claude, Gemini, Llama & Grok ranked on MMLU-Pro, SWE-bench & cost per token. Pick the right model ...",
+    "host_name": "iternal.ai",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/leobeeson/llm_benchmarks",
+    "name": "A collection of benchmarks and datasets for evaluating LLM. · GitHub",
+    "snippet": "Description: A collection of standardized tests, including GRE, GMAT, SAT, LSAT, and civil service exams. Purpose: To evaluate LLMs' reasoning abilities and ...",
+    "host_name": "github.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.meta-intelligence.tech/en/insight-llm-evaluation",
+    "name": "MMLU, Chatbot Arena & LLM-as-Judge [2026 Guide]",
+    "snippet": "MMLU (Massive Multitask Language Understanding) is currently the most widely cited LLM knowledge evaluation. It contains 15,908 four-choice ...",
+    "host_name": "www.meta-intelligence.tech",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://mbrenndoerfer.com/writing/instruction-following-evaluation-benchmarks-llm-judge",
+    "name": "Instruction Following Evaluation: Benchmarks & LLM Judges",
+    "snippet": "Learn to evaluate instruction-tuned LLMs using benchmarks like Alpaca Eval and MT-Bench, human evaluation protocols, and LLM-as-Judge automatic ...",
+    "host_name": "mbrenndoerfer.com",
+    "rank": 9,
+    "date": "",
+    "favicon": ""
+  }
+]
