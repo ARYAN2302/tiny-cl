@@ -37,6 +37,12 @@ MODEL_ID = "LiquidAI/LFM2.5-350M"
 OUTPUT_DIR = Path("/kaggle/working")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
+# Two seeds: MODEL_SEED controls weight init/training, DATA_SEED controls
+# which UltraChat/Medical/Code/Legal examples get sampled. Run twice with
+# different DATA_SEED (42, then 123) before claiming anything.
+MODEL_SEED = 42
+DATA_SEED = 42  # ← change to 123 for the second run
+
 LORA_RANK = 32
 LORA_ALPHA = 32
 LORA_DROPOUT = 0.05
@@ -53,12 +59,16 @@ DRIFT_THRESHOLD = 1.15
 REPAIR_ALPHA = 0.1
 MAX_REPAIR_STEPS = 10
 
-SEED = 42
-random.seed(SEED)
-np.random.seed(SEED)
-torch.manual_seed(SEED)
+SEED = MODEL_SEED  # for backwards compat with existing code
+random.seed(MODEL_SEED)
+np.random.seed(MODEL_SEED)
+torch.manual_seed(MODEL_SEED)
 if torch.cuda.is_available():
-    torch.cuda.manual_seed_all(SEED)
+    torch.cuda.manual_seed_all(MODEL_SEED)
+
+# Separate RNG for data sampling — so different DATA_SEED gives different examples
+# but same MODEL_SEED gives same weight init
+data_rng = random.Random(DATA_SEED)
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -67,12 +77,12 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 # ============================================================================
 
 def load_dataset_sample(dataset_id, field, n_samples, split="train"):
-    """Load n_samples from a HF dataset, extract text field."""
+    """Load n_samples from a HF dataset, extract text field. Uses data_rng for sampling."""
     from datasets import load_dataset
     try:
         ds = load_dataset(dataset_id, split=split)
         texts = [t for t in ds[field] if t and len(t.strip()) > 20]
-        random.shuffle(texts)
+        data_rng.shuffle(texts)
         return texts[:n_samples]
     except Exception as e:
         print(f"    WARNING: {dataset_id} failed: {e}")
@@ -106,7 +116,7 @@ def load_mmlu_eval(n_subjects=20, n_per_subject=5):
         try:
             ds = load_dataset("cais/mmlu", subj, split="test")
             samples = list(ds)
-            random.shuffle(samples)
+            data_rng.shuffle(samples)
             for ex in samples[:n_per_subject]:
                 q = ex["question"]
                 choices = ex["choices"]
@@ -349,6 +359,12 @@ def run_naive_pipeline(stages, mmlu_pairs):
         train_on_pairs(model, tokenizer, train_pairs)
         result = eval_all(model, tokenizer, mmlu_pairs, stages, i+1, f"after stage {i+1} ({name})")
         eval_results.append({"stage": name, "result": result})
+        # Checkpoint after every stage — don't lose 7h of work to a crash
+        checkpoint = {"method": "naive", "data_seed": DATA_SEED, "completed_stages": i+1,
+                      "results_so_far": eval_results}
+        with open(OUTPUT_DIR / f"checkpoint_naive_d{DATA_SEED}_s{i+1}.json", "w") as f:
+            json.dump(checkpoint, f, indent=2, default=str)
+        print(f"  [checkpoint] saved after naive stage {i+1}")
 
     del model; gc.collect()
     if torch.cuda.is_available(): torch.cuda.empty_cache()
@@ -382,6 +398,16 @@ def run_avr_pipeline(stages, mmlu_pairs):
 
         print(f"  Post-train PPLs: " + " | ".join(f"{k}: {v:.2f}" for k, v in post_ppls.items()))
 
+        # Log raw PPL ratios for ALL prior stages — shows drift magnitudes
+        # so we can compare to TRACE (where ratios were 1.7-3.7x)
+        if i > 0:
+            print(f"  Drift ratios vs best-seen:")
+            for s in completed_stages[:-1]:
+                if s in post_ppls and s in best_ppls:
+                    ratio = post_ppls[s] / best_ppls[s] if best_ppls[s] > 0 else 1.0
+                    drift_flag = " ← DRIFT" if ratio > DRIFT_THRESHOLD else ""
+                    print(f"    {s}: {post_ppls[s]:.2f} / {best_ppls[s]:.2f} = {ratio:.2f}x{drift_flag}")
+
         # AVR verify + repair
         if i > 0 and snapshot is not None:
             drifted = verify_drift(post_ppls, best_ppls, completed_stages[:-1])
@@ -414,6 +440,13 @@ def run_avr_pipeline(stages, mmlu_pairs):
 
         result = eval_all(model, tokenizer, mmlu_pairs, stages, i+1, f"after stage {i+1} ({name})")
         eval_results.append({"stage": name, "result": result})
+        # Checkpoint after every stage — don't lose 7h of work to a crash
+        checkpoint = {"method": "avr", "data_seed": DATA_SEED, "completed_stages": i+1,
+                      "results_so_far": eval_results,
+                      "total_repairs_so_far": total_repairs}
+        with open(OUTPUT_DIR / f"checkpoint_avr_d{DATA_SEED}_s{i+1}.json", "w") as f:
+            json.dump(checkpoint, f, indent=2, default=str)
+        print(f"  [checkpoint] saved after AVR stage {i+1}")
 
     print(f"\n  [AVR] Total repair steps: {total_repairs}")
     del model; gc.collect()
@@ -427,9 +460,20 @@ def run_avr_pipeline(stages, mmlu_pairs):
 def main():
     print("=" * 70)
     print("SHIPPING TEST: Post-training pipeline comparison")
-    print(f"Model: {MODEL_ID} | Seed: {SEED}")
+    print(f"Model: {MODEL_ID}")
+    print(f"Model seed: {MODEL_SEED} | Data seed: {DATA_SEED}")
     print(f"Stages: UltraChat → Medical → Code → Domain4")
     print(f"AVR: threshold={DRIFT_THRESHOLD}, α={REPAIR_ALPHA}, max_steps={MAX_REPAIR_STEPS}")
+    print()
+    print("NOTE: This is ONE run with ONE data seed. Before claiming")
+    print("anything, run again with DATA_SEED=123 and compare. If the two")
+    print("runs agree, the result is real. If they don't, the result is")
+    print("seed-sensitive and needs more investigation.")
+    print()
+    print("Hyperparameters were tuned on TRACE (classification tasks with")
+    print("1.7-3.7x drift). This pipeline has different domains (chat, medical,")
+    print("code, legal) — drift magnitudes may differ. Watch the 'Drift ratios'")
+    print("logs to see if they land in a similar range.")
     print("=" * 70)
 
     # Load data
@@ -511,9 +555,10 @@ def main():
             "drift_threshold": DRIFT_THRESHOLD, "repair_alpha": REPAIR_ALPHA,
         }
     }
-    with open(OUTPUT_DIR / "shipping_comparison.json", "w") as f:
+    out_name = f"shipping_comparison_d{DATA_SEED}.json"
+    with open(OUTPUT_DIR / out_name, "w") as f:
         json.dump(results, f, indent=2, default=str)
-    print(f"\nResults saved: {OUTPUT_DIR}/shipping_comparison.json")
+    print(f"\nResults saved: {OUTPUT_DIR}/{out_name}")
 
 if __name__ == "__main__":
     main()
