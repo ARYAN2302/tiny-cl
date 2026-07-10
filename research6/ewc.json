@@ -1,0 +1,74 @@
+[
+  {
+    "url": "https://pub.towardsai.net/overcoming-catastrophic-forgetting-a-simple-guide-to-elastic-weight-consolidation-122d7ac54328",
+    "name": "Overcoming Catastrophic Forgetting: A Simple Guide to Elastic Weight",
+    "snippet": "Elastic Weight Consolidation (EWC) is a regularization technique that mitigates catastrophic forgetting by constraining the learning process in neural networks.",
+    "host_name": "pub.towardsai.net",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/html/2502.11756v1",
+    "name": "On the Computation of the Fisher Information in Continual Learning",
+    "snippet": "One of the most popular methods for continual learning with deep neural networks is Elastic Weight Consolidation (EWC), which involves computing ...",
+    "host_name": "arxiv.org",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://ceur-ws.org/Vol-4162/paper3.pdf",
+    "name": "[PDF] Elastic Weight Consolidation for Knowledge Graph Continual Learning",
+    "snippet": "We investigate how Elastic Weight Consolidation (EWC) [12], a regularization-based continual learning method, performs on KG link prediction.",
+    "host_name": "ceur-ws.org",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.emergentmind.com/topics/elastic-weight-consolidation-ewc",
+    "name": "Elastic Weight Consolidation (EWC) - Emergent Mind",
+    "snippet": "EWC is a continual learning framework that uses Fisher Information-based regularization to mitigate catastrophic forgetting in neural networks.",
+    "host_name": "www.emergentmind.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://medium.com/data-science/continual-learning-a-deep-dive-into-elastic-weight-consolidation-loss-7cda4a2d058c",
+    "name": "Continual Learning — A Deep Dive Into Elastic Weight Consolidation",
+    "snippet": "In this article, we will explore a method to address this issue known as Elastic Weight Consolidation (EWC). EWC offers a promising approach to mitigate ...",
+    "host_name": "medium.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://mbrenndoerfer.com/writing/regularization-methods-ewc-synaptic-intelligence-continual-learning",
+    "name": "Regularization Methods: EWC and Synaptic Intelligence - Interactive",
+    "snippet": "Learn how Elastic Weight Consolidation and Synaptic Intelligence protect critical parameters to prevent catastrophic forgetting in continual ...",
+    "host_name": "mbrenndoerfer.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://neurips.cc/virtual/2025/129842",
+    "name": "Elastic Weight Consolidation for Knowledge Graph Continual Learning",
+    "snippet": "We evaluate Elastic Weight Consolidation (EWC), a regularization-based continual learning method, on KG link prediction using TransE embeddings on FB15k-237.",
+    "host_name": "neurips.cc",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://openreview.net/forum?id=IyRQDOPjD5",
+    "name": "Full Elastic Weight Consolidation via the Surrogate Hessian-Vector Product",
+    "snippet": "Elastic weight consolidation (EWC) is a widely accepted method for preventing catastrophic forgetting while learning a series of tasks.",
+    "host_name": "openreview.net",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  }
+]

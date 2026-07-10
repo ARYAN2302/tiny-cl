@@ -1,0 +1,74 @@
+[
+  {
+    "url": "https://arxiv.org/html/2404.04002v2",
+    "name": "Continual Learning with Weight Interpolation - arXiv",
+    "snippet": "In this work, we study the potential applications of recent findings from the field of weight interpolation in continual learning [10] . Based on recent weight ...",
+    "host_name": "arxiv.org",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://openaccess.thecvf.com/content/CVPR2024W/CLVISION/supplemental/Kozal_Continual_Learning_with_CVPRW_2024_supplemental.pdf",
+    "name": "[PDF] Continual Learning with Weight Interpolation Supplementary Material",
+    "snippet": "We present interpolation plots for various forms of rehearsal in Fig. 5. These plots show that each form of rehearsal requires a different interpolation α ...",
+    "host_name": "openaccess.thecvf.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://aclanthology.org/2026.eacl-long.37",
+    "name": "Sparse Adapter Fusion for Continual Learning in NLP - ACL Anthology",
+    "snippet": "To tackle these issues, we propose a Sparse Adapter Fusion Method (SAFM), which dynamically fuses old and new adapters to address these challenges. SAFM ...",
+    "host_name": "aclanthology.org",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://ojs.aaai.org/index.php/AAAI/article/view/39213/43174",
+    "name": "[PDF] Random Amalgamation of Adapters for Flatter Loss Landscapes",
+    "snippet": "Our method creates smooth pa- rameter interpolations by randomly blending the weights of these physical adapters during training, enforcing consistent.",
+    "host_name": "ojs.aaai.org",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://lirias.kuleuven.be/retrieve/e63f3aaa-7c0a-4a92-a96e-99d9845331d8",
+    "name": "[PDF] forgetting of task-specific knowledge in model - Lirias",
+    "snippet": "This paper investigates the linear merging of models in the context of continual learning (CL). Us- ing controlled visual cues in computer ...",
+    "host_name": "lirias.kuleuven.be",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/ennengyang/awesome-model-merging-methods-theories-applications",
+    "name": "GitHub - EnnengYang/Awesome-Model-Merging-Methods-Theories",
+    "snippet": "Learning to Route for Dynamic Adapter Composition in Continual Learning ... Closed-form merging of parameter-efficient modules for Federated Continual Learning ...",
+    "host_name": "github.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.researchgate.net/publication/387104679_Linked_Adapters_Linking_Past_and_Future_to_Present_for_Effective_Continual_Learning",
+    "name": "Linking Past and Future to Present for Effective Continual Learning",
+    "snippet": "An effective approach to address continual learning is to use a large pre-trained model with task-specific adapters to adapt to the new tasks. Though this ...",
+    "host_name": "www.researchgate.net",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://proceedings.mlr.press/v232/srinivasan23a/srinivasan23a.pdf",
+    "name": "[PDF] i2i: initializing adapters with improvised knowledge",
+    "snippet": "Applied to continual learning, Adapters can solve the catastrophic forgetting issue by learning a separate set of Adapter parameters for each task. However ...",
+    "host_name": "proceedings.mlr.press",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  }
+]

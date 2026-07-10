@@ -1,0 +1,92 @@
+[
+  {
+    "url": "https://huggingface.co/docs/trl/en/sft_trainer",
+    "name": "SFT Trainer - Hugging Face",
+    "snippet": "TRL supports the Supervised Fine-Tuning (SFT) Trainer for training language models. This example demonstrates how to train a language model using the ...",
+    "host_name": "huggingface.co",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://huggingface.co/blog/trl-v1",
+    "name": "TRL v1.0: Post-Training Library Built to Move with the Field - Hugging Face",
+    "snippet": "We're releasing TRL v1.0, TRL now powers production systems, and embraces that responsibility. 2024 2025 2026. TRL's trainers and APIs. A ...",
+    "host_name": "huggingface.co",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/huggingface/trl",
+    "name": "huggingface/trl - Transformers Reinforcement Learning - GitHub",
+    "snippet": "We released TRL v1 — a cutting-edge library designed for post-training foundation models using advanced techniques like Supervised Fine-Tuning (SFT), TRL ...",
+    "host_name": "github.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://huggingface.co/docs/trl/en/index",
+    "name": "TRL - Transformers Reinforcement Learning - Hugging Face",
+    "snippet": "TRL is a full stack library where we provide a set of tools to train transformer language models with methods like Supervised Fine-Tuning (SFT), Group Relative ...",
+    "host_name": "huggingface.co",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://medium.com/thedeephub/sfttrainer-a-comprehensive-exploration-of-its-concept-advantages-limitations-history-and-19ab0926e74e",
+    "name": "SFTTrainer: A Comprehensive Exploration of Its Concept  - Medium",
+    "snippet": "SFTTrainer was created by the Hugging Face team. It is part of their Transformers library and the TRL (Transformer Reinforcement Learning) ...",
+    "host_name": "medium.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://discuss.huggingface.co/t/fine-tune-with-sfttrainer/67311",
+    "name": "Fine tune with SFTTrainer - Intermediate - Hugging Face Forums",
+    "snippet": "default SFTTrainer of TRL trains the model to predict both instructions and completions.",
+    "host_name": "discuss.huggingface.co",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.marktechpost.com/2026/04/01/hugging-face-releases-trl-v1-0-a-unified-post-training-stack-for-sft-reward-modeling-dpo-and-grpo-workflows",
+    "name": "Hugging Face Releases TRL v1.0: A Unified Post-Training Stack for SFT",
+    "snippet": "Hugging Face Releases TRL v1.0: A Unified Post-Training Stack for SFT, Reward Modeling, DPO, and GRPO Workflows.",
+    "host_name": "www.marktechpost.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://huggingface.co/docs/trl/v0.9.6/en/sft_trainer",
+    "name": "Supervised Fine-tuning Trainer - Hugging Face",
+    "snippet": "In TRL we provide an easy-to-use API to create your SFT models and train them with few lines of code on your dataset. Check out a complete flexible example at ...",
+    "host_name": "huggingface.co",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://ai.plainenglish.io/hugging-face-trl-components-b85b55efb4d8",
+    "name": "Hugging Face TRL Components - Artificial Intelligence in Plain English",
+    "snippet": "The trainer (e.g. SFTTrainer ) will automatically use the Liger kernel implementation with no other code changes. Use Cases & Best Practices ...",
+    "host_name": "ai.plainenglish.io",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/huggingface/trl/releases",
+    "name": "Releases · huggingface/trl - GitHub",
+    "snippet": "v0 → v1 migration guide. A MIGRATION.md guide has been added covering all breaking changes when upgrading from TRL v0 to v1. If you're already on v0.29, the ...",
+    "host_name": "github.com",
+    "rank": 9,
+    "date": "",
+    "favicon": ""
+  }
+]

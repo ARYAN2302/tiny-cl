@@ -1,0 +1,74 @@
+[
+  {
+    "url": "https://www.primeintellect.ai/blog/nemotron-3",
+    "name": "Post-Training Nemotron 3 on Lab - Prime Intellect",
+    "snippet": "Continuous improvement loops using production traces flowing back into the next RL run, so your Nemotron-based agents can continuously improve ...",
+    "host_name": "www.primeintellect.ai",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.primeintellect.ai/blog/lab-is-open",
+    "name": "Releasing Lab: the training platform for self-improving agents",
+    "snippet": "It is a repeatable loop around your own data, tools, tasks, and reward signals. Lab gives teams the infrastructure to run that loop without ...\nNemotron 3 Ultra is fully supported on Prime Intellect Lab with day-0 hosted RL, evaluations, inference, and continuous improvement on Blackwell ...",
+    "host_name": "www.primeintellect.ai",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=Krz-p2J0-aE",
+    "name": "Understanding Reinforcement Learning with Prime Intellect and",
+    "snippet": "While Supervised Fine-Tuning (SFT) provides the initial baseline for model alignment, the real \"intelligence leap\" happens with ...\n... training. Join us live, bring your questions, and ... Understanding Reinforcement Learning with Prime Intellect and Unsloth | Nemotron Labs.",
+    "host_name": "www.youtube.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.primeintellect.ai/blog/intellect-2",
+    "name": "The First Globally Distributed Reinforcement Learning Training of a",
+    "snippet": "Post-Training Nemotron 3 on Lab Post-Training is fully supported on Prime Intellect Lab with day-0 hosted RL, evaluations, inference, and  ...",
+    "host_name": "www.primeintellect.ai",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://developer.nvidia.com/blog/mastering-agentic-techniques-ai-agent-reinforcement-learning",
+    "name": "Mastering Agentic Techniques: AI Agent Reinforcement Learning",
+    "snippet": "This guide helps model-builders, research teams, and agent developers decide when to use RL and how to run a first verifiable RL training loop ...\nAccelerate development with NVIDIA NeMo and Nemotron: Open models, recipes, and agentic AI examples with Nemotron; Scalable post-training with ...",
+    "host_name": "developer.nvidia.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.primeintellect.ai/blog/rl-at-1t-scale",
+    "name": "RL at 1T Scale: prime-rl Performance Deep Dive - Prime Intellect",
+    "snippet": "prime-rl has been built from the ground up to allow for efficient agentic post-training, embracing asynchronous RL. Agentic tasks often have ...",
+    "host_name": "www.primeintellect.ai",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/pdf/2512.16144",
+    "name": "[PDF] INTELLECT-3: Technical Report - arXiv",
+    "snippet": "We present INTELLECT-3, a 106B-parameter Mixture-of-Experts model (12B active) trained with large-scale reinforcement learning on our ...",
+    "host_name": "arxiv.org",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://cameronrwolfe.substack.com/p/rl-continual-learning",
+    "name": "Continual Learning with RL for LLMs",
+    "snippet": "Continual learning can be viewed as a continued post-training process for an LLM. Training prompts are sourced from NuminaMath, BigMathVerified ...\nThe continual learning paradigm is starkly different from how neural networks are typically trained: for several epochs over a large, fixed ...",
+    "host_name": "cameronrwolfe.substack.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  }
+]

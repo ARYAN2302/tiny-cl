@@ -1,0 +1,92 @@
+[
+  {
+    "url": "https://www.youtube.com/watch?v=dMY3dBLojTk",
+    "name": "Fast Fine Tuning with Unsloth - YouTube",
+    "snippet": "Discover how to fine-tune LLMs at blazing speeds on Windows and Linux! If you've been jealous of MLX's performance on Mac, Unsloth is the ...",
+    "host_name": "www.youtube.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://unsloth.ai/docs/get-started/unsloth-notebooks",
+    "name": "Unsloth Notebooks | Unsloth Documentation",
+    "snippet": "Fine-tuning notebooks: Explore the Unsloth catalog. Train your own model with our notebooks, powered by free GPU compute. Click Run all (or save ...",
+    "host_name": "unsloth.ai",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.reddit.com/r/LocalLLaMA/comments/1eil421/unsloth_finetuning_demo_notebook_for_beginners",
+    "name": "Unsloth Finetuning Demo Notebook for Beginners! : r/LocalLLaMA",
+    "snippet": "Designed specifically for beginners trying to understand finetuning. Within it, you'll find detailed explanations for every step of the finetuning process. Tutorial: Fine-tune your own LLM in 13 minutes, here's how : r/unsloth How good unsloth fine tuned models can actually get - Reddit More results from www.reddit.com",
+    "host_name": "www.reddit.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://unsloth.ai/docs/get-started/fine-tuning-llms-guide/datasets-guide",
+    "name": "Datasets Guide | Unsloth Documentation",
+    "snippet": "Review progress and output live in graph or in Executions view for mode details. Select the resulting dataset in Studio and fine tune a model.",
+    "host_name": "unsloth.ai",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://pub.towardsai.net/fast-and-efficient-model-finetuning-using-the-unsloth-library-7cd7c74a77f9",
+    "name": "Fast and Efficient Model Finetuning using the Unsloth Library",
+    "snippet": "In this article, we will show you the relevant steps to finetune a Llama-2 model for a code generation task. The code is based on the notebook ...",
+    "host_name": "pub.towardsai.net",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://medium.com/@kushalvala/fine-tuning-large-language-models-with-unsloth-380216a76108",
+    "name": "Fine-Tuning Large Language Models with Unsloth | by Kushal V",
+    "snippet": "In this article, we will explore the fine-tuning process of large language models using Unsloth, a powerful framework designed for efficient language model ...",
+    "host_name": "medium.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=Lt7KrFMcCis",
+    "name": "How to Fine-tune LLMs with Unsloth: Complete Guide - YouTube",
+    "snippet": "In this guide, you'll learn how to fine-tune your own LLMs using Unsloth. Fine-tuning Large Language Models with LoRa and QLoRA has become ...",
+    "host_name": "www.youtube.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/unslothai/unsloth?locale=en-US",
+    "name": "Unsloth Studio is a web UI for training and running open models like",
+    "snippet": "You can use our new free Unsloth Studio notebook to run and train models for free in a web UI. Read our guide. Add dataset, run, then deploy your trained model.",
+    "host_name": "github.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://unsloth.ai",
+    "name": "Unsloth - Train and Run Models Locally",
+    "snippet": "Unsloth is an open-source, no-code web UI for training, running and exporting open models in one unified local interface.",
+    "host_name": "unsloth.ai",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://themenonlab.blog/blog/unsloth-studio-fine-tune-llms-no-code",
+    "name": "Fine-Tune 500+ LLMs Locally Without Writing a Single Line of Code",
+    "snippet": "Unsloth Studio is a fully local, open-source web UI for training, running, and exporting LLMs — 2x faster with 70% less VRAM.",
+    "host_name": "themenonlab.blog",
+    "rank": 9,
+    "date": "",
+    "favicon": ""
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "url": "https://www.spheron.network/blog/liquid-foundation-models-lfm-deployment-gpu-cloud-2026",
+    "name": "Deploy Liquid AI LFM2 Models (LFM2-8B-A1B, LFM2-2.6B) on",
+    "snippet": "Before configuring fine-tuning, check docs.liquid.ai for the current fine-tuning documentation and the recommended LoRA target modules for LFM2.",
+    "host_name": "www.spheron.network",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://unsloth.ai/docs/models/tutorials/lfm2.5",
+    "name": "Liquid LFM2.5: How To Run & Fine-tune | Unsloth Documentation",
+    "snippet": "Run and fine-tune LFM2.5 Instruct and Vision locally on your device! Liquid AI releases LFM2.5, including their instruct and vision ...",
+    "host_name": "unsloth.ai",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://docs.axolotl.ai/docs/models/LiquidAI.html",
+    "name": "Liquid Foundation Models 2 - Axolotl Docs",
+    "snippet": "This guide shows how to fine-tune both the LFM2 and LFM2-VL models with Axolotl. Thanks to the team at LiquidAI for giving us early access to prepare for these ...",
+    "host_name": "docs.axolotl.ai",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.distillabs.ai/blog/fine-tuning-liquids-lfm25-accurate-tool-calling-at-350m-parameters",
+    "name": "Fine-Tuning Liquid's LFM2.5: Accurate Tool Calling at 350M Parameters",
+    "snippet": "Liquid AI's LFM2.5-350M is built for structured outputs, data extraction, and tool calling · After fine-tuning with distil labs, it reaches 96-98 ...",
+    "host_name": "www.distillabs.ai",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.liquid.ai/blog/liquid-foundation-models-v2-our-second-series-of-generative-ai-models",
+    "name": "Introducing LFM2: The Fastest On-Device Foundation Models on",
+    "snippet": "Built on a new hybrid architecture, LFM2 delivers 2x faster decode and prefill performance than Qwen3 on CPU. It also significantly outperforms ...",
+    "host_name": "www.liquid.ai",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://modelscope.cn/models/LiquidAI/LFM2-1.2B",
+    "name": "LFM2-1.2B - ModelScope",
+    "snippet": "Model details. Due to their small size, we recommend fine-tuning LFM2 models on narrow use cases to maximize performance. They are particularly suited for ...",
+    "host_name": "modelscope.cn",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/html/2511.23404v1",
+    "name": "LFM2 Technical Report - arXiv",
+    "snippet": "We present LFM2, a family of Liquid Foundation Models designed for efficient on-device deployment and strong task capabilities.",
+    "host_name": "arxiv.org",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/Liquid4All/cookbook",
+    "name": "GitHub - Liquid4All/cookbook: Examples, end-2-end tutorials and",
+    "snippet": "Supervised fine-tuning for LFM2-VL models on custom image-text datasets ... Fine-tune and run Liquid AI's LFM2-8B-A1B as a local terminal agent, Code. LFM ...",
+    "host_name": "github.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  }
+]

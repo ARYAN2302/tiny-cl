@@ -1,0 +1,74 @@
+[
+  {
+    "url": "https://huggingface.co/docs/trl/en/sft_trainer",
+    "name": "SFT Trainer - Hugging Face",
+    "snippet": "This example demonstrates how to train a language model using the SFTTrainer from TRL. We train a Qwen 3 0.6B model on the Capybara dataset, a compact, diverse ...",
+    "host_name": "huggingface.co",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/huggingface/trl/blob/main/trl/trainer/sft_trainer.py",
+    "name": "trl/trl/trainer/sft_trainer.py at main · huggingface/trl - GitHub",
+    "snippet": "peft_config ([`~peft.PeftConfig`], *optional*):. PEFT configuration used to wrap the model. If `None`, the model is not wrapped.",
+    "host_name": "github.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://huggingface.co/docs/trl/v0.9.6/en/sft_trainer",
+    "name": "Supervised Fine-tuning Trainer - Hugging Face",
+    "snippet": "In TRL we provide an easy-to-use API to create your SFT models and train them with few lines of code on your dataset.",
+    "host_name": "huggingface.co",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://medium.com/thedeephub/sfttrainer-a-comprehensive-exploration-of-its-concept-advantages-limitations-history-and-19ab0926e74e",
+    "name": "SFTTrainer: A Comprehensive Exploration of Its Concept  - Medium",
+    "snippet": "You can find the source code for SFTTrainer on GitHub: https://github.com/huggingface/trl/blob/main/trl/trainer/sft_trainer.py. Applications.",
+    "host_name": "medium.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://huggingface.co/docs/trl/v0.19.1/en/sft_trainer",
+    "name": "Supervised Fine-tuning Trainer - Hugging Face",
+    "snippet": "Using HfArgumentParser we can turn this class into argparse arguments that can be specified on the command line. Copied. from trl import ModelConfig, SFTTrainer ...",
+    "host_name": "huggingface.co",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/huggingface/trl",
+    "name": "huggingface/trl - Transformers Reinforcement Learning - GitHub",
+    "snippet": "Full integration with PEFT enables training on large models with modest ... This repository's source code is available under the Apache-2.0 License.",
+    "host_name": "github.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://huggingface.co/docs/trl/main/en/trainer",
+    "name": "Trainer - Hugging Face",
+    "snippet": "At TRL we support PPO (Proximal Policy Optimisation) with an implementation that largely follows the structure introduced in the paper “Fine-Tuning Language ...",
+    "host_name": "huggingface.co",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://colab.research.google.com/github/huggingface/trl/blob/main/examples/notebooks/sft_trl_lora_qlora.ipynb",
+    "name": "Supervised Fine-Tuning (SFT) with LoRA/QLoRA using TRL - Colab",
+    "snippet": "TRL: The Hugging Face library that makes fine-tuning and reinforcement learning simple and efficient. Learn how to perform Supervised Fine-Tuning (SFT) with ...",
+    "host_name": "colab.research.google.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  }
+]

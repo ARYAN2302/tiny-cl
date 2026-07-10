@@ -1,0 +1,92 @@
+[
+  {
+    "url": "https://avalanche-api.continualai.org/en/v0.1.0/generated/avalanche.training.BaseStrategy.html",
+    "name": "avalanche.training.BaseStrategy",
+    "snippet": "Plugins can be used to implement callbacks to augment the training loop with additional behavior (e.g. a memory buffer for replay). Missing: hooks | Show results with: hooks\nIt implements a basic training loop and callback system that allows to execute code at each experience of the training loop. Plugins can be used to implement callbacks to augment the training loop with additional behavior (e.g. a memory buffer for replay).",
+    "host_name": "avalanche-api.continualai.org",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://avalanche-api.continualai.org/en/v0.1.0/generated/avalanche.training.plugins.StrategyPlugin.html",
+    "name": "avalanche.training.plugins. - Avalanche's API documentation!",
+    "snippet": "Base class for strategy plugins. Implements all the callbacks required by the BaseStrategy with an empty function. Subclasses should override the callbacks. Missing: hooks | Show results with: hooks",
+    "host_name": "avalanche-api.continualai.org",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://m.blog.naver.com/jjunsss/223067767075",
+    "name": "Avalanche [continual-learning] - 02 - 네이버 블로그",
+    "snippet": "Avalanche에서 어떻게 데이터셋을 다룰 수 있고, 효과적으로 변경할 수 있는지를 정리하였습니다. 핵심만 살펴보도록 하겠습니다. ​. AvalancheDataset.",
+    "host_name": "m.blog.naver.com",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://openreview.net/forum?id=xWRX16GCugt",
+    "name": "Sequoia: A Software Framework to Unify Continual Learning Research",
+    "snippet": "Plugins in Avalanche are similar to callbacks in PyTorch Lightning. Plugins have but at least one additional hooks compared to Callbacks from ...",
+    "host_name": "openreview.net",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://harrydrippin.github.io/2021/04/26/avalanche",
+    "name": "Avalanche: an End-to-End Library for Continual Learning - Paper Review",
+    "snippet": "BaseStrategy.train() 을 개략적으로 표현하면 ... 그리고 위에서 설명한 Hook들을 역할 별로 정의하기 위한 방법으로 Plugin 시스템이 있습니다.",
+    "host_name": "harrydrippin.github.io",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/continualai/avalanche-rl",
+    "name": "ContinualAI/avalanche-rl: Avalanche fork adding RL support · GitHub",
+    "snippet": "RLBaseStrategy is the super-class of all RL algorithms, augmenting BaseStrategy with RL specific callbacks while still making use of all major features such as ... Missing: hooks | Show results with: hooks",
+    "host_name": "github.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://avalanche.continualai.org/avalanche-v0.1.0/from-zero-to-hero-tutorial/04_training",
+    "name": "Training | Avalanche - v0.1.0",
+    "snippet": "Callback points, which are used to call the plugins at a specific moments during the loop's execution. Missing: hooks | Show results with: hooks",
+    "host_name": "avalanche.continualai.org",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/pdf/2302.01766",
+    "name": "[PDF] arXiv:2302.01766v1 [cs.LG] 2 Feb 2023",
+    "snippet": "Plugins use callbacks to access the strategy state and execute code at specific moments of the loop.",
+    "host_name": "arxiv.org",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://openaccess.thecvf.com/content/CVPR2021W/CLVision/papers/Lomonaco_Avalanche_An_End-to-End_Library_for_Continual_Learning_CVPRW_2021_paper.pdf",
+    "name": "[PDF] Avalanche: An End-to-End Library for Continual Learning",
+    "snippet": "Plugin System BaseStrategy provides a simple callback mechanism. This is used by strategies, metrics, and loggers to interact with the training loop and ... Missing: hooks | Show results with: hooks",
+    "host_name": "openaccess.thecvf.com",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://avalanche.continualai.org/from-zero-to-hero-tutorial/04_training",
+    "name": "Training | Avalanche - ContinualAI",
+    "snippet": "The plugin systems in Avalanche is designed to easily augment continual learning strategies with custom behavior, without having to rewrite the training loop from scratch.",
+    "host_name": "avalanche.continualai.org",
+    "rank": 9,
+    "date": "",
+    "favicon": ""
+  }
+]

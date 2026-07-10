@@ -1,0 +1,74 @@
+[
+  {
+    "url": "https://www.liquid.ai/blog/liquid-foundation-models-v2-our-second-series-of-generative-ai-models",
+    "name": "Introducing LFM2: The Fastest On-Device Foundation Models on the",
+    "snippet": "Built on a new hybrid architecture, LFM2 delivers 2x faster decode and prefill performance than Qwen3 on CPU. It also significantly outperforms ...",
+    "host_name": "www.liquid.ai",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/html/2511.23404v1",
+    "name": "LFM2 Technical Report - arXiv",
+    "snippet": "We present LFM2, a family of Liquid Foundation Models designed for efficient on-device deployment and strong task capabilities.",
+    "host_name": "arxiv.org",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.spheron.network/blog/liquid-foundation-models-lfm-deployment-gpu-cloud-2026",
+    "name": "Deploy Liquid AI LFM2 Models (LFM2-8B-A1B, LFM2-2.6B) on GPU",
+    "snippet": "LFM2 Hybrid Architecture: LIV Convolutions and GQA Blocks. LFM2's architecture combines two distinct layer types. LIV (Linear Input Variant) ...",
+    "host_name": "www.spheron.network",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.deeplearning.ai/the-batch/liquid-ais-small-reasoning-model-mixes-attention-with-convolutional-layers-for-efficiency",
+    "name": "Liquid AI's Small Reasoning Model Mixes Attention With",
+    "snippet": "Architecture: Hybrid transformer-convolutional neural network, 1.17 billion parameters; Performance: Matched or exceeded Qwen3-1.7B on most ...",
+    "host_name": "www.deeplearning.ai",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/kyegomez/LFM2",
+    "name": "kyegomez/LFM2: A simple and minimal open source implementation",
+    "snippet": "Hybrid architecture combining short-range convolutions with grouped query attention; 16 blocks: 10 LIV convolution blocks + 6 GQA blocks; Double-gated short ...",
+    "host_name": "github.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://blog.cordatus.ai/featured-articles/lfm2-the-fastest-on-device-foundation-model",
+    "name": "LFM2: The Fastest On-Device Foundation Model - Cordatus Blog",
+    "snippet": "Hybrid Architecture in LFM2 · 10 Double-Gated Short-Range LIV Convolution Blocks: Handle local pattern recognition with adaptive multiplicative ...",
+    "host_name": "blog.cordatus.ai",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://huggingface.co/LiquidAI/LFM2-350M",
+    "name": "LiquidAI/LFM2-350M - Hugging Face",
+    "snippet": "LFM2 is a new generation of hybrid models developed by Liquid AI, specifically designed for edge AI and on-device deployment.",
+    "host_name": "huggingface.co",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://machine-learning-made-simple.medium.com/how-liquid-ai-built-the-best-edge-ai-model-in-the-world-48c478f6235f",
+    "name": "How Liquid AI built the Best Edge AI Model in the World | by Devansh",
+    "snippet": "LFM2: 10 gated short convolution blocks + 6 grouped-query attention blocks. ... This is the exact hybrid insight Liquid AI used to build LFM2.",
+    "host_name": "machine-learning-made-simple.medium.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "url": "https://github.com/Liquid4All/leap-finetune",
+    "name": "Liquid4All/leap-finetune: A full model customization repo for Liquid Foundation Models",
+    "snippet": "LEAP-Finetune is a minimal fine-tuning repo for LFM2. It handles dataset formatting, validation, distributed orchestration, checkpointing, and export for local ...",
+    "host_name": "github.com",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://docs.liquid.ai/examples/customize-models/home-assistant",
+    "name": "Fine-tuning LFM for a local Home Assistant - Liquid Docs",
+    "snippet": "A step by step guide on building a home assistant system powered entirely by a local LFM model. Every stage of the journey is covered, from a first working ...",
+    "host_name": "docs.liquid.ai",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://unsloth.ai/docs/models/tutorials/lfm2.5",
+    "name": "Liquid LFM2.5: How To Run & Fine-tune | Unsloth Documentation",
+    "snippet": "⚙️ Usage Guide ... Liquid AI recommends these settings for inference: temperature = 0.1. top_k = 50. top_p = 0.1. repetition_penalty = 1.05.",
+    "host_name": "unsloth.ai",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://docs.liquid.ai/lfm/fine-tuning/leap-finetune",
+    "name": "LEAP Finetune - Liquid Docs",
+    "snippet": "“Train LFM2-1.2B with SFT LoRA on the Hugging Face HuggingFaceTB/smoltalk dataset, sweep learning rate and LoRA rank, and tell me which run looks best.” “Fine- ...",
+    "host_name": "docs.liquid.ai",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://huggingface.co/LiquidAI/LFM2-350M",
+    "name": "LiquidAI/LFM2-350M - Hugging Face",
+    "snippet": "Due to their small size, we recommend fine-tuning LFM2 models on narrow use cases to maximize performance. They are particularly suited for ...",
+    "host_name": "huggingface.co",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/Liquid4All/cookbook",
+    "name": "GitHub - Liquid4All/cookbook: Examples, end-2-end tutorials and apps built using Liquid AI Foundational Models (LFM) and the LEAP SDK",
+    "snippet": "Native examples for deploying LFM2 models on iOS and Android using the LEAP Edge SDK. Written for Android (Kotlin) and iOS (Swift), the goal of the Edge SDK is ...",
+    "host_name": "github.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/html/2511.23404v1",
+    "name": "LFM2 Technical Report - arXiv",
+    "snippet": "We present LFM2, a family of Liquid Foundation Models designed for efficient on-device deployment and strong task capabilities.",
+    "host_name": "arxiv.org",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.linkedin.com/posts/pau-labarta-bajo-4432074b_open-source-fine-tuning-library-for-%F0%9D%97%9Fiquid-activity-7454489407694372864-jVVM",
+    "name": "Pau Labarta Bajo's Post - LinkedIn",
+    "snippet": "leap-finetune is a 100% open-source library that helps you fine-tune Liquid Foundational Models (LFM) with minimal code. What are LFMs? Liquid ...",
+    "host_name": "www.linkedin.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  }
+]

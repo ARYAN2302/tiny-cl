@@ -1,0 +1,74 @@
+[
+  {
+    "url": "https://arxiv.org/abs/2510.17776",
+    "name": "Mapping Post-Training Forgetting in Language Models at Scale - arXiv",
+    "snippet": "Hence, we propose a sample-wise paradigm to measure what is forgotten and when backward transfer occurs. Our metric counts 1->0 transitions ( ...",
+    "host_name": "arxiv.org",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/html/2510.17776v1",
+    "name": "Mapping Post-Training Forgetting in Language Models at Scale - arXiv",
+    "snippet": "Hence, we propose a sample-wise paradigm to measure what is forgotten and when backward transfer occurs. Our metric counts 1→0 transitions ( ...",
+    "host_name": "arxiv.org",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://post-forget.github.io",
+    "name": "Mapping Post-Training Forgetting in Language Models at Scale",
+    "snippet": "We introduce sample-wise metrics to measure forgetting and backtransfer across the post-training pipeline and knowledge categories.",
+    "host_name": "post-forget.github.io",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://scholar.google.co.id/citations?user=tc8HH6MAAAAJ&hl=zh-CN",
+    "name": "‪Andreas Hochlehnert‬ - ‪Google 学术搜索‬",
+    "snippet": "Mapping Post-Training Forgetting in Language Models at Scale. J Harmon, A Hochlehnert, M Bethge, A Prabhu. arXiv preprint arXiv:2510.17776, 2025. 3, 2025.",
+    "host_name": "scholar.google.co.id",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/abs/2603.12163",
+    "name": "A Quantitative Characterization of Forgetting in Post-Training - arXiv",
+    "snippet": "Overall, our results show that forgetting can by precisely quantified based on the interaction between divergence direction, geometric ...",
+    "host_name": "arxiv.org",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://scholar.google.com/citations?user=BTQeyz8AAAAJ&hl=en",
+    "name": "‪Jackson Harmon‬ - ‪Google Scholar‬",
+    "snippet": "Mapping Post-Training Forgetting in Language Models at Scale. J Harmon, A Hochlehnert, M Bethge, A Prabhu. arXiv preprint arXiv:2510.17776, 2025. 5, 2025 ...",
+    "host_name": "scholar.google.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/abs/2410.17146",
+    "name": "LiNeS: Post-training Layer Scaling Prevents Forgetting and  - arXiv",
+    "snippet": "We introduce LiNeS, Layer-increasing Network Scaling, a post-training editing technique designed to preserve pre-trained generalization while enhancing fine- ...",
+    "host_name": "arxiv.org",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/html/2507.05386v5",
+    "name": "Reinforcement Fine-Tuning Naturally Mitigates Forgetting in  - arXiv",
+    "snippet": "We present the first comprehensive analysis of the forgetting mitigation effects of SFT and RFT during continual post-training of MLLMs, ...",
+    "host_name": "arxiv.org",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  }
+]

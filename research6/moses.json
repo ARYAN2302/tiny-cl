@@ -1,0 +1,74 @@
+[
+  {
+    "url": "https://arxiv.org/abs/2310.06762",
+    "name": "TRACE: A Comprehensive Benchmark for Continual Learning",
+    "snippet": "In this paper, we introduce TRACE, a novel benchmark designed to evaluate continual learning in LLMs. TRACE consists of 8 distinct datasets ...",
+    "host_name": "arxiv.org",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.semanticscholar.org/paper/TRACE%3A-A-Comprehensive-Benchmark-for-Continual-in-Wang-Zhang/a64067c6c4286fc60f4430829ae6b18519c088e3",
+    "name": "[PDF] TRACE: A Comprehensive Benchmark for Continual Learning",
+    "snippet": "TRACE is introduced, a novel benchmark designed to evaluate continual learning in LLMs and the Reasoning-augmented Continual Learning (RCL) approach, ...",
+    "host_name": "www.semanticscholar.org",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://openreview.net/forum?id=3qa4YLkcEw",
+    "name": "TRACE: A Comprehensive Benchmark for Continual Learning",
+    "snippet": "The authors introduce a benchmark TRACE to assess the continual learning capabilities of existing LLMs. The dataset designed to evaluate models ...",
+    "host_name": "openreview.net",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.researchgate.net/publication/397480553_Mixtures_of_SubExperts_for_Large_Language_Continual_Learning",
+    "name": "Mixtures of SubExperts for Large Language Continual Learning",
+    "snippet": "We evaluate MoSEs on the comprehensive TRACE benchmark datasets. Our experiments demonstrate that MoSEs significantly outperform conventional continual learning ...",
+    "host_name": "www.researchgate.net",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/BeyonderXX/TRACE",
+    "name": "GitHub - BeyonderXX/TRACE: TRACE: A Comprehensive Benchmark for",
+    "snippet": "In this paper, to evaluate a model's general ability, we assess across five key dimensions: Factual Knowledge, General Reasoning, Multilinguality, Commonsense ...",
+    "host_name": "github.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/abs/2511.06237",
+    "name": "Mixtures of SubExperts for Large Language Continual Learning - arXiv",
+    "snippet": "We evaluate MoSEs on the comprehensive TRACE benchmark datasets. Our experiments demonstrate that MoSEs significantly outperform ...",
+    "host_name": "arxiv.org",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://continual-learning-bench.com",
+    "name": "Continual Learning Bench",
+    "snippet": "A benchmark for evaluating AI agents that must adapt and improve from feedback across sequential task instances.",
+    "host_name": "continual-learning-bench.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://openreview.net/pdf?id=3qa4YLkcEw",
+    "name": "[PDF] TRACE: A Comprehensive Benchmark for Continual Learning",
+    "snippet": "TRACE consists of two main components: 1). A selection of eight datasets constituting a tailored set of tasks for continual learning, covering challenges in ...",
+    "host_name": "openreview.net",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  }
+]

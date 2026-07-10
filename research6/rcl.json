@@ -1,0 +1,74 @@
+[
+  {
+    "url": "https://arxiv.org/html/2508.08275v3",
+    "name": "MLLM-CTBench: A Benchmark for Continual Instruction Tuning  - arXiv",
+    "snippet": "Under a unified protocol, we evaluate eight representative continual learning algorithms from four major families: regularization-based [1, 62, 28, 2] , replay- ...",
+    "host_name": "arxiv.org",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/html/2508.04676v1",
+    "name": "Towards Efficient Anti-Forgetting in Continual Learning of LLM  - arXiv",
+    "snippet": "Results demonstrate that TM consistently improves performance and exhibits better robustness. Our work paves the way for efficient replay of ... Missing: RCL | Show results with: RCL",
+    "host_name": "arxiv.org",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://openreview.net/pdf?id=IgZWU75BLL",
+    "name": "[PDF] SURPRISE-DRIVEN PRIORITISED REPLAY FOR CONTINUAL LLM",
+    "snippet": "Three lines of research have emerged to approach catastrophic forgetting, replay, regularisation and architecture. These were first developed in the vision and ...",
+    "host_name": "openreview.net",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://dl.acm.org/doi/10.1145/3735633",
+    "name": "Continual Learning of Large Language Models",
+    "snippet": "Replay-based methods adopt the relaxed memory constraint by keeping a small buffer of observed data and retraining the model on it when learning new tasks.",
+    "host_name": "dl.acm.org",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/abs/2108.06758",
+    "name": "An Investigation of Replay-based Approaches for Continual Learning",
+    "snippet": "Several solution classes have been proposed, of which so-called replay-based approaches seem very promising due to their simplicity and ... Missing: RCL LLM",
+    "host_name": "arxiv.org",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.semanticscholar.org/paper/TRACE%3A-A-Comprehensive-Benchmark-for-Continual-in-Wang-Zhang/a64067c6c4286fc60f4430829ae6b18519c088e3",
+    "name": "[PDF] TRACE: A Comprehensive Benchmark for Continual Learning",
+    "snippet": "TRACE is introduced, a novel benchmark designed to evaluate continual learning in LLMs and the Reasoning-augmented Continual Learning (RCL) approach, ...",
+    "host_name": "www.semanticscholar.org",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://cameronrwolfe.substack.com/p/rl-continual-learning",
+    "name": "Continual Learning with RL for LLMs",
+    "snippet": "Although replay buffers are one of the most simple and effective techniques for continual learning, applying them in the LLM domain is less ...",
+    "host_name": "cameronrwolfe.substack.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.nature.com/articles/s42256-025-00983-2",
+    "name": "Preserving and combining knowledge in robotic lifelong reinforcement",
+    "snippet": "This study focuses on robotic lifelong reinforcement learning (LRL), a domain where reinforcement learning provides an agent–environment ...",
+    "host_name": "www.nature.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  }
+]

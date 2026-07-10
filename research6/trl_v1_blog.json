@@ -1,0 +1,92 @@
+[
+  {
+    "url": "https://huggingface.co/blog/trl-v1",
+    "name": "TRL v1.0: Post-Training Library Built to Move with the Field - Hugging Face",
+    "snippet": "The breaking changes needed to reach v1.0 were distributed deliberately across the 0.x releases. Migration from the last 0.x version is minimal ...",
+    "host_name": "huggingface.co",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/huggingface/blog/blob/main/trl-v1.md",
+    "name": "blog/trl-v1.md at main · huggingface/blog - GitHub",
+    "snippet": "The breaking changes needed to reach v1.0 were distributed deliberately across the 0.x releases. Migration from the last 0.x version is minimal — see the ...",
+    "host_name": "github.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://huggingface.co/docs/trl/en/index",
+    "name": "TRL - Transformers Reinforcement Learning - Hugging Face",
+    "snippet": "TRL is a full stack library where we provide a set of tools to train transformer language models with methods like Supervised Fine-Tuning (SFT), Group Relative ...",
+    "host_name": "huggingface.co",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.marktechpost.com/2026/04/01/hugging-face-releases-trl-v1-0-a-unified-post-training-stack-for-sft-reward-modeling-dpo-and-grpo-workflows",
+    "name": "Hugging Face Releases TRL v1.0: A Unified Post-Training Stack for SFT",
+    "snippet": "Hugging Face has officially released TRL (Transformer Reinforcement Learning) v1.0, marking a pivotal transition for the library from a ...",
+    "host_name": "www.marktechpost.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/huggingface/trl",
+    "name": "huggingface/trl - Transformers Reinforcement Learning - GitHub",
+    "snippet": "TRL v1: We released TRL v1 — a major milestone that marks a real shift in what TRL is. Read the blog post to learn more.",
+    "host_name": "github.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://huggingface.co/docs/trl/main/en/experimental",
+    "name": "Experimental Features - Hugging Face",
+    "snippet": "Can these APIs change or vanish without warning? Yes. Anything inside trl.experimental can change or disappear in any release. Should I use this in ...",
+    "host_name": "huggingface.co",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=5WRiHuvR6Kw",
+    "name": "TRL v1.0, Hugging Face's New Standard for LLM Post-Training",
+    "snippet": "This video explains what TRL v1.0 means for the LLM post-training ecosystem ... TRL #HuggingFace #PostTraining #SFT #DPO #GRPO #RLHF #LLMTraining.",
+    "host_name": "www.youtube.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://medium.com/@danushidk507/trl-transformer-reinforcement-learning-library-2-59186d66ac0b",
+    "name": "TRL: Transformer Reinforcement Learning Library -2 - Medium",
+    "snippet": "Hugging Face's TRL (Transformer Reinforcement Learning) is a full-stack library for post-training and aligning large language models using ...",
+    "host_name": "medium.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://huggingface.co/blog/rapidfireai",
+    "name": "20x Faster TRL Fine-tuning with RapidFire AI - Hugging Face",
+    "snippet": "Hugging Face TRL now officially integrates with RapidFire AI to accelerate your fine-tuning and post-training experiments. TRL users can now ...",
+    "host_name": "huggingface.co",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.codu.co/hugging-face-blog/trl-v10-post-training-library-that-holds-when-the-field-invalidates-its-own-assumptions-qqKq6OE",
+    "name": "TRL v1.0: Post-Training Library That Holds When the Field  - Codú",
+    "snippet": "Link shared by Hugging Face Blog.",
+    "host_name": "www.codu.co",
+    "rank": 9,
+    "date": "",
+    "favicon": ""
+  }
+]

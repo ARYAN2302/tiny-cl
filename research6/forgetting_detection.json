@@ -1,0 +1,92 @@
+[
+  {
+    "url": "https://pubmed.ncbi.nlm.nih.gov/37478043",
+    "name": "Overcoming Catastrophic Forgetting in Continual Learning by",
+    "snippet": "Extensive experimental results demonstrate that our method mitigates catastrophic forgetting and outperforms existing regularization-based methods.",
+    "host_name": "pubmed.ncbi.nlm.nih.gov",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.researchgate.net/publication/372513647_Overcoming_Catastrophic_Forgetting_in_Continual_Learning_by_Exploring_Eigenvalues_of_Hessian_Matrix",
+    "name": "Overcoming Catastrophic Forgetting in Continual Learning by",
+    "snippet": "Kong et al. (2023) introduced the GEAR method, which utilizes Hessian matrix eigenvalues to mitigate catastrophic forgetting during continual learning.",
+    "host_name": "www.researchgate.net",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/html/2509.23893v1",
+    "name": "Dynamic Orthogonal Continual Fine-tuning for Mitigating  - arXiv",
+    "snippet": "This work focuses on developing fine-tuning methods to mitigate catastrophic forgetting in LLMs for continual learning, with no involvement of ...",
+    "host_name": "arxiv.org",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://ceur-ws.org/Vol-4082/paper1.pdf",
+    "name": "[PDF] Addressing Catastrophic Forgetting and Beyond: Key Challenges in",
+    "snippet": "To suppress catastrophic forgetting within the continual learning framework, Researchers have explored different tactics [11], mainly including dynamic ...",
+    "host_name": "ceur-ws.org",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://openreview.net/forum?id=H1ls_eSKPH",
+    "name": "Overcoming Catastrophic Forgetting via Hessian-free Curvature",
+    "snippet": "This paper provides an approach to address catastrophic forgetting via Hessian-free curvature estimates.",
+    "host_name": "openreview.net",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://thesai.org/Downloads/Volume16No4/Paper_14-Mitigating_Catastrophic_Forgetting_in_Continual_Learning.pdf",
+    "name": "[PDF] Mitigating Catastrophic Forgetting in Continual Learning Using the",
+    "snippet": "To address this, PCL is formulated as a minimum distance optimization problem among gradients, and an Asymmetric Gradient Distance (AGD) metric ...",
+    "host_name": "thesai.org",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://raw.githubusercontent.com/mlresearch/v244/main/assets/zeng24a/zeng24a.pdf",
+    "name": "[PDF] Dirichlet Continual Learning: Tackling Catastrophic Forgetting in NLP",
+    "snippet": "Catastrophic forgetting poses a significant chal- lenge in continual learning (CL). our DCL method achieves a significant 3.48% accuracy improve- ment and a 4. ...",
+    "host_name": "raw.githubusercontent.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.ibm.com/think/topics/catastrophic-forgetting",
+    "name": "What is Catastrophic Forgetting? - IBM",
+    "snippet": "Catastrophic forgetting occurs when neural networks forget previously learned tasks after being trained on new data or undergoing fine-tuning for specific ...",
+    "host_name": "www.ibm.com",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.youtube.com/watch?v=OCu2vPl4Ts8",
+    "name": "Continual Learning Beyond Catastrophic Forgetting in Class",
+    "snippet": "Speakers: Antonio Carta and Vincenzo Lomonaco Abstract: Continual learning methods are evaluated on various objectives, such as reducing ...",
+    "host_name": "www.youtube.com",
+    "rank": 8,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://icml.cc/virtual/2025/poster/44997",
+    "name": "Towards Understanding Catastrophic Forgetting in Two-layer",
+    "snippet": "Continual learning (CL) focuses on the ability of models to learn sequentially from a stream of tasks. A major challenge in CL is catastrophic forgetting (CF).",
+    "host_name": "icml.cc",
+    "rank": 9,
+    "date": "",
+    "favicon": ""
+  }
+]

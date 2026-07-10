@@ -1,0 +1,74 @@
+[
+  {
+    "url": "https://verl.readthedocs.io/en/latest/start/agentic_rl.html",
+    "name": "Agentic RL Training - verl documentation - Read the Docs",
+    "snippet": "This document explains the system principles and usage involved to help users implement Agentic RL. Server-based Asynchronous Rollout  . Since ...",
+    "host_name": "verl.readthedocs.io",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/langfengq/verl-agent",
+    "name": "verl-agent is an extension of veRL, designed for training LLM/VLM",
+    "snippet": "This design makes verl-agent highly scalable for very long-horizon, multi-turn RL training (e.g., tasks in ALFWorld can require up to 50 steps to complete).",
+    "host_name": "github.com",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://arxiv.org/html/2510.01132v1",
+    "name": "A Practitioner's Guide to Multi-turn Agentic Reinforcement Learning",
+    "snippet": "This paper provides a systematic analysis on how the fundamental pillars of RL impact multi-turn RL training, respectively, and concludes ...",
+    "host_name": "arxiv.org",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://neurips.cc/virtual/2025/127960",
+    "name": "A Practitioner's Guide to Multi-turn Agentic Reinforcement Learning",
+    "snippet": "We study how to train large language models (LLMs) as autonomous agents that act over multiple turns in agentic environments.",
+    "host_name": "neurips.cc",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://cameronrwolfe.substack.com/p/agentic-rl",
+    "name": "Agentic RL: Frameworks and Best Practices",
+    "snippet": "The multi-turn setup of agentic RL is a key distinguishing factor compared to a standard single-turn RL training setup.",
+    "host_name": "cameronrwolfe.substack.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://unsloth.ai/docs/get-started/reinforcement-learning-rl-guide/training-ai-agents-with-rl",
+    "name": "Training AI Agents with RL | Unsloth Documentation",
+    "snippet": "Learn how to train AI agents for real-world tasks using Reinforcement Learning (RL). Agents are also typically “multi-turn” In this guide, you ...",
+    "host_name": "unsloth.ai",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://openreview.net/pdf?id=yPWJG9wgll",
+    "name": "[PDF] A Practitioner's Guide to Multi-turn Agentic Reinforcement Learning",
+    "snippet": "We focus on two core research questions that directly investigate practical multi-turn deployment. 150. First, we ask: how environment complexity affects the ...",
+    "host_name": "openreview.net",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "http://agentic-intelligence-lab.org/2025/08/15/technical-post.html",
+    "name": "Verlog - A Multi-turn RL framework for LLM agents",
+    "snippet": "Verlog is a multi-turn reinforcement learning framework built for long-horizon LLM-agentic tasks with highly variable episode lengths.",
+    "host_name": "agentic-intelligence-lab.org",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  }
+]

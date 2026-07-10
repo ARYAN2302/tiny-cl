@@ -1,0 +1,74 @@
+[
+  {
+    "url": "https://arxiv.org/html/2506.14990v1",
+    "name": "A Benchmark for Continual Multi-Agent Reinforcement Learning",
+    "snippet": "Continual reinforcement learning studies how agents can learn sequentially from a stream of tasks without forgetting previous knowledge. A wide ...",
+    "host_name": "arxiv.org",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://openreview.net/forum?id=I3W8PynQU0",
+    "name": "A Benchmark for Continual Multi-Agent Reinforcement Learning",
+    "snippet": "The benchmark offers procedural environment generation, controllable difficulty levels, and supports evaluation of both full and partial observability. Six ...",
+    "host_name": "openreview.net",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://zylos.ai/research/2026-04-09-continual-learning-catastrophic-forgetting-ai-agents",
+    "name": "Continual Learning and Catastrophic Forgetting Prevention in AI",
+    "snippet": "For AI agents, forgetting carries consequences that extend beyond benchmark degradation. A customer support agent that forgets product policies ...",
+    "host_name": "zylos.ai",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.krafton.ai/blog/posts/2025-07-28-llm_post_training/grpo-en.html",
+    "name": "Continual Post-Training of LLMs via - Offline GRPO - Krafton AI",
+    "snippet": "In this post, we explore a new approach to enhancing the reasoning capabilities of LLMs through continual post-training. While pre-training equips LLMs with ...",
+    "host_name": "www.krafton.ai",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://www.sciencedirect.com/science/article/abs/pii/S0893608026002145",
+    "name": "A Multi-Agent Continual reinforcement learning framework with multi",
+    "snippet": "This paper proposes an innovative Multi-Agent Continual Reinforcement Learning (MACRL) framework to address the challenges of continual learning in dynamic ...",
+    "host_name": "www.sciencedirect.com",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://huggingface.co/papers?q=trajectory-level%20rewards",
+    "name": "Daily Papers - Hugging Face",
+    "snippet": "Overcoming Catastrophic Forgetting in Visual Continual Learning with ... Aligning Agents via Planning: A Benchmark for Trajectory-Level Reward Modeling.",
+    "host_name": "huggingface.co",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://openaccess.thecvf.com/content/CVPR2026/papers/Yao_CGL_Advancing_Continual_GUI_Learning_via_Reinforcement_Fine-Tuning_CVPR_2026_paper.pdf",
+    "name": "[PDF] Advancing Continual GUI Learning via Reinforcement Fine-Tuning",
+    "snippet": "In the Method section, we propose the CGL method, which synergistically integrates SFT and GRPO to balance new- task adaptability and old-task anti-forgetting — ...",
+    "host_name": "openaccess.thecvf.com",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://proceedings.mlr.press/v232/caccia23a/caccia23a.pdf",
+    "name": "[PDF] task-agnostic continual reinforcement learning",
+    "snippet": "Continual learning agents aim at solving multiple tasks and adapt to new tasks without forgetting the previous one(s), a major limitation of standard deep ...",
+    "host_name": "proceedings.mlr.press",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  }
+]

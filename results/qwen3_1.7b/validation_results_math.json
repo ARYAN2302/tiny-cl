@@ -1,0 +1,120 @@
+{
+  "benchmark": "math_stream",
+  "config": {
+    "model": "Qwen/Qwen3-1.7B",
+    "seed": 42,
+    "tasks": [
+      "gsm8k",
+      "math_algebra",
+      "aqua_rat",
+      "svamp"
+    ],
+    "lora_rank": 128,
+    "lora_alpha": 128,
+    "lora_targets": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj"
+    ],
+    "drift_threshold": 1.15,
+    "repair_alpha": 0.1,
+    "max_repair_steps": 10,
+    "batch_size": 8,
+    "grad_accum": 2,
+    "context_length": 1024,
+    "examples_per_task": 5000,
+    "epochs": 3,
+    "conditions": [
+      "naive",
+      "avr"
+    ]
+  },
+  "results": {
+    "naive": {
+      "R": [
+        [
+          0.66,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.56,
+          0.455,
+          0.0,
+          0.0
+        ],
+        [
+          0.42,
+          0.185,
+          0.42,
+          0.0
+        ],
+        [
+          0.085,
+          0.085,
+          0.005,
+          0.705
+        ]
+      ],
+      "metrics": {
+        "ACC": 0.22,
+        "BWT": -0.45333333333333337,
+        "FF": 0.45333333333333337
+      }
+    },
+    "avr": {
+      "R": [
+        [
+          0.615,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.605,
+          0.465,
+          0.0,
+          0.0
+        ],
+        [
+          0.6,
+          0.415,
+          0.52,
+          0.0
+        ],
+        [
+          0.47,
+          0.44,
+          0.455,
+          0.75
+        ]
+      ],
+      "metrics": {
+        "ACC": 0.52875,
+        "BWT": -0.07833333333333335,
+        "FF": 0.07833333333333335
+      },
+      "total_repairs": 29,
+      "log": [
+        {
+          "task": "gsm8k",
+          "repair_steps": 0
+        },
+        {
+          "task": "math_algebra",
+          "repair_steps": 9
+        },
+        {
+          "task": "aqua_rat",
+          "repair_steps": 10
+        },
+        {
+          "task": "svamp",
+          "repair_steps": 10
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,74 @@
+[
+  {
+    "url": "https://arxiv.org/html/2509.01213v1",
+    "name": "Mitigating Catastrophic Forgetting in Continual Learning through Model",
+    "snippet": "Catastrophic forgetting is a significant challenge in continual learning, in which a model loses prior knowledge when it is fine-tuned on ...",
+    "host_name": "arxiv.org",
+    "rank": 0,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://openreview.net/forum?id=ScI7IlKGdI",
+    "name": "Spurious Forgetting in Continual Learning of Language Models",
+    "snippet": "Model expansion techniques [R9] also effectively prevent forgetting by ...",
+    "host_name": "openreview.net",
+    "rank": 1,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://aclanthology.org/2024.acl-long.77.pdf",
+    "name": "[PDF] Mitigating Catastrophic Forgetting in Large Language Models with Self",
+    "snippet": "Figure 5: Effect of K-means clustering for Llama-2-7b on 5 SuperNI tasks under different continual learning orders. limitation of this fine- ...",
+    "host_name": "aclanthology.org",
+    "rank": 2,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://github.com/Wang-ML-Lab/llm-continual-learning-survey",
+    "name": "Continual Learning of Large Language Models: A  - GitHub",
+    "snippet": "This is an updating survey for Continual Learning of Large Language Models (CL-LLMs), a constantly updated and extended version for the manuscript.",
+    "host_name": "github.com",
+    "rank": 3,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://par.nsf.gov/servlets/purl/10644274",
+    "name": "[PDF] IMPROVING MULTIMODAL LARGE LANGUAGE MODELS USING",
+    "snippet": "3.2 CONTINUAL LEARNING METHODS. To mitigate catastrophic forgetting in MLLMs, we examine several methods: 1. Naive Fine-Tuning corresponds to the original LLaVA ...",
+    "host_name": "par.nsf.gov",
+    "rank": 4,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://medium.com/@adnanmasood/continual-learning-the-missing-capability-for-reliable-ai-at-scale-c225e1a523de",
+    "name": "Continual Learning: The Missing Capability for Reliable AI at Scale",
+    "snippet": "Catastrophic Forgetting A failure mode where a neural network loses performance on previously learned tasks after being trained on new data/ ...",
+    "host_name": "medium.com",
+    "rank": 5,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://dl.acm.org/doi/10.1145/3735633",
+    "name": "Continual Learning of Large Language Models",
+    "snippet": "Forgetting (F) represents the largest performance drop observed of each task throughout the training process, averaged over all training stages. It quantifies ...",
+    "host_name": "dl.acm.org",
+    "rank": 6,
+    "date": "",
+    "favicon": ""
+  },
+  {
+    "url": "https://huggingface.co/papers?q=catastrophic%20forgetting%20(CF)",
+    "name": "Daily Papers - Hugging Face",
+    "snippet": "Existing continual learning (CL) methods mainly rely on fine-tuning or adapting large language models (LLMs). They still suffer from catastrophic forgetting (CF) ...",
+    "host_name": "huggingface.co",
+    "rank": 7,
+    "date": "",
+    "favicon": ""
+  }
+]
