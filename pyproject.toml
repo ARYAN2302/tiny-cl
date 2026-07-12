@@ -10,13 +10,17 @@ readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.10"
 authors = [{name = "Aryan Thakur"}]
-dependencies = []
+dependencies = [
+    "transformers>=4.40",
+    "peft>=0.10",
+    "accelerate>=0.20",
+    "datasets>=2.14",
+    "numpy>=1.24",
+    "pyyaml>=6.0",
+]
 
 [project.scripts]
 avr = "avr.cli:main"
 
 [tool.setuptools.packages.find]
 include = ["avr*"]
-
-[tool.setuptools.package-data]
-avr = ["configs/*.yaml"]

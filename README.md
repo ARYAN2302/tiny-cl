@@ -10,7 +10,7 @@
 
 ## The problem
 
-Every "continual learning" method in LLMs is just continual absorption with weight updates. Absorb new data → update weights → try not to forget. EWC, replay, SLAO, AVR — all variations of the same thing: absorb → update → hope.
+Every continual learning method in LLMs is just absorption with weight updates. Absorb new data → update weights → try not to forget. EWC, replay, SLAO — all variations of the same thing: absorb → update → hope.
 
 But that's not learning. When a human learns something new, they don't just absorb it and move on. They absorb it, then **verify** it against what they already know — does this break something I learned before? If it does, they **repair** the conflict. Then they check again. Only when the old knowledge still holds do they call it "learned."
 
@@ -22,15 +22,13 @@ The verify and repair steps are missing. That's why fine-tuning silently breaks 
 
 avr-cl builds those missing steps:
 
-- **A** = Anchor — snapshot the model before learning
-- **V** = Verify — check old tasks after absorption. Did anything break?
-- **R** = Repair — fix what broke. Closed-form weight interpolation, no gradients, no old data
+- **Anchor** — snapshot the model before learning
+- **Verify** — check old tasks after absorption. Did anything break?
+- **Repair** — fix what broke. Closed-form weight interpolation, no gradients, no old data
 
 ## Results
 
-### Qwen3-1.7B — Math reasoning
-
-4-task stream: GSM8K → MATH(algebra) → AQuA-RAT → SVAMP. LoRA r=128, 5000 examples/task.
+Qwen3-1.7B, 4-task stream: GSM8K → MATH(algebra) → AQuA-RAT → SVAMP. LoRA r=128, 5000 examples/task.
 
 | | Naive SFT | avr-cl |
 |---|---|---|
@@ -43,30 +41,54 @@ avr-cl builds those missing steps:
 
 Results: [`results/qwen3_1.7b/`](results/qwen3_1.7b/)
 
-### LFM2.5-230M — Intent classification (preliminary)
-
-4-task stream: Banking77 → CLINC150 → SNIPS → Emotion. LoRA r=128 on conv + attention blocks.
-
-| | Naive SFT | avr-cl |
-|---|---|---|
-| **BWT** | −0.112 | **+0.012** |
-| **Repair steps** | — | 20 |
-
-Positive backward transfer on a hybrid architecture. Preliminary. Results: [`results/lfm2_230m/`](results/lfm2_230m/)
-
-## Run it
-
-The experiments are self-contained scripts. Each one runs on a free Kaggle T4.
+## Install
 
 ```bash
-# Qwen3-1.7B math stream (headline result)
-python scripts/avr_cl_math_qwen3_1.7b.py
-
-# LFM2.5-230M intent stream (cross-architecture)
-python scripts/avr_cl_lfm230m_intent.py
+pip install git+https://github.com/ARYAN2302/tiny-cl.git
 ```
 
-Each script auto-installs dependencies, downloads data, trains, evaluates, and saves results + heatmap.
+## Use it
+
+```python
+import avr
+
+result = avr.run(
+    model="Qwen/Qwen3-1.7B",
+    tasks=[
+        ("task_a", train_examples, eval_examples),
+        ("task_b", train_examples, eval_examples),
+    ],
+    lora_rank=128,
+)
+
+print(f"BWT: {result['bwt']:+.3f}  Repairs: {result['repairs']}")
+```
+
+Each task is a `(name, train_examples, eval_examples)` tuple. Each example is a `(question, answer, gold)` triple:
+- `question` — the input prompt
+- `answer` — the full training target (reasoning + answer)
+- `gold` — the short answer for scoring
+
+The framework handles: model loading, LoRA, chat templates, SFT training, PPL drift detection, weight repair, batched evaluation, R-matrix, BWT/FF/ACC.
+
+Or via CLI:
+
+```bash
+avr train config.yaml --seed 42
+```
+
+Config format:
+```yaml
+model: Qwen/Qwen3-1.7B
+lora_rank: 128
+tasks:
+  - name: task_a
+    train: data/task_a_train.json
+    eval: data/task_a_eval.json
+  - name: task_b
+    train: data/task_b_train.json
+    eval: data/task_b_eval.json
+```
 
 ## How it works
 
@@ -74,7 +96,7 @@ Each script auto-installs dependencies, downloads data, trains, evaluates, and s
 For each task in a sequential stream:
 
   LEARN     → fine-tune on the new task (SFT, any LoRA config)
-  VERIFY    → compute PPL on prior tasks' held-out data
+  VERIFY    → compute PPL on prior tasks' data
               if PPL_now / PPL_best > 1.15 → drift detected
   REPAIR    → θ ← (1−α)·θ + α·θ_snapshot  (closed-form, no gradients)
               repeat until drift resolves or 10-step cap
@@ -93,27 +115,18 @@ No replay buffer. No old training data. One LoRA snapshot in memory.
 | **mergekit** | Merges N separately-trained models *after* the fact. avr-cl prevents the damage *during* one training run. |
 | **Just use TRL** | TRL has no concept of "after this task, before the next." It doesn't know your model forgot. |
 
-## Framework
+## Reproduce the headline result
 
-The `avr/` package contains the pluggable LEARN → VERIFY → REPAIR abstraction:
+```bash
+# On Kaggle T4 or any GPU with 16GB+ VRAM
+python scripts/avr_cl_math_qwen3_1.7b.py
+```
 
-```
-avr/
-├── framework.py            # Orchestrator
-├── detectors.py            # PPLRatioDetector (VERIFY)
-├── operators.py            # SnapshotInterp (REPAIR)
-├── trainer.py              # SFTStrategy (LEARN)
-├── strategy.py             # Config builder
-├── metrics.py              # R-matrix, BWT, FF, ACC
-├── data.py                 # Data loaders
-├── cli.py                  # CLI entry point
-├── configs/                # YAML configs
-└── pyproject.toml          # Package config
-```
+This script is standalone (doesn't require the avr package) and reproduces the Qwen3-1.7B math stream results shown above. The `avr.run()` API in the package implements the same logic.
 
 ## Limitations
 
-- **Validated on 230M–1.7B.** 7B+ is next.
+- **Validated on 1.7B.** Smaller and larger models are next.
 - **SFT only.** DPO/GRPO on the roadmap.
 
 ## License
