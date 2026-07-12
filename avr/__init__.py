@@ -1,54 +1,32 @@
 """
 avr-cl: continual post-training framework.
 
-LEARN → VERIFY → REPAIR, each phase pluggable. AVR v1 is the default
-instance (SFT + PPL-ratio + snapshot-interp). v2 research (subspace
-repair, DPO/GRPO, oracles, consolidators) slots in without API changes.
+LEARN → VERIFY → REPAIR. Detects when fine-tuning broke old capabilities
+and repairs them in weight space. No replay, no gradients at repair time.
 
 Quickstart:
-    pip install avr-cl
-    avr train configs/trace_lfm350m.yaml
-
-Or programmatically:
-    from avr.strategy import AVRStrategy
-    strategy = AVRStrategy(config)
-    state = strategy.run(model, tokenizer, tasks)
+    import avr
+    result = avr.run(
+        model="Qwen/Qwen3-1.7B",
+        tasks=[
+            ("gsm8k", train_pairs, eval_pairs),
+            ("math", train_pairs, eval_pairs),
+        ],
+        lora_rank=128,
+    )
+    print(f"BWT: {result['bwt']:+.3f}  Repairs: {result['repairs']}")
 """
-
-from .framework import (
-    ContinualPostTrainer, StreamState, TaskSpec, DriftInfo, VerificationResult,
-    LearnStrategy, DriftDetector, RepairOperator, Oracle, Consolidator,
-    NoopOracle, NoopConsolidator,
-    get_lora_state, set_lora_state,
-)
-from .operators import SnapshotInterp, SubspaceSnapshotInterp, get_operator
-from .detectors import PPLRatioDetector, get_detector
-from .trainer import SFTStrategy, ReplaySFTStrategy
-from .strategy import AVRStrategy
-from .metrics import compute_metrics, evaluate_task_accuracy, score_answer
-from .data import (load_stream, load_trace, load_mmlu_stream,
-                   load_realworld_stream)
+from .run import run, load_model, evaluate, compute_metrics
+from .run import generate_batch, default_scorer, normalize_answer
 
 __version__ = "0.1.0"
 
 __all__ = [
-    # Core framework
-    "ContinualPostTrainer", "StreamState", "TaskSpec", "DriftInfo",
-    "VerificationResult",
-    # Interfaces
-    "LearnStrategy", "DriftDetector", "RepairOperator",
-    "Oracle", "Consolidator",
-    # Defaults / noops
-    "NoopOracle", "NoopConsolidator",
-    # Snapshot helpers
-    "get_lora_state", "set_lora_state",
-    # v1 implementations
-    "SnapshotInterp", "PPLRatioDetector", "SFTStrategy", "ReplaySFTStrategy",
-    # v2 stubs
-    "SubspaceSnapshotInterp",
-    # Orchestration
-    "AVRStrategy",
-    # Metrics + data
-    "compute_metrics", "evaluate_task_accuracy", "score_answer",
-    "load_stream", "load_trace", "load_mmlu_stream", "load_realworld_stream",
+    "run",          # Main entry: avr.run(model, tasks, ...)
+    "load_model",   # Load any HF model + LoRA
+    "evaluate",     # Evaluate on a task
+    "compute_metrics",  # BWT, FF, ACC from R-matrix
+    "generate_batch",   # Batched generation
+    "default_scorer",   # Default answer scorer
+    "normalize_answer", # Text normalization
 ]
