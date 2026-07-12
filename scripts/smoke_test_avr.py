@@ -16,7 +16,7 @@ subprocess.run([sys.executable, "-m", "pip", "install", "-q",
     "sentencepiece", "protobuf", "packaging"], check=True)
 subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "torchao"], check=False)
 subprocess.run([sys.executable, "-m", "pip", "install", "-q",
-    "git+https://github.com/ARYAN2302/tiny-cl.git#subdirectory=avr"], check=True)
+    "git+https://github.com/ARYAN2302/tiny-cl.git"], check=True)
 
 # Patch transformers dynamo flag (Kaggle numpy compat)
 import transformers.utils.import_utils as _iu

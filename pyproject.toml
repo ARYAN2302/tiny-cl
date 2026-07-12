@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "avr-cl"
+version = "0.1.0"
+description = "Continual post-training: detect when fine-tuning broke old capabilities and repair them."
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [{name = "Aryan Thakur"}]
+dependencies = [
+    "torch>=2.0",
+    "transformers>=4.40",
+    "peft>=0.10",
+    "numpy>=1.24",
+    "datasets>=2.14",
+]
+
+[project.scripts]
+avr = "avr.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["avr*"]
+
+[tool.setuptools.package-data]
+avr = ["configs/*.yaml"]
