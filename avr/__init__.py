@@ -1,8 +1,12 @@
 """
-avr-cl: continual post-training framework.
+avr-cl: continual post-training with drift detection + repair.
 
-LEARN → VERIFY → REPAIR. Detects when fine-tuning broke old capabilities
-and repairs them in weight space. No replay, no gradients at repair time.
+LEARN → VERIFY → REPAIR. Each phase is a separate module you can swap:
+  - avr.learn: train_sft, consolidate (LEARN)
+  - avr.verify: compute_ppl, eval_ppls, check_drift (VERIFY)
+  - avr.repair: get_lora_state, set_lora_state, reset_lora, repair (REPAIR)
+  - avr.eval: evaluate, generate_batch, default_scorer (evaluation)
+  - avr.model: load_model, format_prompt, format_example (model handling)
 
 Quickstart:
     import avr
@@ -16,17 +20,21 @@ Quickstart:
     )
     print(f"BWT: {result['bwt']:+.3f}  Repairs: {result['repairs']}")
 """
-from .run import run, load_model, evaluate, compute_metrics
-from .run import generate_batch, default_scorer, normalize_answer
+from .run import run, compute_metrics
+from .model import load_model, detect_lora_targets, format_prompt, format_example
+from .learn import train_sft, consolidate
+from .verify import compute_ppl, eval_ppls, check_drift
+from .repair import get_lora_state, set_lora_state, reset_lora, repair
+from .eval import evaluate, generate_batch, default_scorer, normalize_answer
 
 __version__ = "0.1.0"
 
 __all__ = [
-    "run",          # Main entry: avr.run(model, tasks, ...)
-    "load_model",   # Load any HF model + LoRA
-    "evaluate",     # Evaluate on a task
-    "compute_metrics",  # BWT, FF, ACC from R-matrix
-    "generate_batch",   # Batched generation
-    "default_scorer",   # Default answer scorer
-    "normalize_answer", # Text normalization
+    "run",
+    "compute_metrics",
+    "load_model", "detect_lora_targets", "format_prompt", "format_example",
+    "train_sft", "consolidate",
+    "compute_ppl", "eval_ppls", "check_drift",
+    "get_lora_state", "set_lora_state", "reset_lora", "repair",
+    "evaluate", "generate_batch", "default_scorer", "normalize_answer",
 ]

@@ -2,7 +2,7 @@
 
 **Your fine-tune silently broke your model. avr-cl tells you, and fixes it.**
 
-A method for detecting and repairing catastrophic forgetting in sequential LLM fine-tuning. After each training stage, it checks if the model forgot prior tasks and repairs the damage in weight space — no replay buffer, no old training data, one LoRA snapshot in memory.
+A continual post-training framework with three phases: LEARN → VERIFY → REPAIR. After each training stage, it detects if the model forgot prior tasks and repairs the damage in weight space — no replay buffer, no old training data, one LoRA snapshot in memory.
 
 <p align="center">
   <img src="results/qwen3_1.7b/validation_heatmap_math.png" width="800">
@@ -73,23 +73,26 @@ Each task is a `(name, train_examples, eval_examples)` tuple. Each example is a 
 
 The framework handles: model loading, LoRA, chat templates, SFT training, PPL drift detection, weight repair, batched evaluation, R-matrix, BWT/FF/ACC.
 
-Or via CLI:
+## The framework
 
-```bash
-avr train config.yaml --seed 42
+Each phase is a separate module. Use the defaults, or swap your own:
+
+```python
+from avr.learn import train_sft       # LEARN: your training function
+from avr.verify import check_drift     # VERIFY: your drift detector
+from avr.repair import repair          # REPAIR: your repair operator
+from avr.eval import evaluate          # evaluation + scoring
 ```
 
-Config format:
-```yaml
-model: Qwen/Qwen3-1.7B
-lora_rank: 128
-tasks:
-  - name: task_a
-    train: data/task_a_train.json
-    eval: data/task_a_eval.json
-  - name: task_b
-    train: data/task_b_train.json
-    eval: data/task_b_eval.json
+```
+avr/
+├── model.py     — load_model, chat template handling
+├── learn.py     — train_sft, consolidate (two-stream)
+├── verify.py    — compute_ppl, check_drift
+├── repair.py    — get/set/reset LoRA state, weight interpolation
+├── eval.py      — batched generation, scoring, R-matrix
+├── run.py       — orchestrator: wires LEARN → VERIFY → REPAIR
+└── cli.py       — avr train config.yaml
 ```
 
 ## How it works
@@ -116,6 +119,8 @@ No replay buffer. No old training data. One LoRA snapshot in memory.
 | **LoRA adapter switching** | Needs a router at inference. Multiple adapters in memory. |
 | **mergekit** | Merges N separately-trained models *after* the fact. avr-cl prevents the damage *during* one training run. |
 | **Just use TRL** | TRL has no concept of "after this task, before the next." It doesn't know your model forgot. |
+
+avr-cl needs zero old data, zero gradients at repair time, one LoRA snapshot, and it *knows* when the model forgot.
 
 ## Reproduce the headline result
 
