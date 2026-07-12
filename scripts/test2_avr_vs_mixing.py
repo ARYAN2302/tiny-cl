@@ -29,11 +29,14 @@ os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 import subprocess, sys
+# Reinstall Kaggle's GPU torch first (previous avr install may have broken it)
+subprocess.run([sys.executable, "-m", "pip", "install", "-q", "--force-reinstall",
+    "torch==2.5.1 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124"], check=False)
 subprocess.run([sys.executable, "-m", "pip", "install", "-q",
     "peft>=0.13.0", "datasets>=3.0.0", "accelerate>=1.0.0",
     "sentencepiece", "protobuf", "packaging"], check=True)
 subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "torchao"], check=False)
-subprocess.run([sys.executable, "-m", "pip", "install", "-q",
+subprocess.run([sys.executable, "-m", "pip", "install", "-q", "--no-deps",
     "git+https://github.com/ARYAN2302/tiny-cl.git"], check=True)
 
 import transformers.utils.import_utils as _iu
