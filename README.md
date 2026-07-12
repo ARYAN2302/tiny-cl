@@ -2,6 +2,8 @@
 
 **Your fine-tune silently broke your model. avr-cl tells you, and fixes it.**
 
+A method for detecting and repairing catastrophic forgetting in sequential LLM fine-tuning. After each training stage, it checks if the model forgot prior tasks and repairs the damage in weight space — no replay buffer, no old training data, one LoRA snapshot in memory.
+
 <p align="center">
   <img src="results/qwen3_1.7b/validation_heatmap_math.png" width="800">
 </p>
@@ -122,7 +124,7 @@ No replay buffer. No old training data. One LoRA snapshot in memory.
 python scripts/avr_cl_math_qwen3_1.7b.py
 ```
 
-This script is standalone (doesn't require the avr package) and reproduces the Qwen3-1.7B math stream results shown above. The `avr.run()` API in the package implements the same logic.
+This script is standalone and reproduces the Qwen3-1.7B math stream results shown above. The `avr.run()` API implements the same logic in a pip-installable package.
 
 ## Limitations
 
