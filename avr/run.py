@@ -375,7 +375,7 @@ def compute_metrics(R, task_order):
 # ============================================================================
 # THE MAIN LOOP
 # ============================================================================
-def run(model_id: str,
+def run(model: str,
         tasks: List[Tuple[str, list, list]],
         lora_rank: int = 128,
         lora_alpha: int = 128,
@@ -396,7 +396,7 @@ def run(model_id: str,
     Run AVR continual learning on a model + task stream.
 
     Args:
-        model_id: HuggingFace model ID (e.g. "Qwen/Qwen3-1.7B")
+        model: HuggingFace model ID (e.g. "Qwen/Qwen3-1.7B")
         tasks: List of (name, train_examples, eval_examples).
                Each example is a (question, answer, gold) tuple.
                - question: the input prompt
@@ -419,12 +419,12 @@ def run(model_id: str,
     T = len(task_order)
 
     print(f"\n{'='*70}", flush=True)
-    print(f"avr-cl | Model: {model_id} | Tasks: {task_order}", flush=True)
+    print(f"avr-cl | Model: {model} | Tasks: {task_order}", flush=True)
     print(f"LoRA r={lora_rank} | Two-stream: {two_stream} | Seed: {seed}", flush=True)
     print(f"AVR: threshold={drift_threshold}, alpha={repair_alpha}, max_steps={max_repair_steps}", flush=True)
     print(f"{'='*70}", flush=True)
 
-    model, tokenizer = load_model(model_id, lora_rank, lora_alpha, lora_targets, device)
+    model_obj, tokenizer = load_model(model, lora_rank, lora_alpha, lora_targets, device)
     R = [[0.0]*T for _ in range(T)]
     best_ppls = {}
     completed = []
@@ -433,7 +433,7 @@ def run(model_id: str,
     snapshot = None
 
     if two_stream:
-        neo_state = get_lora_state(model)
+        neo_state = get_lora_state(model_obj)
 
     for ti, task in enumerate(task_order):
         print(f"\n{'='*60}\n  Task {ti+1}/{T}: {task}\n{'='*60}", flush=True)
@@ -443,29 +443,29 @@ def run(model_id: str,
             # Two-stream: hippocampus + consolidation + AVR on neocortex
             neo_snapshot = copy.deepcopy(neo_state)
             print(f"  [twostream] Snapshot taken", flush=True)
-            reset_lora(model)
+            reset_lora(model_obj)
             print(f"  [twostream] Hippocampus reset", flush=True)
-            train_sft(model, tokenizer, train_ex, epochs=epochs, lr=lr,
+            train_sft(model_obj, tokenizer, train_ex, epochs=epochs, lr=lr,
                      batch_size=batch_size, grad_accum=grad_accum, ctx_len=ctx_len,
                      device=device, tag="hippo")
-            hippo_state = get_lora_state(model)
+            hippo_state = get_lora_state(model_obj)
             print(f"  [twostream] Hippocampus trained", flush=True)
-            set_lora_state(model, neo_state, device)
-            neo_state = consolidate(model, tokenizer, hippo_state, neo_state, train_ex,
+            set_lora_state(model_obj, neo_state, device)
+            neo_state = consolidate(model_obj, tokenizer, hippo_state, neo_state, train_ex,
                                     epochs=1, lr=lr*0.5, batch_size=batch_size,
                                     grad_accum=grad_accum, ctx_len=ctx_len, device=device)
             print(f"  [twostream] Consolidation complete", flush=True)
-            set_lora_state(model, neo_state, device)
+            set_lora_state(model_obj, neo_state, device)
             repair_target = neo_snapshot
         else:
             # Standard AVR: SFT + verify + repair
-            train_sft(model, tokenizer, train_ex, epochs=epochs, lr=lr,
+            train_sft(model_obj, tokenizer, train_ex, epochs=epochs, lr=lr,
                      batch_size=batch_size, grad_accum=grad_accum, ctx_len=ctx_len,
                      device=device, tag="sft")
             repair_target = snapshot
 
         # VERIFY
-        post_ppls = eval_ppls(model, tokenizer, tasks_data, task_order, ti+1, device)
+        post_ppls = eval_ppls(model_obj, tokenizer, tasks_data, task_order, ti+1, device)
         if task not in best_ppls:
             best_ppls[task] = post_ppls[task]
         print(f"  PPLs: " + " | ".join(f"{k}:{v:.2f}" for k,v in post_ppls.items()), flush=True)
@@ -480,9 +480,9 @@ def run(model_id: str,
                     print(f"    {dk}: {info['current']:.2f}/{info['best']:.2f}={info['ratio']:.2f}x", flush=True)
                 still = drifted
                 for step in range(max_repair_steps):
-                    n = repair(model, repair_target, repair_alpha, device)
+                    n = repair(model_obj, repair_target, repair_alpha, device)
                     repairs += 1
-                    rp = eval_ppls(model, tokenizer, tasks_data, task_order, ti+1, device)
+                    rp = eval_ppls(model_obj, tokenizer, tasks_data, task_order, ti+1, device)
                     still = check_drift(rp, best_ppls, completed, drift_threshold)
                     print(f"    [AVR] Repair {step+1}: {n} params, drifted: {list(still.keys()) if still else 'none'}", flush=True)
                     if not still:
@@ -491,7 +491,7 @@ def run(model_id: str,
                 if still:
                     print(f"  [AVR] Max steps reached", flush=True)
                 if two_stream:
-                    neo_state = get_lora_state(model)
+                    neo_state = get_lora_state(model_obj)
             else:
                 print(f"  [AVR] No drift", flush=True)
 
@@ -499,20 +499,20 @@ def run(model_id: str,
         repair_log.append({"task": task, "repairs": repairs})
 
         # Update best PPLs
-        final_ppls = eval_ppls(model, tokenizer, tasks_data, task_order, ti+1, device)
+        final_ppls = eval_ppls(model_obj, tokenizer, tasks_data, task_order, ti+1, device)
         for dk, dp in final_ppls.items():
             if dk not in best_ppls or dp < best_ppls[dk]:
                 best_ppls[dk] = dp
 
         # Snapshot for next task
         if not two_stream:
-            snapshot = get_lora_state(model)
+            snapshot = get_lora_state(model_obj)
         completed.append(task)
 
         # Evaluate on all tasks seen so far (R-matrix)
         print(f"\n  Evaluating...", flush=True)
         for j in range(ti + 1):
-            R[ti][j] = evaluate(model, tokenizer, tasks_data[task_order[j]]["eval"],
+            R[ti][j] = evaluate(model_obj, tokenizer, tasks_data[task_order[j]]["eval"],
                                task_order[j], scorer=scorer, device=device)
 
         if torch.cuda.is_available(): torch.cuda.empty_cache()
@@ -533,6 +533,6 @@ def run(model_id: str,
     print(f"RESULTS: ACC={metrics['acc']:.3f}  BWT={metrics['bwt']:+.3f}  FF={metrics['ff']:.3f}  Repairs={total_repairs}", flush=True)
     print(f"{'='*70}", flush=True)
 
-    del model; gc.collect()
+    del model_obj; gc.collect()
     if torch.cuda.is_available(): torch.cuda.empty_cache()
     return result
