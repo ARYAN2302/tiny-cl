@@ -1,0 +1,17 @@
+{
+  "model": "LiquidAI/LFM2.5-230M",
+  "architecture": "hybrid (8 conv + 6 attention blocks)",
+  "stream": "intent_classification",
+  "tasks": ["banking77", "clinc150", "snips", "emotion"],
+  "lora": {"rank": 128, "targets": ["q_proj", "k_proj", "v_proj", "o_proj", "conv1d"]},
+  "results": {
+    "naive": {"ACC": 0.159, "BWT": -0.112, "FF": 0.112},
+    "avr": {"ACC": 0.143, "BWT": 0.012, "FF": 0.040, "total_repairs": 20},
+    "twostream": {"ACC": 0.090, "BWT": -0.368, "FF": 0.368, "total_repairs": 0}
+  },
+  "headline": "AVR achieved positive backward transfer (+0.012 BWT) on LFM2.5-230M. Naive forgot (-0.112 BWT). 12.4pp recovery.",
+  "cross_architecture_comparison": {
+    "qwen3_1.7b_math": {"naive_bwt": -0.453, "avr_bwt": -0.078, "recovery": "5.8x"},
+    "lfm2_230m_intent": {"naive_bwt": -0.112, "avr_bwt": 0.012, "recovery": "+12.4pp (positive BWT)"}
+  }
+}
