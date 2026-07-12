@@ -33,6 +33,8 @@ subprocess.run([sys.executable, "-m", "pip", "install", "-q",
     "peft>=0.13.0", "datasets>=3.0.0", "accelerate>=1.0.0",
     "sentencepiece", "protobuf", "packaging"], check=True)
 subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "torchao"], check=False)
+subprocess.run([sys.executable, "-m", "pip", "install", "-q",
+    "git+https://github.com/ARYAN2302/tiny-cl.git"], check=True)
 
 import transformers.utils.import_utils as _iu
 _iu._is_torch_greater_or_equal_than_2_6 = False

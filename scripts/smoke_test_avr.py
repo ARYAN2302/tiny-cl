@@ -10,10 +10,13 @@ os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 import subprocess, sys
+# Install deps + the avr package itself from the repo
 subprocess.run([sys.executable, "-m", "pip", "install", "-q",
     "peft>=0.13.0", "datasets>=3.0.0", "accelerate>=1.0.0",
     "sentencepiece", "protobuf", "packaging"], check=True)
 subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "torchao"], check=False)
+subprocess.run([sys.executable, "-m", "pip", "install", "-q",
+    "git+https://github.com/ARYAN2302/tiny-cl.git"], check=True)
 
 # Patch transformers dynamo flag (Kaggle numpy compat)
 import transformers.utils.import_utils as _iu
