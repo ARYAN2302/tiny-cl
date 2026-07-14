@@ -21,6 +21,9 @@ subprocess.run([sys.executable, "-m", "pip", "install", "-q",
     "peft>=0.13.0", "datasets>=3.0.0", "accelerate>=1.0.0",
     "sentencepiece", "protobuf", "packaging"], check=True)
 subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "torchao"], check=False)
+# Fix HuggingFace xet CDN 403 errors — downgrade hub to pre-xet version
+subprocess.run([sys.executable, "-m", "pip", "install", "-q", "--force-reinstall", "--no-deps",
+    "huggingface_hub==0.25.2"], check=True)
 subprocess.run([sys.executable, "-m", "pip", "install", "-q", "--no-deps",
     "git+https://github.com/ARYAN2302/tiny-cl.git"], check=True)
 
