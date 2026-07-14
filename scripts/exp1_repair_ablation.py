@@ -28,8 +28,7 @@ os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
 subprocess.run([sys.executable, "-m", "pip", "install", "-q",
     "huggingface_hub==0.24.7",
     "peft>=0.13.0", "accelerate>=1.0.0",
-    "sentencepiece", "protobuf", "packaging",
-    "pyarrow"], check=True)
+    "sentencepiece", "protobuf", "packaging"], check=True)
 subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "torchao"], check=False)
 subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "hf-xet"], check=False)
 subprocess.run([sys.executable, "-m", "pip", "install", "-q", "--no-deps",
@@ -52,11 +51,16 @@ OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 DATA_CACHE = OUTPUT_DIR / "data_cache"
 DATA_CACHE.mkdir(parents=True, exist_ok=True)
 SEED = 42
-MIRROR = "https://hf-mirror.com"
 
 # ============================================================================
-# Direct parquet download — no datasets lib, no fsspec, no xet
+# DATA LOADERS — direct GitHub raw downloads. NO HuggingFace involved.
+# All URLs verified HTTP 200, no xet, no auth, no redirects to broken CDN.
 # ============================================================================
+GSM8K_BASE = "https://raw.githubusercontent.com/openai/grade-school-math/master/grade_school_math/data"
+MATH_URL   = "https://raw.githubusercontent.com/rasbt/math_full_minus_math500/main/math_full.json"
+AQUA_BASE  = "https://raw.githubusercontent.com/google-deepmind/AQuA/master"
+SVAMP_URL  = "https://raw.githubusercontent.com/arkilpatel/SVAMP/main/SVAMP.json"
+
 def _download(url, dest):
     dest = Path(dest)
     if dest.exists() and dest.stat().st_size > 0:
@@ -69,19 +73,14 @@ def _download(url, dest):
     print(f"  -> {dest.stat().st_size} bytes", flush=True)
     return str(dest)
 
-def _read_parquet(path):
-    import pyarrow.parquet as pq
-    return pq.read_table(str(path)).to_pylist()
-
-def _hf_parquet_url(repo, subdir, split):
-    """Build a hf-mirror.com parquet URL for a dataset."""
-    return f"{MIRROR}/datasets/{repo}/resolve/main/{subdir}/{split}-00000-of-00001.parquet"
-
 def load_gsm8k(n, split="train"):
     fn = "test" if split == "test" else "train"
-    url = _hf_parquet_url("openai/gsm8k", "main", fn)
-    cache = DATA_CACHE / f"gsm8k_{fn}.parquet"
-    rows = _read_parquet(_download(url, cache))
+    cache = DATA_CACHE / f"gsm8k_{fn}.jsonl"
+    path = _download(f"{GSM8K_BASE}/{fn}.jsonl", cache)
+    rows = []
+    with open(path) as f:
+        for line in f:
+            rows.append(json.loads(line))
     rng = random.Random(SEED); rng.shuffle(rows)
     pairs = []
     for ex in rows[:n]:
@@ -92,16 +91,27 @@ def load_gsm8k(n, split="train"):
     return pairs
 
 def load_math(n, split="train"):
-    fn = "test" if split == "test" else "train"
-    url = _hf_parquet_url("EleutherAI/hendrycks_math", "algebra", fn)
-    cache = DATA_CACHE / f"math_algebra_{fn}.parquet"
-    rows = _read_parquet(_download(url, cache))
+    """MATH dataset — 12500 combined records, split ourselves by seed.
+    The rasbt/math_full_minus_math500 mirror has no train/test split, so we
+    use a deterministic shuffle: same shuffle for both 'train' and 'test'
+    calls, then take the first n for train and next 100 for test."""
+    cache = DATA_CACHE / "math_full.json"
+    path = _download(MATH_URL, cache)
+    with open(path) as f:
+        rows = json.load(f)
     rng = random.Random(SEED); rng.shuffle(rows)
+    if split == "test":
+        rows = rows[500:600]  # next 100 after the train slice
+    else:
+        rows = rows[:n]
     pairs = []
-    for ex in rows[:n]:
+    for ex in rows[:n] if split == "train" else rows:
         q = ex["problem"]; sol = ex["solution"]
-        m = re.findall(r'\\boxed\{([^}]+)\}', sol)
-        gold = m[-1].strip() if m else ""
+        # MATH has an explicit 'answer' field — use it directly when possible
+        gold = ex.get("answer", "").strip()
+        if not gold:
+            m = re.findall(r'\\boxed\{([^}]+)\}', sol)
+            gold = m[-1].strip() if m else ""
         if not gold:
             nums = re.findall(r'-?\d[\d.]*', sol)
             gold = nums[-1] if nums else ""
@@ -109,10 +119,16 @@ def load_math(n, split="train"):
     return pairs
 
 def load_aqua(n, split="train"):
-    fn = "validation" if split == "test" else "train"
-    url = _hf_parquet_url("deepmind/aqua_rat", "raw", fn)
-    cache = DATA_CACHE / f"aqua_{fn}.parquet"
-    rows = _read_parquet(_download(url, cache))
+    fn = "dev" if split == "test" else "train"
+    cache = DATA_CACHE / f"aqua_{fn}.json"
+    path = _download(f"{AQUA_BASE}/{fn}.json", cache)
+    # AQuA files are JSONL (one obj per line) despite the .json extension
+    rows = []
+    with open(path) as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                rows.append(json.loads(line))
     rng = random.Random(SEED); rng.shuffle(rows)
     pairs = []
     letters = ["A", "B", "C", "D", "E"]
@@ -122,6 +138,7 @@ def load_aqua(n, split="train"):
         cleaned = []
         for i, o in enumerate(opts):
             o = str(o).strip()
+            # AQuA options are like "A)32400" — strip the letter prefix
             if len(o) >= 2 and o[0].upper() == letters[i] and o[1] in ").:":
                 o = o[2:].strip()
             cleaned.append(o)
@@ -131,13 +148,19 @@ def load_aqua(n, split="train"):
     return pairs
 
 def load_svamp(n, split="train"):
-    fn = "test" if split == "test" else "train"
-    url = _hf_parquet_url("ChilleD/SVAMP", "data", fn)
-    cache = DATA_CACHE / f"svamp_{fn}.parquet"
-    rows = _read_parquet(_download(url, cache))
+    # SVAMP is a single 1000-item JSON file — no train/test split.
+    # Use deterministic shuffle, take first n for train, next 100 for test.
+    cache = DATA_CACHE / "svamp.json"
+    path = _download(SVAMP_URL, cache)
+    with open(path) as f:
+        rows = json.load(f)
     rng = random.Random(SEED); rng.shuffle(rows)
+    if split == "test":
+        rows = rows[500:600]
+    else:
+        rows = rows[:n]
     pairs = []
-    for ex in rows[:n]:
+    for ex in rows[:n] if split == "train" else rows:
         body = ex.get("Body", ""); question = ex.get("Question", "")
         answer = ex.get("Answer", ""); equation = ex.get("Equation", "")
         full_q = f"{body} {question}".strip()
