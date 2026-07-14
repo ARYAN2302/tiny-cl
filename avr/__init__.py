@@ -19,6 +19,15 @@ Quickstart:
         lora_rank=128,
     )
     print(f"BWT: {result['bwt']:+.3f}  Repairs: {result['repairs']}")
+
+Custom repair operator (TIES, TaskArithmetic, etc.):
+    import avr
+
+    def my_repair(model, snapshot, alpha, device):
+        # your merge logic here
+        return n_params_touched
+
+    result = avr.run(model=..., tasks=..., repair_fn=my_repair)
 """
 from .run import run, compute_metrics
 from .model import load_model, detect_lora_targets, format_prompt, format_example

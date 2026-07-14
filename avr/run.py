@@ -42,6 +42,7 @@ def run(model: str,
         max_repair_steps: int = 10,
         two_stream: bool = False,
         scorer=None,
+        repair_fn=None,
         device: str = "cuda",
         seed: int = 42):
     """
@@ -55,6 +56,10 @@ def run(model: str,
         lora_targets: LoRA target modules. Auto-detected if None.
         two_stream: Use hippocampus/neocortex variant. Default False.
         scorer: Custom scorer(response, gold) -> float. Default: substring match.
+        repair_fn: Custom repair operator with signature
+                   fn(model, snapshot, alpha, device) -> int (num params touched).
+                   Default: avr.repair.repair (linear interpolation toward snapshot).
+                   Pass your own for TIES, TaskArithmetic, etc.
     """
     random.seed(seed); np.random.seed(seed); torch.manual_seed(seed)
     if torch.cuda.is_available(): torch.cuda.manual_seed_all(seed)
@@ -67,6 +72,7 @@ def run(model: str,
     print(f"avr-cl | Model: {model} | Tasks: {task_order}", flush=True)
     print(f"LoRA r={lora_rank} | Two-stream: {two_stream} | Seed: {seed}", flush=True)
     print(f"AVR: threshold={drift_threshold}, alpha={repair_alpha}, max_steps={max_repair_steps}", flush=True)
+    print(f"Repair operator: {_do_repair.__name__ if hasattr(_do_repair, '__name__') else 'custom'}", flush=True)
     print(f"{'='*70}", flush=True)
 
     model_obj, tokenizer = load_model(model, lora_rank, lora_alpha, lora_targets, device)
@@ -79,6 +85,8 @@ def run(model: str,
 
     if two_stream:
         neo_state = get_lora_state(model_obj)
+
+    _do_repair = repair_fn if repair_fn is not None else repair
 
     for ti, task in enumerate(task_order):
         print(f"\n{'='*60}\n  Task {ti+1}/{T}: {task}\n{'='*60}", flush=True)
@@ -124,7 +132,7 @@ def run(model: str,
                     print(f"    {dk}: {info['current']:.2f}/{info['best']:.2f}={info['ratio']:.2f}x", flush=True)
                 still = drifted
                 for step in range(max_repair_steps):
-                    n = repair(model_obj, repair_target, repair_alpha, device)
+                    n = _do_repair(model_obj, repair_target, repair_alpha, device)
                     repairs += 1
                     rp = eval_ppls(model_obj, tokenizer, tasks_data, task_order, ti+1, device)
                     still = check_drift(rp, best_ppls, completed, drift_threshold)
