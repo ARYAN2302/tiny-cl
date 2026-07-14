@@ -17,29 +17,30 @@ import os, sys, subprocess
 os.environ["PYDEVD_DISABLE_FILE_VALIDATION"] = "1"
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
-os.environ["HF_HUB_DISABLE_XET"] = "1"
 os.environ["HF_HUB_DISABLE_TELEMETRY"] = "1"
+
+# --- Pin huggingface_hub to a pre-xet version ---
+# huggingface_hub >= 0.26 has xet integration BUILT IN — even with hf-xet
+# package uninstalled and HF_HUB_DISABLE_XET=1, it still routes downloads
+# through xet-bridge-us CDN, which is currently returning 403
+# (SignatureError: invalid key pair id) — an HF-side infrastructure bug.
+# huggingface_hub 0.24.7 is the last version BEFORE xet was integrated,
+# AND it still has is_offline_mode (removed in 0.25+). So this single pin
+# fixes BOTH problems at once.
+subprocess.run([sys.executable, "-m", "pip", "install", "-q",
+    "huggingface_hub==0.24.7", "datasets==2.21.0"], check=True)
 
 # Install deps (idempotent)
 subprocess.run([sys.executable, "-m", "pip", "install", "-q",
-    "peft>=0.13.0", "datasets>=3.0.0", "accelerate>=1.0.0",
+    "peft>=0.13.0", "accelerate>=1.0.0",
     "sentencepiece", "protobuf", "packaging"], check=True)
 # torchao breaks numpy ABI on Kaggle — remove it
 subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "torchao"], check=False)
-# hf-xet is what routes downloads through the xet CDN that 403s. Remove it
-# so huggingface_hub falls back to classic HTTPS download.
+# hf-xet package (if present) hijacks download routing — remove it
 subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "hf-xet"], check=False)
 # Install/refresh avr from git
 subprocess.run([sys.executable, "-m", "pip", "install", "-q", "--no-deps",
     "git+https://github.com/ARYAN2302/tiny-cl.git"], check=True)
-
-# --- Shim is_offline_mode BEFORE importing transformers ---
-# transformers <= 4.44 imports is_offline_mode from huggingface_hub, but
-# huggingface_hub >= 0.25 removed it. Patch it back in.
-import huggingface_hub
-if not hasattr(huggingface_hub, "is_offline_mode"):
-    from huggingface_hub.constants import HF_HUB_OFFLINE
-    huggingface_hub.is_offline_mode = lambda: bool(HF_HUB_OFFLINE)
 
 # --- Numpy ABI patch: transformers thinks torch>=2.6 needs numpy 2.x ---
 import transformers.utils.import_utils as _iu
