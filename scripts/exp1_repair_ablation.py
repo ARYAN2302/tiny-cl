@@ -8,42 +8,34 @@ Experiment 1: Repair Method Ablation — "Is PPL-gating the key innovation?"
   D: TIES-merge repair (PPL-gated, TIES sign-election)
   E: Task Arithmetic repair (PPL-gated, task vector subtraction)
 
-Uses avr.run() with custom repair_fn for conditions D and E.
+Datasets are downloaded as parquet directly from hf-mirror.com using urllib,
+bypassing HuggingFace's broken xet CDN entirely. No `datasets` library, no
+`huggingface_hub` for data loading. The `datasets` library's fsspec resolver
+was the leak — it ignored HF_ENDPOINT and hit huggingface.co directly.
 """
 # ============================================================================
 # BOOTSTRAP — must happen before any HF/transformers import
 # ============================================================================
-import os, sys, subprocess
+import os, sys, subprocess, urllib.request, json, shutil
 os.environ["PYDEVD_DISABLE_FILE_VALIDATION"] = "1"
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 os.environ["HF_HUB_DISABLE_TELEMETRY"] = "1"
-
-# --- Route ALL HF traffic through hf-mirror.com ---
-# HuggingFace's main CDN now serves files via xet-bridge-us, which is
-# returning 403 SignatureError on signed URLs. This is server-side —
-# pinning huggingface_hub doesn't help because the resolve endpoint
-# itself 302-redirects to xet-bridge. hf-mirror.com is a community
-# mirror that serves the same files from its own cache without xet.
+# Route model download (Qwen3) through hf-mirror too — main HF is xet-broken
 os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
 
-# Pin huggingface_hub to 0.24.7 (pre-xet integration, has is_offline_mode)
+# Pin huggingface_hub to 0.24.7 (pre-xet, has is_offline_mode for transformers<=4.44)
 subprocess.run([sys.executable, "-m", "pip", "install", "-q",
-    "huggingface_hub==0.24.7", "datasets==2.21.0"], check=True)
-
-# Install deps (idempotent)
-subprocess.run([sys.executable, "-m", "pip", "install", "-q",
+    "huggingface_hub==0.24.7",
     "peft>=0.13.0", "accelerate>=1.0.0",
-    "sentencepiece", "protobuf", "packaging"], check=True)
-# torchao breaks numpy ABI on Kaggle — remove it
+    "sentencepiece", "protobuf", "packaging",
+    "pyarrow"], check=True)
 subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "torchao"], check=False)
-# hf-xet package (if present) hijacks download routing — remove it
 subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "hf-xet"], check=False)
-# Install/refresh avr from git
 subprocess.run([sys.executable, "-m", "pip", "install", "-q", "--no-deps",
     "git+https://github.com/ARYAN2302/tiny-cl.git"], check=True)
 
-# --- Numpy ABI patch: transformers thinks torch>=2.6 needs numpy 2.x ---
+# Numpy ABI patch: transformers thinks torch>=2.6 needs numpy 2.x
 import transformers.utils.import_utils as _iu
 _iu._is_torch_greater_or_equal_than_2_6 = False
 _iu.is_torch_greater_or_equal_than_2_6 = lambda: False
@@ -52,24 +44,47 @@ _iu.is_torch_greater_or_equal_than_2_6 = lambda: False
 # Real imports
 # ============================================================================
 import avr
-from avr.repair import get_lora_state, set_lora_state
-import json, re, random, math, gc, torch, numpy as np
+import re, random, math, gc, torch, numpy as np
 from pathlib import Path
 
 OUTPUT_DIR = Path("/kaggle/working") if os.path.isdir("/kaggle/working") else Path("./output")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+DATA_CACHE = OUTPUT_DIR / "data_cache"
+DATA_CACHE.mkdir(parents=True, exist_ok=True)
 SEED = 42
+MIRROR = "https://hf-mirror.com"
 
 # ============================================================================
-# Data loaders
+# Direct parquet download — no datasets lib, no fsspec, no xet
 # ============================================================================
+def _download(url, dest):
+    dest = Path(dest)
+    if dest.exists() and dest.stat().st_size > 0:
+        return str(dest)
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    print(f"  GET {url}", flush=True)
+    req = urllib.request.Request(url, headers={"User-Agent": "avr-cl/0.1"})
+    with urllib.request.urlopen(req, timeout=300) as r, open(dest, "wb") as f:
+        shutil.copyfileobj(r, f)
+    print(f"  -> {dest.stat().st_size} bytes", flush=True)
+    return str(dest)
+
+def _read_parquet(path):
+    import pyarrow.parquet as pq
+    return pq.read_table(str(path)).to_pylist()
+
+def _hf_parquet_url(repo, subdir, split):
+    """Build a hf-mirror.com parquet URL for a dataset."""
+    return f"{MIRROR}/datasets/{repo}/resolve/main/{subdir}/{split}-00000-of-00001.parquet"
+
 def load_gsm8k(n, split="train"):
-    from datasets import load_dataset
-    ds = load_dataset("openai/gsm8k", "main", split=f"{split}[:{n+100}]")
-    rng = random.Random(SEED)
-    all_ex = list(ds); rng.shuffle(all_ex)
+    fn = "test" if split == "test" else "train"
+    url = _hf_parquet_url("openai/gsm8k", "main", fn)
+    cache = DATA_CACHE / f"gsm8k_{fn}.parquet"
+    rows = _read_parquet(_download(url, cache))
+    rng = random.Random(SEED); rng.shuffle(rows)
     pairs = []
-    for ex in all_ex[:n]:
+    for ex in rows[:n]:
         q = ex["question"]; a = ex["answer"]
         m = re.search(r'####\s*(-?[\d,.]+)', a)
         gold = m.group(1).replace(",", "").strip() if m else a.strip()
@@ -77,15 +92,13 @@ def load_gsm8k(n, split="train"):
     return pairs
 
 def load_math(n, split="train"):
-    from datasets import load_dataset
-    try:
-        ds = load_dataset("EleutherAI/hendrycks_math", "algebra", split=f"{split}[:{n+100}]")
-    except Exception:
-        ds = load_dataset("lighteval/MATH", "algebra", split=f"{split}[:{n+100}]")
-    rng = random.Random(SEED)
-    all_ex = list(ds); rng.shuffle(all_ex)
+    fn = "test" if split == "test" else "train"
+    url = _hf_parquet_url("EleutherAI/hendrycks_math", "algebra", fn)
+    cache = DATA_CACHE / f"math_algebra_{fn}.parquet"
+    rows = _read_parquet(_download(url, cache))
+    rng = random.Random(SEED); rng.shuffle(rows)
     pairs = []
-    for ex in all_ex[:n]:
+    for ex in rows[:n]:
         q = ex["problem"]; sol = ex["solution"]
         m = re.findall(r'\\boxed\{([^}]+)\}', sol)
         gold = m[-1].strip() if m else ""
@@ -96,14 +109,14 @@ def load_math(n, split="train"):
     return pairs
 
 def load_aqua(n, split="train"):
-    from datasets import load_dataset
-    split_name = "validation" if split == "test" else split
-    ds = load_dataset("deepmind/aqua_rat", "raw", split=f"{split_name}[:{n+100}]")
-    rng = random.Random(SEED)
-    all_ex = list(ds); rng.shuffle(all_ex)
+    fn = "validation" if split == "test" else "train"
+    url = _hf_parquet_url("deepmind/aqua_rat", "raw", fn)
+    cache = DATA_CACHE / f"aqua_{fn}.parquet"
+    rows = _read_parquet(_download(url, cache))
+    rng = random.Random(SEED); rng.shuffle(rows)
     pairs = []
     letters = ["A", "B", "C", "D", "E"]
-    for ex in all_ex[:n]:
+    for ex in rows[:n]:
         q = ex["question"]; opts = ex["options"]; correct = ex["correct"]
         rationale = ex.get("rationale", "")
         cleaned = []
@@ -118,12 +131,13 @@ def load_aqua(n, split="train"):
     return pairs
 
 def load_svamp(n, split="train"):
-    from datasets import load_dataset
-    ds = load_dataset("ChilleD/SVAMP", split=f"{split}[:{n+100}]")
-    rng = random.Random(SEED)
-    all_ex = list(ds); rng.shuffle(all_ex)
+    fn = "test" if split == "test" else "train"
+    url = _hf_parquet_url("ChilleD/SVAMP", "data", fn)
+    cache = DATA_CACHE / f"svamp_{fn}.parquet"
+    rows = _read_parquet(_download(url, cache))
+    rng = random.Random(SEED); rng.shuffle(rows)
     pairs = []
-    for ex in all_ex[:n]:
+    for ex in rows[:n]:
         body = ex.get("Body", ""); question = ex.get("Question", "")
         answer = ex.get("Answer", ""); equation = ex.get("Equation", "")
         full_q = f"{body} {question}".strip()
@@ -201,14 +215,11 @@ def repair_ties(model, snapshot, alpha=0.1, device="cuda"):
         delta = p.data - snap_val
         if delta.numel() == 0:
             continue
-        # Trim: zero out bottom 20% by magnitude
         threshold = torch.quantile(delta.abs().flatten().float(), 0.2).to(delta.dtype)
         delta = torch.where(delta.abs() < threshold, torch.zeros_like(delta), delta)
-        # Elect sign: majority sign wins per-tensor
         sign_sum = float(torch.sign(delta).sum().item())
         elected_sign = 1.0 if sign_sum >= 0 else -1.0
         delta = torch.where(torch.sign(delta) == elected_sign, delta, torch.zeros_like(delta))
-        # Merge: walk back toward snapshot along elected direction
         p.data.copy_(p.data - alpha * delta)
         n += 1
     return n
@@ -217,10 +228,6 @@ def repair_task_arithmetic(model, snapshot, alpha=0.1, device="cuda"):
     """Task Arithmetic repair.
     task_vector = current - snapshot
     current <- current - alpha * task_vector
-    (equivalent to: current <- (1-alpha)*current + alpha*snapshot
-     but kept as a separate operator for ablation clarity —
-     the difference vs linear-interp is that alpha here is applied
-     to the raw task vector with no per-step PPL gating variation.)
     """
     n = 0
     for name, p in model.named_parameters():
@@ -240,11 +247,13 @@ print("EXP 1: Repair Method Ablation", flush=True)
 print("A: Naive | B: AVR | C: Ungated | D: TIES | E: TaskArith", flush=True)
 print("="*70, flush=True)
 
-print("\nLoading data (500 ex/task for speed)...", flush=True)
+print("\nLoading data (500 ex/task) from hf-mirror.com parquet...", flush=True)
 gsm8k_tr = load_gsm8k(500); gsm8k_te = load_gsm8k(100, "test")
 math_tr  = load_math(500);  math_te  = load_math(100, "test")
 aqua_tr  = load_aqua(500);  aqua_te  = load_aqua(100, "test")
 svamp_tr = load_svamp(500); svamp_te = load_svamp(100, "test")
+print(f"  loaded: gsm8k={len(gsm8k_tr)}/{len(gsm8k_te)} math={len(math_tr)}/{len(math_te)} "
+      f"aqua={len(aqua_tr)}/{len(aqua_te)} svamp={len(svamp_tr)}/{len(svamp_te)}", flush=True)
 
 tasks_data = [
     ("gsm8k", gsm8k_tr, gsm8k_te),
@@ -277,7 +286,7 @@ def run_condition(label, desc, **kwargs):
     gc.collect()
     if torch.cuda.is_available(): torch.cuda.empty_cache()
 
-# A: Naive — threshold=999 so PPL gate never trips, alpha irrelevant
+# A: Naive — threshold=999 so PPL gate never trips
 run_condition("A_naive", "Naive (no repair)",
     drift_threshold=999.0, repair_alpha=0.0, max_repair_steps=0)
 
@@ -321,7 +330,6 @@ for cond, label in [("A_naive","Naive"),
         print(f"{label:<28} {'FAIL':<10}", flush=True)
 print("-"*58, flush=True)
 
-# Save (strip R-matrix for readability)
 def strip(r):
     if "error" in r: return r
     return {k: v for k, v in r.items() if k != "R"}
