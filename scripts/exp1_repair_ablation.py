@@ -39,7 +39,7 @@ SEED = 42
 # Data loaders (same as exp0, abbreviated)
 def load_gsm8k(n, split="train"):
     from datasets import load_dataset
-    ds = load_dataset("openai/gsm8k", "main", split=split, streaming=True)
+    ds = load_dataset("openai/gsm8k", "main", split=f"{split}[:{n+100}]")
     rng = random.Random(SEED)
     all_ex = list(ds); rng.shuffle(all_ex)
     pairs = []
@@ -53,9 +53,9 @@ def load_gsm8k(n, split="train"):
 def load_math(n, split="train"):
     from datasets import load_dataset
     try:
-        ds = load_dataset("EleutherAI/hendrycks_math", "algebra", split=split, streaming=True)
+        ds = load_dataset("EleutherAI/hendrycks_math", "algebra", split=f"{split}[:{n+100}]")
     except:
-        ds = load_dataset("lighteval/MATH", "algebra", split=split, streaming=True)
+        ds = load_dataset("lighteval/MATH", "algebra", split=f"{split}[:{n+100}]")
     rng = random.Random(SEED)
     all_ex = list(ds); rng.shuffle(all_ex)
     pairs = []
@@ -72,7 +72,7 @@ def load_math(n, split="train"):
 def load_aqua(n, split="train"):
     from datasets import load_dataset
     split_name = "validation" if split == "test" else split
-    ds = load_dataset("deepmind/aqua_rat", "raw", split=split_name, streaming=True)
+    ds = load_dataset("deepmind/aqua_rat", "raw", split=f"{split_name}[:{n+100}]")
     rng = random.Random(SEED)
     all_ex = list(ds); rng.shuffle(all_ex)
     pairs = []
@@ -92,7 +92,7 @@ def load_aqua(n, split="train"):
 
 def load_svamp(n, split="train"):
     from datasets import load_dataset
-    ds = load_dataset("ChilleD/SVAMP", split=split, streaming=True)
+    ds = load_dataset("ChilleD/SVAMP", split=f"{split}[:{n+100}]")
     rng = random.Random(SEED)
     all_ex = list(ds); rng.shuffle(all_ex)
     pairs = []
