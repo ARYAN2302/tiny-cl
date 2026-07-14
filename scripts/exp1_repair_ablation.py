@@ -14,6 +14,7 @@ import os
 os.environ["PYDEVD_DISABLE_FILE_VALIDATION"] = "1"
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
+os.environ["HF_HUB_DISABLE_XET"] = "1"
 
 import subprocess, sys
 subprocess.run([sys.executable, "-m", "pip", "install", "-q",
