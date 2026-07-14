@@ -19,14 +19,15 @@ os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 os.environ["HF_HUB_DISABLE_TELEMETRY"] = "1"
 
-# --- Pin huggingface_hub to a pre-xet version ---
-# huggingface_hub >= 0.26 has xet integration BUILT IN — even with hf-xet
-# package uninstalled and HF_HUB_DISABLE_XET=1, it still routes downloads
-# through xet-bridge-us CDN, which is currently returning 403
-# (SignatureError: invalid key pair id) — an HF-side infrastructure bug.
-# huggingface_hub 0.24.7 is the last version BEFORE xet was integrated,
-# AND it still has is_offline_mode (removed in 0.25+). So this single pin
-# fixes BOTH problems at once.
+# --- Route ALL HF traffic through hf-mirror.com ---
+# HuggingFace's main CDN now serves files via xet-bridge-us, which is
+# returning 403 SignatureError on signed URLs. This is server-side —
+# pinning huggingface_hub doesn't help because the resolve endpoint
+# itself 302-redirects to xet-bridge. hf-mirror.com is a community
+# mirror that serves the same files from its own cache without xet.
+os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
+
+# Pin huggingface_hub to 0.24.7 (pre-xet integration, has is_offline_mode)
 subprocess.run([sys.executable, "-m", "pip", "install", "-q",
     "huggingface_hub==0.24.7", "datasets==2.21.0"], check=True)
 
