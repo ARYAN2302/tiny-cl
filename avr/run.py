@@ -68,6 +68,8 @@ def run(model: str,
     tasks_data = {t[0]: {"train": t[1], "eval": t[2]} for t in tasks}
     T = len(task_order)
 
+    _do_repair = repair_fn if repair_fn is not None else repair
+
     print(f"\n{'='*70}", flush=True)
     print(f"avr-cl | Model: {model} | Tasks: {task_order}", flush=True)
     print(f"LoRA r={lora_rank} | Two-stream: {two_stream} | Seed: {seed}", flush=True)
@@ -85,8 +87,6 @@ def run(model: str,
 
     if two_stream:
         neo_state = get_lora_state(model_obj)
-
-    _do_repair = repair_fn if repair_fn is not None else repair
 
     for ti, task in enumerate(task_order):
         print(f"\n{'='*60}\n  Task {ti+1}/{T}: {task}\n{'='*60}", flush=True)
