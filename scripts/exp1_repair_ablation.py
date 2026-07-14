@@ -8,10 +8,11 @@ Experiment 1: Repair Method Ablation — "Is PPL-gating the key innovation?"
   D: TIES-merge repair (PPL-gated, TIES sign-election)
   E: Task Arithmetic repair (PPL-gated, task vector subtraction)
 
-Datasets are downloaded as parquet directly from hf-mirror.com using urllib,
-bypassing HuggingFace's broken xet CDN entirely. No `datasets` library, no
-`huggingface_hub` for data loading. The `datasets` library's fsspec resolver
-was the leak — it ignored HF_ENDPOINT and hit huggingface.co directly.
+Datasets are downloaded as JSON/JSONL directly from GitHub raw URLs via
+urllib, bypassing HuggingFace entirely. The model (Qwen3-1.7B) is
+downloaded from ModelScope (Alibaba's model hub — they make Qwen, so it's
+the canonical source, and it doesn't use xet CDN). No HuggingFace
+infrastructure is involved in any download.
 """
 # ============================================================================
 # BOOTSTRAP — must happen before any HF/transformers import
@@ -21,23 +22,36 @@ os.environ["PYDEVD_DISABLE_FILE_VALIDATION"] = "1"
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 os.environ["HF_HUB_DISABLE_TELEMETRY"] = "1"
-# Route model download (Qwen3) through hf-mirror too — main HF is xet-broken
+# Route ALL HF traffic (model download) through hf-mirror.com.
+# Newer huggingface_hub (>=0.28) respects this properly — no xet, no 403.
+# xet only kicks in on huggingface.co itself; mirrors don't use it.
 os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
 
-# Pin huggingface_hub to 0.24.7 (pre-xet, has is_offline_mode for transformers<=4.44)
+# Install deps — do NOT pin huggingface_hub. Let pip resolve it to match
+# the installed transformers (5.0.0 needs hub>=1.3.0). Hub 0.24.7 was too
+# old and didn't respect HF_ENDPOINT for metadata checks.
+# Install modelscope for model download — bypasses HF xet CDN entirely.
 subprocess.run([sys.executable, "-m", "pip", "install", "-q",
-    "huggingface_hub==0.24.7",
     "peft>=0.13.0", "accelerate>=1.0.0",
-    "sentencepiece", "protobuf", "packaging"], check=True)
+    "sentencepiece", "protobuf", "packaging",
+    "modelscope"], check=True)
+# torchao breaks numpy ABI on Kaggle — remove it
 subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "torchao"], check=False)
+# hf-xet hijacks download routing — remove it (belt and suspenders)
 subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "hf-xet"], check=False)
+# Install/refresh avr from git
 subprocess.run([sys.executable, "-m", "pip", "install", "-q", "--no-deps",
     "git+https://github.com/ARYAN2302/tiny-cl.git"], check=True)
 
-# Numpy ABI patch: transformers thinks torch>=2.6 needs numpy 2.x
-import transformers.utils.import_utils as _iu
-_iu._is_torch_greater_or_equal_than_2_6 = False
-_iu.is_torch_greater_or_equal_than_2_6 = lambda: False
+# Numpy ABI patch — only needed for older transformers that think torch>=2.6
+# requires numpy 2.x. Wrapped in try/except because transformers 5.0.0 may
+# not have this attribute.
+try:
+    import transformers.utils.import_utils as _iu
+    _iu._is_torch_greater_or_equal_than_2_6 = False
+    _iu.is_torch_greater_or_equal_than_2_6 = lambda: False
+except (AttributeError, ImportError):
+    pass
 
 # ============================================================================
 # Real imports
@@ -270,13 +284,19 @@ print("EXP 1: Repair Method Ablation", flush=True)
 print("A: Naive | B: AVR | C: Ungated | D: TIES | E: TaskArith", flush=True)
 print("="*70, flush=True)
 
-print("\nLoading data (500 ex/task) from hf-mirror.com parquet...", flush=True)
+print("\nLoading data (500 ex/task) from GitHub raw...", flush=True)
 gsm8k_tr = load_gsm8k(500); gsm8k_te = load_gsm8k(100, "test")
 math_tr  = load_math(500);  math_te  = load_math(100, "test")
 aqua_tr  = load_aqua(500);  aqua_te  = load_aqua(100, "test")
 svamp_tr = load_svamp(500); svamp_te = load_svamp(100, "test")
 print(f"  loaded: gsm8k={len(gsm8k_tr)}/{len(gsm8k_te)} math={len(math_tr)}/{len(math_te)} "
       f"aqua={len(aqua_tr)}/{len(aqua_te)} svamp={len(svamp_tr)}/{len(svamp_te)}", flush=True)
+
+# Download model from ModelScope (Alibaba's hub — hosts Qwen, no xet, no HF)
+print("\nDownloading Qwen3-1.7B from ModelScope...", flush=True)
+from modelscope import snapshot_download
+MODEL_PATH = snapshot_download("Qwen/Qwen3-1.7B", cache_dir=OUTPUT_DIR / "model_cache")
+print(f"  Model cached at: {MODEL_PATH}", flush=True)
 
 tasks_data = [
     ("gsm8k", gsm8k_tr, gsm8k_te),
@@ -286,7 +306,7 @@ tasks_data = [
 ]
 
 COMMON = dict(
-    model="Qwen/Qwen3-1.7B",
+    model=MODEL_PATH,
     tasks=tasks_data,
     lora_rank=128,
     lora_targets=["q_proj","k_proj","v_proj","o_proj"],
