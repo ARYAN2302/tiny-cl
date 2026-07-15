@@ -102,10 +102,11 @@ def install_deps(extra=None, transformers_pin=None):
         "protobuf",
         "packaging",
         "huggingface_hub>=0.26.0",  # needed for HF_HUB_DISABLE_XET support
-        "modelscope",               # REQUIRED — only reliable model source on Kaggle
+        "huggingface_hub>=0.26.0",  # needed for HF_HUB_DISABLE_XET support
     ]
     # Optional packages — if they fail, we continue
-    optional_pkgs = []
+    # modelscope is optional because we download directly from ModelScope HTTP API
+    optional_pkgs = ["modelscope"]
     if transformers_pin:
         optional_pkgs.append(f"transformers{transformers_pin}")
     if extra:
@@ -185,6 +186,51 @@ def _inline_avr_package(install_dir="/tmp/avr-inline"):
     print(f"[bootstrap] avr package inlined to {install_dir}", flush=True)
     return "inlined"
 
+def _modelscope_download_direct(model_id, cache_dir):
+    """Download model files directly from ModelScope HTTP API using urllib.
+    No modelscope pip package needed — just stdlib urllib.
+    ModelScope API: https://www.modelscope.cn/api/v1/models/{model_id}/repo?Revision=master&FilePath={path}
+    """
+    import urllib.request, json
+    cache_dir = Path(cache_dir)
+    # ModelScope stores under models/{org}--{name}/snapshots/master/
+    org, name = model_id.split("/", 1)
+    model_dir = cache_dir / "models" / f"{org}--{name}" / "snapshots" / "master"
+    model_dir.mkdir(parents=True, exist_ok=True)
+
+    # Step 1: get file list
+    list_url = f"https://www.modelscope.cn/api/v1/models/{model_id}/repo/files?Revision=master"
+    print(f"  [ms-direct] Fetching file list...", flush=True)
+    req = urllib.request.Request(list_url, headers={"User-Agent": "avr-cl/0.1"})
+    with urllib.request.urlopen(req, timeout=60) as r:
+        resp = json.loads(r.read())
+    files = resp.get("Data", {}).get("Files", [])
+    if not files:
+        raise RuntimeError(f"No files found for {model_id} on ModelScope")
+
+    # Step 2: download each file (skip hidden files like .gitattributes)
+    for f in files:
+        path = f["Path"]
+        size = f.get("Size", 0)
+        if path.startswith(".") or size == 0:
+            continue
+        dest = model_dir / path
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        if dest.exists() and dest.stat().st_size == size:
+            print(f"  [ms-direct] {path} (cached, {size:,} bytes)", flush=True)
+            continue
+        dl_url = f"https://www.modelscope.cn/api/v1/models/{model_id}/repo?Revision=master&FilePath={path}"
+        print(f"  [ms-direct] Downloading {path} ({size:,} bytes)...", flush=True)
+        req = urllib.request.Request(dl_url, headers={"User-Agent": "avr-cl/0.1"})
+        with urllib.request.urlopen(req, timeout=600) as r, open(dest, "wb") as out:
+            shutil.copyfileobj(r, out)
+        print(f"  [ms-direct]   OK ({dest.stat().st_size:,} bytes)", flush=True)
+
+    print(f"  [ms-direct] All files downloaded to {model_dir}", flush=True)
+    return str(model_dir)
+
+
+
 def download_model(model_id, cache_dir, prefer="modelscope"):
     """
     Download a model snapshot. Returns the local path.
@@ -203,7 +249,18 @@ def download_model(model_id, cache_dir, prefer="modelscope"):
     cache_dir.mkdir(parents=True, exist_ok=True)
     errors = []
 
-    # --- Source 1: ModelScope (optional — may not be installed) ---
+    # --- Source 1: Direct HTTP from ModelScope API (no pip package) ---
+    if prefer != "hf":
+        try:
+            path = _modelscope_download_direct(model_id, cache_dir)
+            print(f"[download] ModelScope direct HTTP OK: {path}", flush=True)
+            return path
+        except Exception as e:
+            msg = f"{type(e).__name__}: {str(e)[:200]}"
+            errors.append(f"modelscope-direct: {msg}")
+            print(f"[download] ModelScope direct HTTP failed: {msg}", flush=True)
+
+    # --- Source 2: ModelScope (optional — may not be installed) ---
     if prefer != "hf":
         try:
             from modelscope import snapshot_download as ms_download
