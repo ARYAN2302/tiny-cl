@@ -276,9 +276,9 @@ def patch_transformers_torch26():
     except (AttributeError, ImportError):
         pass
 
-install_deps(transformers_pin=">=4.57.0,<5.0.0")                       # peft, accelerate, modelscope, huggingface_hub, ...
-_inline_avr_package()                               # inlined avr source, no network needed
-patch_transformers_torch26()        # work around torch>=2.6 + transformers check
+install_deps()                                     # same as exp5 — no transformers pin (lets ModelScope install)
+_inline_avr_package()                              # inlined avr source, no network needed
+patch_transformers_torch26()                       # work around torch>=2.6 + transformers check
 
 # ============================================================================
 # Imports
