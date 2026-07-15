@@ -1,0 +1,51 @@
+{
+  "experiment": "exp6_baselines_lfm",
+  "model": "liquidai/LFM2.5-1.2B-Instruct",
+  "config": {
+    "lora_rank": 128,
+    "examples_per_task": 500,
+    "epochs": 3,
+    "tasks": ["gsm8k", "math", "aqua", "svamp"],
+    "seed": 42,
+    "lora_targets": ["q_proj", "k_proj", "v_proj", "out_proj", "in_proj", "w1", "w3"]
+  },
+  "results": {
+    "naive": {
+      "acc": 0.198,
+      "bwt": -0.280,
+      "ff": 0.280,
+      "repairs": 0,
+      "R": [
+        [0.510, 0, 0, 0],
+        [0.390, 0.200, 0, 0],
+        [0.420, 0.110, 0.300, 0],
+        [0.050, 0.060, 0.060, 0.620]
+      ]
+    },
+    "avr": {
+      "acc": 0.357,
+      "bwt": -0.150,
+      "ff": 0.180,
+      "repairs": 30,
+      "R": [
+        [0.510, 0, 0, 0],
+        [0.580, 0.280, 0, 0],
+        [0.500, 0.300, 0.370, 0],
+        [0.200, 0.260, 0.250, 0.720]
+      ]
+    },
+    "ewc": {
+      "acc": 0.232,
+      "bwt": -0.267,
+      "ff": 0.267,
+      "repairs": 0,
+      "R": [
+        [0.510, 0, 0, 0],
+        [0.430, 0.230, 0, 0],
+        [0.380, 0.190, 0.260, 0],
+        [0.080, 0.060, 0.060, 0.730]
+      ]
+    }
+  },
+  "verdict": "AVR: 1.9x less forgetting than Naive (BWT -0.150 vs -0.280), 1.8x higher accuracy (0.357 vs 0.198). EWC barely better than Naive (-0.267 vs -0.280). AVR beats EWC on every metric. 30 repairs fired."
+}

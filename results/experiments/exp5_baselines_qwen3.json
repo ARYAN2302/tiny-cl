@@ -1,0 +1,42 @@
+{
+  "experiment": "exp5_baselines_qwen3",
+  "model": "Qwen/Qwen3-1.7B",
+  "config": {
+    "lora_rank": 128,
+    "examples_per_task": 500,
+    "epochs": 3,
+    "tasks": ["gsm8k", "math", "aqua", "svamp"],
+    "seed": 42
+  },
+  "results": {
+    "naive": {
+      "acc": 0.240,
+      "bwt": -0.320,
+      "ff": 0.333,
+      "repairs": 0,
+      "R": [
+        [0.610, 0, 0, 0],
+        [0.560, 0.190, 0, 0],
+        [0.490, 0.230, 0.400, 0],
+        [0.120, 0.070, 0.050, 0.720]
+      ]
+    },
+    "avr": {
+      "acc": 0.522,
+      "bwt": -0.037,
+      "ff": 0.040,
+      "repairs": 27,
+      "R": [
+        [0.610, 0, 0, 0],
+        [0.530, 0.240, 0, 0],
+        [0.590, 0.250, 0.520, 0],
+        [0.540, 0.240, 0.480, 0.830]
+      ]
+    },
+    "ewc": {
+      "status": "failed_bug",
+      "note": "task_order = [t[0] for t in tasks_data] got first char of dict keys. Fixed in commit 7a0f170. Rerun with exp5_ewc_only.py"
+    }
+  },
+  "verdict": "AVR: 8.6x less forgetting than Naive (BWT -0.037 vs -0.320), 2.2x higher accuracy (0.522 vs 0.240). 27 repairs fired across 3 task transitions."
+}
