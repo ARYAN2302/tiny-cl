@@ -28,6 +28,7 @@ LFM2-specific notes:
 # ===========================================================================
 import os
 import sys
+import re
 import subprocess
 import urllib.request
 import shutil
@@ -59,38 +60,87 @@ REPO_RAW = "https://raw.githubusercontent.com/ARYAN2302/tiny-cl/main"
 # ---------------------------------------------------------------------------
 # 1. Dependency install
 # ---------------------------------------------------------------------------
-def _pip(*args, check=True, timeout=600):
-    """Run pip quietly with a timeout."""
-    cmd = [sys.executable, "-m", "pip", "install", "-q", *args]
-    return subprocess.run(cmd, check=check, capture_output=True,
-                          text=True, timeout=timeout)
+def _pip(*args, check=True, timeout=600, quiet=True):
+    """Run pip with a timeout. On failure, print captured stderr before raising."""
+    flags = ["-q"] if quiet else []
+    cmd = [sys.executable, "-m", "pip", "install", *flags, *args]
+    r = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+    if r.returncode != 0 and check:
+        # Surface the actual pip error — the -q flag hides it by default
+        print(f"[bootstrap] pip FAILED: {' '.join(args)}", flush=True)
+        print(f"[bootstrap] pip returncode: {r.returncode}", flush=True)
+        if r.stderr:
+            # Print last 2000 chars of stderr (the useful part)
+            print("[bootstrap] pip stderr (tail):\n" + r.stderr[-2000:], flush=True)
+        if r.stdout:
+            print("[bootstrap] pip stdout (tail):\n" + r.stdout[-1000:], flush=True)
+        raise subprocess.CalledProcessError(r.returncode, cmd, r.stdout, r.stderr)
+    return r
+
+
+def _pip_maybe(*args, timeout=600):
+    """Run pip, return True on success, False on failure (no raise)."""
+    try:
+        r = _pip(*args, check=False, timeout=timeout)
+        return r.returncode == 0
+    except subprocess.TimeoutExpired:
+        print(f"[bootstrap] pip timed out: {' '.join(args)}", flush=True)
+        return False
 
 
 def install_deps(extra=None, transformers_pin=None):
     """
-    Install common deps for exp5/exp6.
+    Install common deps for exp5/exp6. Resilient to individual package failures.
+
+    Strategy:
+      1. Try installing all packages in one batch (fast path).
+      2. If that fails, install them one at a time so a single bad package
+         doesn't kill the whole run. Print a warning for each failure.
+      3. modelscope is OPTIONAL — if it fails to install, we skip it and
+         rely on the HF fallback in download_model(). Same for transformers_pin.
 
     Args:
         extra: list of extra pip specs to install.
         transformers_pin: e.g. ">=4.57.0,<5.0.0" for LFM2.5 support.
                          If None, installs whatever is already there (no force).
     """
-    pkgs = [
+    # Core packages — these are required and must all install.
+    core_pkgs = [
         "peft>=0.13.0",
         "accelerate>=1.0.0",
         "sentencepiece",
         "protobuf",
         "packaging",
-        "modelscope",
         "huggingface_hub>=0.26.0",  # needed for HF_HUB_DISABLE_XET support
     ]
+    # Optional packages — if they fail, we continue (download_model has fallbacks)
+    optional_pkgs = ["modelscope"]
     if transformers_pin:
-        pkgs.append(f"transformers{transformers_pin}")
+        optional_pkgs.append(f"transformers{transformers_pin}")
     if extra:
-        pkgs.extend(extra)
+        optional_pkgs.extend(extra)
 
     print("[bootstrap] Installing deps...", flush=True)
-    _pip(*pkgs)
+
+    # Try batch install of core + optional first (fast path)
+    all_pkgs = core_pkgs + optional_pkgs
+    if _pip_maybe(*all_pkgs):
+        print("[bootstrap] All deps installed in one batch.", flush=True)
+    else:
+        # Batch failed — install core one-by-one (required), then optional (best-effort)
+        print("[bootstrap] Batch install failed, installing individually...", flush=True)
+        for pkg in core_pkgs:
+            if not _pip_maybe(pkg):
+                # Core package failed — this is fatal, but try without version pin
+                pkg_name = re.split(r"[><=!]", pkg, maxsplit=1)[0]
+                print(f"[bootstrap] WARNING: {pkg} failed, trying {pkg_name} unpinned...", flush=True)
+                if not _pip_maybe(pkg_name):
+                    raise RuntimeError(f"Required package {pkg_name} failed to install")
+        for pkg in optional_pkgs:
+            if not _pip_maybe(pkg):
+                pkg_name = re.split(r"[><=!]", pkg, maxsplit=1)[0]
+                print(f"[bootstrap] WARNING: optional {pkg} failed ({pkg_name} unavailable). "
+                      f"Will use fallbacks.", flush=True)
 
     # torchao crashes on T4; hf-xet is what causes the 403s. Kill both.
     subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "torchao"],
@@ -252,13 +302,16 @@ def download_model(model_id, cache_dir, prefer="modelscope"):
     cache_dir.mkdir(parents=True, exist_ok=True)
     errors = []
 
-    # --- Source 1: ModelScope ---
+    # --- Source 1: ModelScope (optional — may not be installed) ---
     if prefer != "hf":
         try:
             from modelscope import snapshot_download as ms_download
             path = ms_download(model_id, cache_dir=str(cache_dir))
             print(f"[download] ModelScope OK: {path}", flush=True)
             return path
+        except ImportError:
+            errors.append("modelscope: not installed (optional, skipped)")
+            print(f"[download] ModelScope: not installed, skipping to HF", flush=True)
         except Exception as e:
             msg = f"{type(e).__name__}: {str(e)[:200]}"
             errors.append(f"modelscope: {msg}")
@@ -313,9 +366,9 @@ def patch_transformers_torch26():
     except (AttributeError, ImportError):
         pass
 
-install_deps(transformers_pin=">=4.57.0,<5.0.0")  # peft, accelerate, modelscope, huggingface_hub, ...
-install_avr()                                     # 3 fallback strategies for the avr package
-patch_transformers_torch26()                      # work around torch>=2.6 + transformers check
+install_deps(transformers_pin=">=4.57.0,<5.0.0")                       # peft, accelerate, modelscope, huggingface_hub, ...
+install_avr()                        # 3 fallback strategies for the avr package
+patch_transformers_torch26()        # work around torch>=2.6 + transformers check
 
 # ============================================================================
 # Imports
