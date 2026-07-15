@@ -15,7 +15,7 @@ def load_model(model_id: str, lora_rank: int = 128, lora_alpha: int = 128,
 
     model = AutoModelForCausalLM.from_pretrained(
         model_id, dtype=torch.bfloat16, device_map=device,
-        attn_implementation="eager")
+        attn_implementation="sdpa")
 
     if lora_targets is None:
         lora_targets = detect_lora_targets(model)
