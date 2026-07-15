@@ -8,51 +8,43 @@ Same math stream (GSM8K→MATH→AQuA→SVAMP), 500 examples/task.
   - EWC: Elastic Weight Consolidation (Fisher-weighted L2 penalty)
 
 Datasets: GitHub raw (no HuggingFace)
-Model: ModelScope snapshot_download (no HuggingFace CDN)
+Model: ModelScope -> HF mirror -> direct HF (auto-fallback via _bootstrap)
+Package: pip-git -> git-clone -> raw-inline (auto-fallback via _bootstrap)
 """
 # ============================================================================
-# BOOTSTRAP
+# BOOTSTRAP — robust install + model download (see scripts/_bootstrap.py)
 # ============================================================================
-import os, sys, subprocess, urllib.request, json, shutil
-os.environ["PYDEVD_DISABLE_FILE_VALIDATION"] = "1"
-os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
-os.environ["TOKENIZERS_PARALLELISM"] = "false"
-os.environ["HF_HUB_DISABLE_TELEMETRY"] = "1"
-os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
-
-subprocess.run([sys.executable, "-m", "pip", "install", "-q",
-    "peft>=0.13.0", "accelerate>=1.0.0",
-    "sentencepiece", "protobuf", "packaging",
-    "modelscope"], check=True)
-subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "torchao"], check=False)
-subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "hf-xet"], check=False)
-subprocess.run([sys.executable, "-m", "pip", "install", "-q", "--no-deps",
-    "git+https://github.com/ARYAN2302/tiny-cl.git"], check=True)
-
+import os, sys, tempfile, urllib.request
 try:
-    import transformers.utils.import_utils as _iu
-    _iu._is_torch_greater_or_equal_than_2_6 = False
-    _iu.is_torch_greater_or_equal_than_2_6 = lambda: False
-except (AttributeError, ImportError):
-    pass
+    # If running from a clone of the repo, _bootstrap.py is right here.
+    from _bootstrap import (install_deps, install_avr, download_model,
+                            patch_transformers_torch26, OUTPUT_DIR, DATA_CACHE)
+except ImportError:
+    # Kaggle workflow: paste this script alone. Auto-fetch _bootstrap.py.
+    _src = "https://raw.githubusercontent.com/ARYAN2302/tiny-cl/main/scripts/_bootstrap.py"
+    _dst = os.path.join(tempfile.gettempdir(), "_bootstrap.py")
+    print(f"[exp5] fetching _bootstrap.py from {_src}", flush=True)
+    urllib.request.urlretrieve(_src, _dst)
+    sys.path.insert(0, tempfile.gettempdir())
+    from _bootstrap import (install_deps, install_avr, download_model,
+                            patch_transformers_torch26, OUTPUT_DIR, DATA_CACHE)
+
+install_deps()                       # peft, accelerate, modelscope, huggingface_hub, ...
+install_avr()                        # 3 fallback strategies for the avr package
+patch_transformers_torch26()        # work around torch>=2.6 + transformers check
 
 # ============================================================================
 # Imports
 # ============================================================================
 import avr
 from avr.repair import get_lora_state, set_lora_state
-import re, random, math, gc, json, time, copy
+import re, random, math, gc, json, time, copy, shutil
 import torch
 import torch.nn.functional as F
 import numpy as np
 from torch.utils.data import Dataset, DataLoader
 from pathlib import Path
-from modelscope import snapshot_download
 
-OUTPUT_DIR = Path("/kaggle/working") if os.path.isdir("/kaggle/working") else Path("./output")
-OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-DATA_CACHE = OUTPUT_DIR / "data_cache"
-DATA_CACHE.mkdir(parents=True, exist_ok=True)
 SEED = 42
 
 MODEL_ID = "Qwen/Qwen3-1.7B"
@@ -356,8 +348,8 @@ tasks_list = [("gsm8k", tasks_data["gsm8k"]["train"], tasks_data["gsm8k"]["eval"
               ("aqua",  tasks_data["aqua"]["train"],  tasks_data["aqua"]["eval"]),
               ("svamp", tasks_data["svamp"]["train"], tasks_data["svamp"]["eval"])]
 
-print("\nDownloading Qwen3-1.7B from ModelScope...", flush=True)
-MODEL_PATH = snapshot_download(MODEL_ID, cache_dir=OUTPUT_DIR / "model_cache")
+print(f"\nDownloading {MODEL_ID} (ModelScope -> HF mirror -> direct HF)...", flush=True)
+MODEL_PATH = download_model(MODEL_ID, cache_dir=OUTPUT_DIR / "model_cache")
 print(f"  Cached: {MODEL_PATH}", flush=True)
 
 results = {}

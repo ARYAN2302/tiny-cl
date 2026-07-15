@@ -11,8 +11,9 @@ Model: liquidai/LFM2.5-1.2B-Instruct (LiquidAI hybrid conv+attention, 1.2B)
   - LFM2.5 series: newer, more capable, instruct-tuned
   - Same Lfm2ForCausalLM architecture as LFM2 (10 conv + 6 attention layers)
   - Clean tokenizer (PreTrainedTokenizerFast), chat_template.jinja present
-Download: ModelScope (no HuggingFace CDN)
+Download: ModelScope -> HF mirror -> direct HF (auto-fallback via _bootstrap)
 Datasets: GitHub raw (no HuggingFace)
+Package: pip-git -> git-clone -> raw-inline (auto-fallback via _bootstrap)
 
 LFM2-specific notes:
   - attention output projection is "out_proj", NOT "o_proj"
@@ -21,50 +22,40 @@ LFM2-specific notes:
   - LoRA targets include conv layers (in_proj, out_proj) + attn (q/k/v/out_proj)
 """
 # ============================================================================
-# BOOTSTRAP
+# BOOTSTRAP — robust install + model download (see scripts/_bootstrap.py)
 # ============================================================================
-import os, sys, subprocess, urllib.request, json, shutil
-os.environ["PYDEVD_DISABLE_FILE_VALIDATION"] = "1"
-os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
-os.environ["TOKENIZERS_PARALLELISM"] = "false"
-os.environ["HF_HUB_DISABLE_TELEMETRY"] = "1"
-os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
-
-# Install deps — pin transformers >=4.57 for LFM2.5 support (needs 4.57.2)
-subprocess.run([sys.executable, "-m", "pip", "install", "-q",
-    "peft>=0.13.0", "accelerate>=1.0.0",
-    "sentencepiece", "protobuf", "packaging",
-    "modelscope",
-    "transformers>=4.57.0,<5.0.0"], check=True)
-subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "torchao"], check=False)
-subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "hf-xet"], check=False)
-subprocess.run([sys.executable, "-m", "pip", "install", "-q", "--no-deps",
-    "git+https://github.com/ARYAN2302/tiny-cl.git"], check=True)
-
+import os, sys, tempfile, urllib.request
 try:
-    import transformers.utils.import_utils as _iu
-    _iu._is_torch_greater_or_equal_than_2_6 = False
-    _iu.is_torch_greater_or_equal_than_2_6 = lambda: False
-except (AttributeError, ImportError):
-    pass
+    # If running from a clone of the repo, _bootstrap.py is right here.
+    from _bootstrap import (install_deps, install_avr, download_model,
+                            patch_transformers_torch26, OUTPUT_DIR, DATA_CACHE)
+except ImportError:
+    # Kaggle workflow: paste this script alone. Auto-fetch _bootstrap.py.
+    _src = "https://raw.githubusercontent.com/ARYAN2302/tiny-cl/main/scripts/_bootstrap.py"
+    _dst = os.path.join(tempfile.gettempdir(), "_bootstrap.py")
+    print(f"[exp6] fetching _bootstrap.py from {_src}", flush=True)
+    urllib.request.urlretrieve(_src, _dst)
+    sys.path.insert(0, tempfile.gettempdir())
+    from _bootstrap import (install_deps, install_avr, download_model,
+                            patch_transformers_torch26, OUTPUT_DIR, DATA_CACHE)
+
+# LFM2.5 needs transformers >= 4.57
+install_deps(transformers_pin=">=4.57.0,<5.0.0")
+install_avr()                        # 3 fallback strategies for the avr package
+patch_transformers_torch26()        # work around torch>=2.6 + transformers check
 
 # ============================================================================
 # Imports
 # ============================================================================
 import avr
 from avr.repair import get_lora_state, set_lora_state
-import re, random, math, gc, json, time, copy
+import re, random, math, gc, json, time, copy, shutil
 import torch
 import torch.nn.functional as F
 import numpy as np
 from torch.utils.data import Dataset, DataLoader
 from pathlib import Path
-from modelscope import snapshot_download
 
-OUTPUT_DIR = Path("/kaggle/working") if os.path.isdir("/kaggle/working") else Path("./output")
-OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-DATA_CACHE = OUTPUT_DIR / "data_cache"
-DATA_CACHE.mkdir(parents=True, exist_ok=True)
 SEED = 42
 
 # LFM2.5-1.2B-Instruct — newer, more capable, instruct-tuned
@@ -332,8 +323,8 @@ tasks_data = {
 }
 tasks_list = [(k, tasks_data[k]["train"], tasks_data[k]["eval"]) for k in tasks_data]
 
-print("\nDownloading LFM2.5-1.2B-Instruct from ModelScope...", flush=True)
-MODEL_PATH = snapshot_download(MODEL_ID, cache_dir=OUTPUT_DIR / "model_cache")
+print(f"\nDownloading {MODEL_ID} (ModelScope -> HF mirror -> direct HF)...", flush=True)
+MODEL_PATH = download_model(MODEL_ID, cache_dir=OUTPUT_DIR / "model_cache")
 print(f"  Cached: {MODEL_PATH}", flush=True)
 
 results = {}
