@@ -295,15 +295,59 @@ MATH_URL   = "https://raw.githubusercontent.com/rasbt/math_full_minus_math500/ma
 AQUA_BASE  = "https://raw.githubusercontent.com/google-deepmind/AQuA/master"
 SVAMP_URL  = "https://raw.githubusercontent.com/arkilpatel/SVAMP/main/SVAMP.json"
 
-def _download(url, dest):
+def _raw_to_jsdelivr(url):
+    """Convert a raw.githubusercontent.com URL to cdn.jsdelivr.net/gh/ format.
+    https://raw.githubusercontent.com/USER/REPO/BRANCH/PATH ->
+    https://cdn.jsdelivr.net/gh/USER/REPO@BRANCH/PATH
+    """
+    m = re.match(r"https://raw\.githubusercontent\.com/([^/]+)/([^/]+)/([^/]+)/(.*)", url)
+    if m:
+        user, repo, branch, path = m.groups()
+        return f"https://cdn.jsdelivr.net/gh/{user}/{repo}@{branch}/{path}"
+    return None
+
+
+def _download(url, dest, _max_retries=5):
+    """Download a URL to dest with retries + CDN fallback.
+    Tries raw.githubusercontent.com first (with 5 retries + backoff),
+    then falls back to cdn.jsdelivr.net (different CDN/DNS).
+    """
     dest = Path(dest)
     if dest.exists() and dest.stat().st_size > 0:
         return str(dest)
     dest.parent.mkdir(parents=True, exist_ok=True)
-    req = urllib.request.Request(url, headers={"User-Agent": "avr-cl/0.1"})
-    with urllib.request.urlopen(req, timeout=300) as r, open(dest, "wb") as f:
-        shutil.copyfileobj(r, f)
-    return str(dest)
+
+    urls_to_try = [url]
+    jsdelivr_url = _raw_to_jsdelivr(url)
+    if jsdelivr_url and jsdelivr_url != url:
+        urls_to_try.append(jsdelivr_url)
+
+    last_err = None
+    for try_url in urls_to_try:
+        cdn_name = "raw.githubusercontent" if "raw.githubusercontent" in try_url else "jsdelivr"
+        for attempt in range(_max_retries):
+            try:
+                req = urllib.request.Request(try_url,
+                    headers={"User-Agent": "avr-cl/0.1"})
+                with urllib.request.urlopen(req, timeout=120) as r, open(dest, "wb") as f:
+                    shutil.copyfileobj(r, f)
+                if dest.stat().st_size > 0:
+                    if attempt > 0 or len(urls_to_try) > 1:
+                        print(f"    [download] OK via {cdn_name} (attempt {attempt+1})", flush=True)
+                    return str(dest)
+            except Exception as e:
+                last_err = e
+                wait = 2 ** attempt  # 1, 2, 4, 8, 16 seconds
+                print(f"    [download] {cdn_name} attempt {attempt+1}/{_max_retries} failed: "
+                      f"{type(e).__name__}: {str(e)[:100]}", flush=True)
+                if attempt < _max_retries - 1:
+                    print(f"    [download] retrying in {wait}s...", flush=True)
+                    import time as _time; _time.sleep(wait)
+        print(f"    [download] {cdn_name} exhausted, trying next CDN...", flush=True)
+
+    raise RuntimeError(
+        f"Failed to download {url} after trying {len(urls_to_try)} CDN(s) "
+        f"with {_max_retries} retries each. Last error: {last_err}")
 
 def load_gsm8k(n, split="train"):
     fn = "test" if split == "test" else "train"
