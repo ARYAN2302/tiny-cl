@@ -1,5 +1,5 @@
 """
-Experiment 6: Baselines on LFM2-1.2B — Naive vs AVR vs EWC
+Experiment 6: Baselines on LFM2.5-1.2B-Instruct — Naive vs AVR vs EWC
 
 Same math stream (GSM8K→MATH→AQuA→SVAMP), 500 examples/task.
 3 conditions:
@@ -7,13 +7,16 @@ Same math stream (GSM8K→MATH→AQuA→SVAMP), 500 examples/task.
   - AVR: PPL-gated repair (our method)
   - EWC: Elastic Weight Consolidation (Fisher-weighted L2 penalty)
 
-Model: LiquidAI/LFM2-1.2B (hybrid conv+attention architecture)
+Model: liquidai/LFM2.5-1.2B-Instruct (LiquidAI hybrid conv+attention, 1.2B)
+  - LFM2.5 series: newer, more capable, instruct-tuned
+  - Same Lfm2ForCausalLM architecture as LFM2 (10 conv + 6 attention layers)
+  - Clean tokenizer (PreTrainedTokenizerFast), chat_template.jinja present
 Download: ModelScope (no HuggingFace CDN)
 Datasets: GitHub raw (no HuggingFace)
 
 LFM2-specific notes:
   - attention output projection is "out_proj", NOT "o_proj"
-  - needs transformers >= 4.55 (Lfm2ForCausalLM built-in)
+  - needs transformers >= 4.57 (LFM2.5 config says 4.57.2)
   - use attn_implementation="sdpa" (T4 doesn't support flash_attention_2)
   - LoRA targets include conv layers (in_proj, out_proj) + attn (q/k/v/out_proj)
 """
@@ -27,12 +30,12 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 os.environ["HF_HUB_DISABLE_TELEMETRY"] = "1"
 os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
 
-# Install deps — pin transformers >=4.55 for LFM2 support
+# Install deps — pin transformers >=4.57 for LFM2.5 support (needs 4.57.2)
 subprocess.run([sys.executable, "-m", "pip", "install", "-q",
     "peft>=0.13.0", "accelerate>=1.0.0",
     "sentencepiece", "protobuf", "packaging",
     "modelscope",
-    "transformers>=4.55.0,<5.0.0"], check=True)
+    "transformers>=4.57.0,<5.0.0"], check=True)
 subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "torchao"], check=False)
 subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "hf-xet"], check=False)
 subprocess.run([sys.executable, "-m", "pip", "install", "-q", "--no-deps",
@@ -64,8 +67,11 @@ DATA_CACHE = OUTPUT_DIR / "data_cache"
 DATA_CACHE.mkdir(parents=True, exist_ok=True)
 SEED = 42
 
-# LFM2-1.2B — hybrid conv+attention model
-MODEL_ID = "liquidai/LFM2-1.2B"
+# LFM2.5-1.2B-Instruct — newer, more capable, instruct-tuned
+# Same Lfm2ForCausalLM architecture as LFM2 (hybrid conv+attention)
+# Clean tokenizer (PreTrainedTokenizerFast), chat_template.jinja present
+# 10 conv + 6 attention layers, out_proj (not o_proj), in_proj (conv), w1/w3 (MLP)
+MODEL_ID = "liquidai/LFM2.5-1.2B-Instruct"
 # LFM2 uses "out_proj" (not "o_proj") for attention output.
 # Also target conv layers (in_proj, out_proj) and MLP (w1, w3).
 LORA_TARGETS = ["q_proj", "k_proj", "v_proj", "out_proj", "in_proj", "w1", "w3"]
@@ -313,7 +319,7 @@ def run_ewc(model_path, tasks_data, lora_rank, lora_targets, epochs, batch_size,
 # MAIN
 # ============================================================================
 print("="*70, flush=True)
-print("EXP 6: Baselines on LFM2-1.2B", flush=True)
+print("EXP 6: Baselines on LFM2.5-1.2B-Instruct", flush=True)
 print("Naive vs AVR vs EWC", flush=True)
 print("="*70, flush=True)
 
@@ -326,7 +332,7 @@ tasks_data = {
 }
 tasks_list = [(k, tasks_data[k]["train"], tasks_data[k]["eval"]) for k in tasks_data]
 
-print("\nDownloading LFM2-1.2B from ModelScope...", flush=True)
+print("\nDownloading LFM2.5-1.2B-Instruct from ModelScope...", flush=True)
 MODEL_PATH = snapshot_download(MODEL_ID, cache_dir=OUTPUT_DIR / "model_cache")
 print(f"  Cached: {MODEL_PATH}", flush=True)
 
@@ -378,7 +384,7 @@ if torch.cuda.is_available(): torch.cuda.empty_cache()
 
 # Summary
 print(f"\n{'='*70}", flush=True)
-print("BASELINE COMPARISON — LFM2-1.2B", flush=True)
+print("BASELINE COMPARISON — LFM2.5-1.2B-Instruct", flush=True)
 print(f"{'='*70}", flush=True)
 print(f"\n{'Method':<15} {'BWT':<10} {'ACC':<10} {'Repairs':<10}", flush=True)
 print("-"*45, flush=True)
