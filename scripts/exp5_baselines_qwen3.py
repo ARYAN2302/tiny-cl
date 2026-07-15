@@ -695,7 +695,7 @@ def run_ewc(model_path, tasks_data, lora_rank, lora_targets, epochs, batch_size,
     random.seed(seed); np.random.seed(seed); torch.manual_seed(seed)
     if torch.cuda.is_available(): torch.cuda.manual_seed_all(seed)
 
-    task_order = [t[0] for t in tasks_data]
+    task_order = list(tasks_data.keys())
     T = len(task_order)
     from avr.model import load_model
     from avr.verify import eval_ppls
