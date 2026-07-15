@@ -10,7 +10,7 @@ Same math stream (GSM8K→MATH→AQuA→SVAMP), 500 examples/task.
 Datasets: GitHub raw (no HuggingFace)
 Model: ModelScope -> HF mirror -> direct HF (auto-fallback via _bootstrap)
 Self-contained: bootstrap inlined, no external fetch needed.
-Package: pip-git -> git-clone -> raw-inline (3-way fallback)
+Package: avr source INLINED (zero network dependency)
 Model: ModelScope -> HF mirror -> direct HF (3-way fallback)
 """
 # ===========================================================================
@@ -141,139 +141,49 @@ def install_deps(extra=None, transformers_pin=None):
 
 
 # ---------------------------------------------------------------------------
-# 2. avr package install — three fallback strategies
+# 2. avr package — INLINED SOURCE (no github/network needed)
 # ---------------------------------------------------------------------------
-def _verify_avr_installed():
-    """
-    Light sanity check: verify the avr package is importable *as a module*
-    (i.e., its files are findable on sys.path). We do NOT do a full
-    `import avr` here because that would trigger `import torch` etc.,
-    which may not be installed yet at this point in the bootstrap.
+# The avr package source (~25KB, 8 files) is embedded directly below.
+# At runtime, _inline_avr_package() writes it to /tmp/avr-inline/avr/ and
+# adds that dir to sys.path. This avoids all dependency on github.com
+# and raw.githubusercontent.com (which sometimes have DNS issues on Kaggle).
+# The only network calls this script makes are:
+#   - PyPI (pip install of deps below)
+#   - ModelScope or HuggingFace (for model download)
+# ---------------------------------------------------------------------------
 
-    Instead, we use importlib.util.find_spec to check that the package
-    metadata is resolvable without executing the module body.
-    """
+AVR_SOURCES = {
+    '__init__.py': '"""\navr-cl: continual post-training with drift detection + repair.\n\nLEARN → VERIFY → REPAIR. Each phase is a separate module you can swap:\n  - avr.learn: train_sft, consolidate (LEARN)\n  - avr.verify: compute_ppl, eval_ppls, check_drift (VERIFY)\n  - avr.repair: get_lora_state, set_lora_state, reset_lora, repair (REPAIR)\n  - avr.eval: evaluate, generate_batch, default_scorer (evaluation)\n  - avr.model: load_model, format_prompt, format_example (model handling)\n\nQuickstart:\n    import avr\n    result = avr.run(\n        model="Qwen/Qwen3-1.7B",\n        tasks=[\n            ("gsm8k", train_pairs, eval_pairs),\n            ("math", train_pairs, eval_pairs),\n        ],\n        lora_rank=128,\n    )\n    print(f"BWT: {result[\'bwt\']:+.3f}  Repairs: {result[\'repairs\']}")\n\nCustom repair operator (TIES, TaskArithmetic, etc.):\n    import avr\n\n    def my_repair(model, snapshot, alpha, device):\n        # your merge logic here\n        return n_params_touched\n\n    result = avr.run(model=..., tasks=..., repair_fn=my_repair)\n"""\nfrom .run import run, compute_metrics\nfrom .model import load_model, detect_lora_targets, format_prompt, format_example\nfrom .learn import train_sft, consolidate\nfrom .verify import compute_ppl, eval_ppls, check_drift\nfrom .repair import get_lora_state, set_lora_state, reset_lora, repair\nfrom .eval import evaluate, generate_batch, default_scorer, normalize_answer\n\n__version__ = "0.1.0"\n\n__all__ = [\n    "run",\n    "compute_metrics",\n    "load_model", "detect_lora_targets", "format_prompt", "format_example",\n    "train_sft", "consolidate",\n    "compute_ppl", "eval_ppls", "check_drift",\n    "get_lora_state", "set_lora_state", "reset_lora", "repair",\n    "evaluate", "generate_batch", "default_scorer", "normalize_answer",\n]\n',
+    'model.py': '"""Model loading, LoRA setup, and chat template wrapping."""\nimport torch\nfrom typing import Optional\n\n\ndef load_model(model_id: str, lora_rank: int = 128, lora_alpha: int = 128,\n               lora_targets: list = None, device: str = "cuda"):\n    from transformers import AutoModelForCausalLM, AutoTokenizer\n    from peft import LoraConfig, get_peft_model, TaskType\n\n    print(f"  Loading {model_id}...", flush=True)\n    tokenizer = AutoTokenizer.from_pretrained(model_id)\n    if tokenizer.pad_token is None:\n        tokenizer.pad_token = tokenizer.eos_token\n\n    model = AutoModelForCausalLM.from_pretrained(\n        model_id, dtype=torch.bfloat16, device_map=device,\n        attn_implementation="sdpa")\n\n    if lora_targets is None:\n        lora_targets = detect_lora_targets(model)\n        print(f"  Auto-detected LoRA targets: {lora_targets}", flush=True)\n\n    lora_config = LoraConfig(\n        r=lora_rank, lora_alpha=lora_alpha, lora_dropout=0.05,\n        target_modules=lora_targets, bias="none", task_type=TaskType.CAUSAL_LM)\n    model = get_peft_model(model, lora_config)\n    model.gradient_checkpointing_enable()\n    model.enable_input_require_grads()\n\n    trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)\n    total = sum(p.numel() for p in model.parameters())\n    print(f"  Trainable: {trainable:,} / {total:,} ({100*trainable/total:.2f}%)", flush=True)\n    return model, tokenizer\n\n\ndef detect_lora_targets(model):\n    candidates = ["q_proj", "k_proj", "v_proj", "o_proj",\n                  "gate_proj", "up_proj", "down_proj",\n                  "in_proj", "out_proj", "conv1d"]\n    found = []\n    for name, _ in model.named_modules():\n        for c in candidates:\n            if name.endswith(c) and c not in found:\n                found.append(c)\n    return found if found else ["q_proj", "v_proj"]\n\n\ndef format_prompt(tokenizer, question: str) -> str:\n    messages = [{"role": "user", "content": question}]\n    try:\n        return tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)\n    except Exception:\n        return f"User: {question}\\nAssistant:"\n\n\ndef format_example(tokenizer, question: str, answer: str) -> str:\n    messages = [{"role": "user", "content": question}, {"role": "assistant", "content": answer}]\n    try:\n        text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=False)\n    except Exception:\n        text = f"User: {question}\\nAssistant: {answer}"\n    return text + tokenizer.eos_token\n',
+    'learn.py': '"""LEARN phase: SFT training + two-stream consolidation."""\nimport torch, time\nimport torch.nn.functional as F\nfrom torch.utils.data import Dataset, DataLoader\nfrom .model import format_example\nfrom .repair import get_lora_state, set_lora_state\n\n\nclass _TextDataset(Dataset):\n    def __init__(self, token_ids, ctx_len):\n        self.token_ids = token_ids\n        self.ctx_len = ctx_len\n        self.n_chunks = max(1, len(token_ids) // ctx_len)\n    def __len__(self): return self.n_chunks\n    def __getitem__(self, idx):\n        s = idx * self.ctx_len\n        e = s + self.ctx_len\n        chunk = self.token_ids[s:e]\n        return {"input_ids": chunk, "labels": chunk.clone()}\n\n\ndef train_sft(model, tokenizer, examples, epochs=3, lr=2e-4, batch_size=4,\n              grad_accum=4, ctx_len=512, device="cuda", tag="sft"):\n    all_tokens = []\n    for question, answer, gold in examples:\n        text = format_example(tokenizer, question, answer)\n        all_tokens.extend(tokenizer.encode(text, add_special_tokens=False))\n    token_ids = torch.tensor(all_tokens, dtype=torch.long)\n    dataset = _TextDataset(token_ids, ctx_len)\n    print(f"    [{tag}] {len(token_ids):,} tokens, {len(dataset)} chunks", flush=True)\n\n    for n, p in model.named_parameters():\n        if "lora_" in n: p.requires_grad = True\n        else: p.requires_grad = False\n    trainable = [p for p in model.parameters() if p.requires_grad]\n    opt = torch.optim.AdamW(trainable, lr=lr, weight_decay=0.01)\n    loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)\n\n    gs, tl = 0, 0.0\n    t0 = time.time()\n    accum = 0\n    opt.zero_grad()\n    for epoch in range(epochs):\n        for batch in loader:\n            model.train()\n            out = model(input_ids=batch["input_ids"].to(device),\n                       labels=batch["labels"].to(device))\n            (out.loss / grad_accum).backward()\n            accum += 1\n            if accum >= grad_accum:\n                torch.nn.utils.clip_grad_norm_(trainable, 1.0)\n                opt.step()\n                opt.zero_grad()\n                accum = 0\n                gs += 1\n                tl += out.loss.item()\n                if gs % 50 == 0:\n                    print(f"      [{tag}] step {gs} | loss={tl/gs:.4f} | {time.time()-t0:.0f}s", flush=True)\n\n\ndef consolidate(model, tokenizer, hippo_state, neo_state, examples,\n                epochs=1, lr=1e-4, batch_size=4, grad_accum=4, ctx_len=512, device="cuda"):\n    print(f"    [consolid] KL distill ({epochs} epoch)", flush=True)\n    all_tokens = []\n    for question, answer, gold in examples:\n        text = format_example(tokenizer, question, answer)\n        all_tokens.extend(tokenizer.encode(text, add_special_tokens=False))\n    token_ids = torch.tensor(all_tokens, dtype=torch.long)\n    dataset = _TextDataset(token_ids, ctx_len)\n    loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)\n\n    for n, p in model.named_parameters():\n        if "lora_" in n: p.requires_grad = True\n        else: p.requires_grad = False\n    trainable = [p for p in model.parameters() if p.requires_grad]\n    opt = torch.optim.AdamW(trainable, lr=lr, weight_decay=0.01)\n\n    gs, tl = 0, 0.0\n    t0 = time.time()\n    accum = 0\n    opt.zero_grad()\n    for epoch in range(epochs):\n        for batch in loader:\n            input_ids = batch["input_ids"].to(device)\n            set_lora_state(model, hippo_state, device)\n            model.eval()\n            with torch.no_grad():\n                hippo_logits = model(input_ids=input_ids).logits\n                p_hippo = F.softmax(hippo_logits[..., :-1, :].contiguous().float(), dim=-1)\n            del hippo_logits\n\n            set_lora_state(model, neo_state, device)\n            model.train()\n            neo_logits = model(input_ids=input_ids).logits\n            shift_neo = neo_logits[..., :-1, :].contiguous()\n            log_p_neo = F.log_softmax(shift_neo.float(), dim=-1)\n            kl_loss = F.kl_div(log_p_neo, p_hippo, reduction=\'batchmean\', log_target=False)\n            (kl_loss / grad_accum).backward()\n            accum += 1\n            if accum >= grad_accum:\n                torch.nn.utils.clip_grad_norm_(trainable, 1.0)\n                opt.step()\n                opt.zero_grad()\n                accum = 0\n                gs += 1\n                tl += kl_loss.item()\n                if gs % 50 == 0:\n                    print(f"      [consolid] step {gs} | KL={tl/gs:.4f} | {time.time()-t0:.0f}s", flush=True)\n            del neo_logits, log_p_neo, p_hippo, kl_loss, shift_neo\n            neo_state = get_lora_state(model)\n    print(f"    [consolid] Done: {gs} steps, avg KL={tl/max(gs,1):.4f}", flush=True)\n    return neo_state\n',
+    'verify.py': '"""VERIFY phase: PPL drift detection."""\nimport math\nimport torch\nfrom .model import format_example\n\n\ndef compute_ppl(model, tokenizer, examples, device="cuda", max_samples=100):\n    model.eval()\n    total_loss, total_tokens = 0.0, 0\n    for question, answer, gold in examples[:max_samples]:\n        text = format_example(tokenizer, question, answer)\n        inputs = tokenizer(text, return_tensors="pt", truncation=True, max_length=512).to(device)\n        with torch.no_grad():\n            outputs = model(**inputs, labels=inputs["input_ids"])\n        total_loss += outputs.loss.item() * inputs["input_ids"].shape[1]\n        total_tokens += inputs["input_ids"].shape[1]\n    model.train()\n    return math.exp(total_loss / max(total_tokens, 1))\n\n\ndef eval_ppls(model, tokenizer, tasks_data, task_order, trained_so_far, device="cuda"):\n    ppls = {}\n    for i, task in enumerate(task_order):\n        if i >= trained_so_far:\n            break\n        ppls[task] = compute_ppl(model, tokenizer, tasks_data[task]["train"], device=device)\n    return ppls\n\n\ndef check_drift(current_ppls, best_ppls, completed_tasks, threshold=1.15):\n    drifted = {}\n    for task in completed_tasks:\n        if task not in current_ppls or task not in best_ppls:\n            continue\n        ratio = current_ppls[task] / best_ppls[task] if best_ppls[task] > 0 else 1.0\n        if ratio > threshold:\n            drifted[task] = {"current": current_ppls[task], "best": best_ppls[task], "ratio": ratio}\n    return drifted\n',
+    'repair.py': '"""REPAIR phase: LoRA state management + weight interpolation."""\nimport math\nimport torch\nimport torch.nn.init as init\n\n\ndef get_lora_state(model):\n    return {n: p.data.cpu().clone() for n, p in model.named_parameters() if "lora_" in n}\n\ndef set_lora_state(model, state, device="cuda"):\n    for n, p in model.named_parameters():\n        if "lora_" in n and n in state:\n            p.data.copy_(state[n].to(device).to(p.data.dtype))\n\ndef reset_lora(model):\n    for n, p in model.named_parameters():\n        if "lora_A" in n:\n            init.kaiming_uniform_(p.data, a=math.sqrt(5))\n        elif "lora_B" in n:\n            p.data.zero_()\n\ndef repair(model, snapshot, alpha=0.1, device="cuda"):\n    n = 0\n    for name, p in model.named_parameters():\n        if "lora_" in name and name in snapshot:\n            p.data.copy_((1.0 - alpha) * p.data + alpha * snapshot[name].to(device))\n            n += 1\n    return n\n',
+    'eval.py': '"""Batched evaluation + scoring."""\nimport gc, re, time\nimport torch\nfrom .model import format_prompt\n\n\ndef generate_batch(model, tokenizer, questions, max_new_tokens=200, batch_size=8, device="cuda"):\n    results = []\n    gc_was = getattr(model, "gradient_checkpointing", False)\n    if gc_was:\n        try: model.gradient_checkpointing_disable()\n        except: pass\n    model.eval()\n    try:\n        for i in range(0, len(questions), batch_size):\n            batch = questions[i:i+batch_size]\n            texts = [format_prompt(tokenizer, q) for q in batch]\n            tokenizer.padding_side = "left"\n            inputs = tokenizer(texts, return_tensors="pt", truncation=True,\n                             max_length=1024, padding=True).to(device)\n            with torch.no_grad():\n                outputs = model.generate(**inputs, max_new_tokens=max_new_tokens,\n                    do_sample=False, pad_token_id=tokenizer.pad_token_id, temperature=1.0)\n            for out in outputs:\n                input_len = inputs["input_ids"].shape[1]\n                results.append(tokenizer.decode(out[input_len:], skip_special_tokens=True).strip())\n    finally:\n        if gc_was:\n            try: model.gradient_checkpointing_enable(); model.enable_input_require_grads()\n            except: pass\n    return results\n\n\ndef normalize_answer(s):\n    s = s.strip().lower()\n    s = re.sub(r\'[^\\w\\s.-]\', \' \', s)\n    return \' \'.join(s.split())\n\n\ndef default_scorer(response, gold):\n    resp = normalize_answer(response)\n    g = normalize_answer(gold)\n    if resp == g: return 1.0\n    if g in resp or resp in g: return 1.0\n    g_spaces = g.replace(\'_\', \' \')\n    resp_spaces = resp.replace(\'_\', \' \')\n    if g_spaces in resp_spaces or resp_spaces in g_spaces: return 1.0\n    return 0.0\n\n\ndef evaluate(model, tokenizer, eval_examples, task_name, scorer=None,\n             max_questions=200, batch_size=8, device="cuda"):\n    if scorer is None:\n        scorer = default_scorer\n    total = min(len(eval_examples), max_questions)\n    examples = eval_examples[:total]\n    questions = [ex[0] for ex in examples]\n    golds = [ex[2] for ex in examples]\n    print(f"    Eval {task_name} ({total} Qs)...", flush=True)\n    correct = 0\n    t0 = time.time()\n    for i in range(0, len(questions), batch_size):\n        batch_q = questions[i:i+batch_size]\n        batch_g = golds[i:i+batch_size]\n        responses = generate_batch(model, tokenizer, batch_q, max_new_tokens=200,\n                                   batch_size=len(batch_q), device=device)\n        for r, g in zip(responses, batch_g):\n            if scorer(r, g): correct += 1\n    acc = correct / total\n    print(f"    {task_name}: {correct}/{total} = {acc:.3f} ({time.time()-t0:.0f}s)", flush=True)\n    if torch.cuda.is_available(): torch.cuda.empty_cache()\n    return acc\n',
+    'run.py': '"""\navr.run — the orchestrator.\n\nWires LEARN → VERIFY → REPAIR across a task stream.\nEach phase is swappable: import from avr.learn, avr.verify, avr.repair\nand pass your own implementations if needed.\n"""\nimport torch\nimport numpy as np\nimport gc, copy, random, time\nfrom typing import List, Tuple\n\nfrom .model import load_model\nfrom .learn import train_sft, consolidate\nfrom .verify import eval_ppls, check_drift\nfrom .repair import get_lora_state, set_lora_state, reset_lora, repair\nfrom .eval import evaluate, default_scorer\n\n\ndef compute_metrics(R, task_order):\n    T = len(task_order)\n    acc = float(np.mean([R[T-1][j] for j in range(T)]))\n    bwt_values = [R[T-1][j] - R[j][j] for j in range(T-1)]\n    bwt = float(np.mean(bwt_values)) if bwt_values else 0.0\n    ff_values = [max(R[l][j] for l in range(T)) - R[T-1][j] for j in range(T-1)]\n    ff = float(np.mean(ff_values)) if ff_values else 0.0\n    return {"acc": acc, "bwt": bwt, "ff": ff}\n\n\ndef run(model: str,\n        tasks: List[Tuple[str, list, list]],\n        lora_rank: int = 128,\n        lora_alpha: int = 128,\n        lora_targets: list = None,\n        epochs: int = 3,\n        lr: float = 2e-4,\n        batch_size: int = 4,\n        grad_accum: int = 4,\n        ctx_len: int = 512,\n        drift_threshold: float = 1.15,\n        repair_alpha: float = 0.1,\n        max_repair_steps: int = 10,\n        two_stream: bool = False,\n        scorer=None,\n        repair_fn=None,\n        device: str = "cuda",\n        seed: int = 42):\n    """\n    Run Anchor-Verify-Repair on a model + task stream.\n\n    Args:\n        model: HuggingFace model ID\n        tasks: List of (name, train_examples, eval_examples).\n               Each example is (question, answer, gold).\n        lora_rank: LoRA rank. Default 128.\n        lora_targets: LoRA target modules. Auto-detected if None.\n        two_stream: Use hippocampus/neocortex variant. Default False.\n        scorer: Custom scorer(response, gold) -> float. Default: substring match.\n        repair_fn: Custom repair operator with signature\n                   fn(model, snapshot, alpha, device) -> int (num params touched).\n                   Default: avr.repair.repair (linear interpolation toward snapshot).\n                   Pass your own for TIES, TaskArithmetic, etc.\n    """\n    random.seed(seed); np.random.seed(seed); torch.manual_seed(seed)\n    if torch.cuda.is_available(): torch.cuda.manual_seed_all(seed)\n\n    task_order = [t[0] for t in tasks]\n    tasks_data = {t[0]: {"train": t[1], "eval": t[2]} for t in tasks}\n    T = len(task_order)\n\n    _do_repair = repair_fn if repair_fn is not None else repair\n\n    print(f"\\n{\'=\'*70}", flush=True)\n    print(f"avr-cl | Model: {model} | Tasks: {task_order}", flush=True)\n    print(f"LoRA r={lora_rank} | Two-stream: {two_stream} | Seed: {seed}", flush=True)\n    print(f"AVR: threshold={drift_threshold}, alpha={repair_alpha}, max_steps={max_repair_steps}", flush=True)\n    print(f"Repair operator: {_do_repair.__name__ if hasattr(_do_repair, \'__name__\') else \'custom\'}", flush=True)\n    print(f"{\'=\'*70}", flush=True)\n\n    model_obj, tokenizer = load_model(model, lora_rank, lora_alpha, lora_targets, device)\n    R = [[0.0]*T for _ in range(T)]\n    best_ppls = {}\n    completed = []\n    total_repairs = 0\n    repair_log = []\n    snapshot = None\n\n    if two_stream:\n        neo_state = get_lora_state(model_obj)\n\n    for ti, task in enumerate(task_order):\n        print(f"\\n{\'=\'*60}\\n  Task {ti+1}/{T}: {task}\\n{\'=\'*60}", flush=True)\n        train_ex = tasks_data[task]["train"]\n\n        # LEARN\n        if two_stream:\n            neo_snapshot = copy.deepcopy(neo_state)\n            print(f"  [twostream] Snapshot taken", flush=True)\n            reset_lora(model_obj)\n            print(f"  [twostream] Hippocampus reset", flush=True)\n            train_sft(model_obj, tokenizer, train_ex, epochs=epochs, lr=lr,\n                     batch_size=batch_size, grad_accum=grad_accum, ctx_len=ctx_len,\n                     device=device, tag="hippo")\n            hippo_state = get_lora_state(model_obj)\n            print(f"  [twostream] Hippocampus trained", flush=True)\n            set_lora_state(model_obj, neo_state, device)\n            neo_state = consolidate(model_obj, tokenizer, hippo_state, neo_state, train_ex,\n                                    epochs=1, lr=lr*0.5, batch_size=batch_size,\n                                    grad_accum=grad_accum, ctx_len=ctx_len, device=device)\n            print(f"  [twostream] Consolidation complete", flush=True)\n            set_lora_state(model_obj, neo_state, device)\n            repair_target = neo_snapshot\n        else:\n            train_sft(model_obj, tokenizer, train_ex, epochs=epochs, lr=lr,\n                     batch_size=batch_size, grad_accum=grad_accum, ctx_len=ctx_len,\n                     device=device, tag="sft")\n            repair_target = snapshot\n\n        # VERIFY\n        post_ppls = eval_ppls(model_obj, tokenizer, tasks_data, task_order, ti+1, device)\n        if task not in best_ppls:\n            best_ppls[task] = post_ppls[task]\n        print(f"  PPLs: " + " | ".join(f"{k}:{v:.2f}" for k,v in post_ppls.items()), flush=True)\n\n        # REPAIR\n        repairs = 0\n        if ti > 0 and repair_target is not None:\n            drifted = check_drift(post_ppls, best_ppls, completed, drift_threshold)\n            if drifted:\n                print(f"  [AVR] DRIFT on {list(drifted.keys())}", flush=True)\n                for dk, info in drifted.items():\n                    print(f"    {dk}: {info[\'current\']:.2f}/{info[\'best\']:.2f}={info[\'ratio\']:.2f}x", flush=True)\n                still = drifted\n                for step in range(max_repair_steps):\n                    n = _do_repair(model_obj, repair_target, repair_alpha, device)\n                    repairs += 1\n                    rp = eval_ppls(model_obj, tokenizer, tasks_data, task_order, ti+1, device)\n                    still = check_drift(rp, best_ppls, completed, drift_threshold)\n                    print(f"    [AVR] Repair {step+1}: {n} params, drifted: {list(still.keys()) if still else \'none\'}", flush=True)\n                    if not still:\n                        print(f"  [AVR] Converged at step {step+1}", flush=True)\n                        break\n                if still:\n                    print(f"  [AVR] Max steps reached", flush=True)\n                if two_stream:\n                    neo_state = get_lora_state(model_obj)\n            else:\n                print(f"  [AVR] No drift", flush=True)\n\n        total_repairs += repairs\n        repair_log.append({"task": task, "repairs": repairs})\n\n        # Update best PPLs\n        final_ppls = eval_ppls(model_obj, tokenizer, tasks_data, task_order, ti+1, device)\n        for dk, dp in final_ppls.items():\n            if dk not in best_ppls or dp < best_ppls[dk]:\n                best_ppls[dk] = dp\n\n        # Snapshot\n        if not two_stream:\n            snapshot = get_lora_state(model_obj)\n        completed.append(task)\n\n        # Evaluate (R-matrix)\n        print(f"\\n  Evaluating...", flush=True)\n        for j in range(ti + 1):\n            R[ti][j] = evaluate(model_obj, tokenizer, tasks_data[task_order[j]]["eval"],\n                               task_order[j], scorer=scorer, device=device)\n\n        if torch.cuda.is_available(): torch.cuda.empty_cache()\n        gc.collect()\n\n    metrics = compute_metrics(R, task_order)\n    result = {\n        "acc": metrics["acc"],\n        "bwt": metrics["bwt"],\n        "ff": metrics["ff"],\n        "repairs": total_repairs,\n        "R": R,\n        "repair_log": repair_log,\n        "task_order": task_order,\n    }\n\n    print(f"\\n{\'=\'*70}", flush=True)\n    print(f"RESULTS: ACC={metrics[\'acc\']:.3f}  BWT={metrics[\'bwt\']:+.3f}  FF={metrics[\'ff\']:.3f}  Repairs={total_repairs}", flush=True)\n    print(f"{\'=\'*70}", flush=True)\n\n    del model_obj; gc.collect()\n    if torch.cuda.is_available(): torch.cuda.empty_cache()\n    return result\n',
+    'cli.py': '"""\navr.cli — `avr train config.yaml`\n\nConfig format:\n    model: Qwen/Qwen3-1.7B\n    lora_rank: 128\n    tasks:\n      - name: task_a\n        train: data/task_a_train.json\n        eval: data/task_a_eval.json\n      - name: task_b\n        train: data/task_b_train.json\n        eval: data/task_b_eval.json\n\nData format (JSON): list of [question, answer, gold] triples.\n"""\nimport argparse, json, sys\nfrom pathlib import Path\n\n\ndef load_config(path):\n    import yaml\n    with open(path) as f:\n        return yaml.safe_load(f)\n\n\ndef load_task_data(task_cfg):\n    with open(task_cfg["train"]) as f:\n        train = [(ex[0], ex[1], ex[2]) for ex in json.load(f)]\n    with open(task_cfg["eval"]) as f:\n        eval_data = [(ex[0], ex[1], ex[2]) for ex in json.load(f)]\n    return train, eval_data\n\n\ndef main():\n    parser = argparse.ArgumentParser(\n        prog="avr",\n        description="avr-cl: detect when fine-tuning broke old tasks and repair them")\n    sub = parser.add_subparsers(dest="command", required=True)\n\n    train = sub.add_parser("train", help="Run on a task stream")\n    train.add_argument("config", help="Path to YAML config")\n    train.add_argument("--seed", type=int, default=42)\n\n    args = parser.parse_args()\n\n    if args.command == "train":\n        import avr\n        config = load_config(args.config)\n        tasks = []\n        for task_cfg in config["tasks"]:\n            name = task_cfg["name"]\n            train_data, eval_data = load_task_data(task_cfg)\n            tasks.append((name, train_data, eval_data))\n            print(f"  {name}: {len(train_data)} train, {len(eval_data)} eval")\n\n        result = avr.run(\n            model=config["model"],\n            tasks=tasks,\n            lora_rank=config.get("lora_rank", 128),\n            lora_alpha=config.get("lora_alpha", 128),\n            lora_targets=config.get("lora_targets"),\n            epochs=config.get("epochs", 3),\n            lr=config.get("lr", 2e-4),\n            batch_size=config.get("batch_size", 4),\n            grad_accum=config.get("grad_accum", 4),\n            ctx_len=config.get("ctx_len", 512),\n            drift_threshold=config.get("drift_threshold", 1.15),\n            repair_alpha=config.get("repair_alpha", 0.1),\n            max_repair_steps=config.get("max_repair_steps", 10),\n            two_stream=config.get("two_stream", False),\n            seed=args.seed,\n        )\n\n        output = config.get("output", "results.json")\n        with open(output, "w") as f:\n            json.dump(result, f, indent=2, default=str)\n        print(f"\\nResults saved: {output}")\n\n\nif __name__ == "__main__":\n    main()\n',
+}
+
+
+def _inline_avr_package(install_dir="/tmp/avr-inline"):
+    """Write the embedded avr package source to disk and add to sys.path.
+    No network access needed — the source is inlined in this script."""
+    import sys
+    from pathlib import Path
+    pkg_dir = Path(install_dir) / "avr"
+    pkg_dir.mkdir(parents=True, exist_ok=True)
+    for fn, content in AVR_SOURCES.items():
+        (pkg_dir / fn).write_text(content)
+    if str(Path(install_dir)) not in sys.path:
+        sys.path.insert(0, str(Path(install_dir)))
+    # Verify
     import importlib
     importlib.invalidate_caches()
-    # find_spec resolves the package location without importing it.
-    # It will raise ModuleNotFoundError only if `avr` itself is not on the path.
     spec = importlib.util.find_spec("avr")
     if spec is None or spec.origin is None:
-        raise ModuleNotFoundError("avr package not found on sys.path")
-    return spec.origin
+        raise RuntimeError("avr package not findable after inline write")
+    print(f"[bootstrap] avr package inlined to {install_dir}", flush=True)
+    return "inlined"
 
-
-def install_avr(repo_url=REPO_URL, local_dir="/tmp/tiny-cl-src"):
-    """
-    Install the `avr` package. Returns the method that worked.
-
-    Strategy 1: pip install git+<repo_url>            (fast, needs github access)
-    Strategy 2: git clone + pip install -e <local>    (also needs github)
-    Strategy 3: download raw .py files from github raw (works even if git
-                protocol is blocked, as long as HTTPS to raw.githubusercontent.com works)
-    """
-    # Strategy 1
-    try:
-        r = subprocess.run(
-            [sys.executable, "-m", "pip", "install", "-q", "--no-deps",
-             f"git+{repo_url}"],
-            capture_output=True, text=True, timeout=240)
-        if r.returncode == 0:
-            try:
-                _verify_avr_installed()
-                print(f"[bootstrap] avr installed via pip-git", flush=True)
-                return "pip-git"
-            except ModuleNotFoundError:
-                print(f"[bootstrap] pip-git rc=0 but avr not findable; trying next", flush=True)
-        else:
-            print(f"[bootstrap] pip-git failed (rc={r.returncode}): "
-                  f"{r.stderr.strip()[-200:]}", flush=True)
-    except subprocess.TimeoutExpired:
-        print("[bootstrap] pip-git timed out", flush=True)
-    except Exception as e:
-        print(f"[bootstrap] pip-git exception: {e}", flush=True)
-
-    # Strategy 2
-    try:
-        if not Path(local_dir).exists():
-            subprocess.run(
-                ["git", "clone", "--depth", "1", repo_url, local_dir],
-                check=True, capture_output=True, text=True, timeout=240)
-        r = subprocess.run(
-            [sys.executable, "-m", "pip", "install", "-q", "--no-deps",
-             "-e", local_dir],
-            capture_output=True, text=True, timeout=120)
-        if r.returncode == 0:
-            # For editable installs, also add to sys.path as fallback
-            if str(Path(local_dir)) not in sys.path:
-                sys.path.insert(0, str(Path(local_dir)))
-            try:
-                _verify_avr_installed()
-                print(f"[bootstrap] avr installed via git-clone + pip-local", flush=True)
-                return "pip-local"
-            except ModuleNotFoundError:
-                print(f"[bootstrap] pip-local rc=0 but avr not findable; trying next", flush=True)
-        else:
-            print(f"[bootstrap] pip-local failed (rc={r.returncode}): "
-                  f"{r.stderr.strip()[-200:]}", flush=True)
-    except subprocess.TimeoutExpired:
-        print("[bootstrap] git clone timed out", flush=True)
-    except Exception as e:
-        print(f"[bootstrap] pip-local exception: {e}", flush=True)
-
-    # Strategy 3 — inline from raw.githubusercontent.com
-    return _inline_avr_from_raw(local_dir)
-
-
-def _inline_avr_from_raw(local_dir):
-    """Download avr/*.py from GitHub raw and install as a local package."""
-    print("[bootstrap] Falling back to raw-file inline install...", flush=True)
-    files = ["__init__.py", "model.py", "learn.py", "verify.py",
-             "repair.py", "eval.py", "run.py", "cli.py"]
-    pkg_dir = Path(local_dir) / "avr"
-    pkg_dir.mkdir(parents=True, exist_ok=True)
-
-    for fn in files:
-        url = f"{REPO_RAW}/avr/{fn}"
-        dest = pkg_dir / fn
-        req = urllib.request.Request(url, headers={"User-Agent": "avr-bootstrap/0.1"})
-        with urllib.request.urlopen(req, timeout=60) as r:
-            dest.write_bytes(r.read())
-        print(f"  fetched {fn} ({dest.stat().st_size} bytes)", flush=True)
-
-    # Minimal pyproject.toml so setuptools picks up the package
-    (Path(local_dir) / "pyproject.toml").write_text(
-        '[build-system]\n'
-        'requires = ["setuptools>=68.0", "wheel"]\n'
-        'build-backend = "setuptools.build_meta"\n\n'
-        '[project]\n'
-        'name = "avr-cl"\n'
-        'version = "0.1.0"\n'
-        'dependencies = []\n\n'
-        '[tool.setuptools.packages.find]\n'
-        'include = ["avr*"]\n'
-    )
-
-    r = subprocess.run(
-        [sys.executable, "-m", "pip", "install", "-q", "--no-deps",
-         "-e", str(Path(local_dir))],
-        capture_output=True, text=True, timeout=120)
-    if r.returncode != 0:
-        raise RuntimeError(
-            f"All avr install strategies failed.\n"
-            f"Last error (pip-local-editable from raw):\n{r.stderr[-1500:]}")
-    # Belt-and-suspenders: add the local dir to sys.path so `import avr`
-    # works even if the editable install's .pth file wasn't picked up.
-    if str(Path(local_dir)) not in sys.path:
-        sys.path.insert(0, str(Path(local_dir)))
-    _verify_avr_installed()
-    print(f"[bootstrap] avr installed via raw-inline", flush=True)
-    return "raw-inline"
-
-
-# ---------------------------------------------------------------------------
-# 3. Model download — three fallback sources
-# ---------------------------------------------------------------------------
 def download_model(model_id, cache_dir, prefer="modelscope"):
     """
     Download a model snapshot. Returns the local path.
@@ -357,7 +267,7 @@ def patch_transformers_torch26():
         pass
 
 install_deps()                       # peft, accelerate, modelscope, huggingface_hub, ...
-install_avr()                        # 3 fallback strategies for the avr package
+_inline_avr_package()                               # inlined avr source, no network needed
 patch_transformers_torch26()        # work around torch>=2.6 + transformers check
 
 # ============================================================================
