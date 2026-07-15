@@ -95,9 +95,9 @@ def install_deps(extra=None, transformers_pin=None):
     Strategy:
       1. Try installing all packages in one batch (fast path).
       2. If that fails, install them one at a time so a single bad package
-         doesn't kill the whole run. Print a warning for each failure.
-      3. modelscope is OPTIONAL — if it fails to install, we skip it and
-         rely on the HF fallback in download_model(). Same for transformers_pin.
+         doesn't kill the whole run.
+      3. modelscope is REQUIRED (it's the only reliable model download source
+         on Kaggle when GitHub/HF DNS is broken).
 
     Args:
         extra: list of extra pip specs to install.
@@ -112,9 +112,10 @@ def install_deps(extra=None, transformers_pin=None):
         "protobuf",
         "packaging",
         "huggingface_hub>=0.26.0",  # needed for HF_HUB_DISABLE_XET support
+        "modelscope",               # REQUIRED — only reliable model source on Kaggle
     ]
-    # Optional packages — if they fail, we continue (download_model has fallbacks)
-    optional_pkgs = ["modelscope"]
+    # Optional packages — if they fail, we continue
+    optional_pkgs = []
     if transformers_pin:
         optional_pkgs.append(f"transformers{transformers_pin}")
     if extra:

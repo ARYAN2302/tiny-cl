@@ -115,9 +115,10 @@ def install_deps(extra=None, transformers_pin=None):
         "protobuf",
         "packaging",
         "huggingface_hub>=0.26.0",  # needed for HF_HUB_DISABLE_XET support
+        "modelscope",               # REQUIRED — only reliable model source on Kaggle
     ]
-    # Optional packages — if they fail, we continue (download_model has fallbacks)
-    optional_pkgs = ["modelscope"]
+    # Optional packages — if they fail, we continue
+    optional_pkgs = []
     if transformers_pin:
         optional_pkgs.append(f"transformers{transformers_pin}")
     if extra:
