@@ -46,7 +46,7 @@ Results: [`results/qwen3_1.7b/`](results/qwen3_1.7b/)
 ## Install
 
 ```bash
-pip install git+https://github.com/ARYAN2302/tiny-cl.git
+pip install avr-cl
 ```
 
 ## Use it
@@ -162,8 +162,18 @@ This script is standalone and reproduces the Qwen3-1.7B math stream results show
 
 ## Limitations
 
-- **Validated on 1.7B.** Smaller and larger models are next.
-- **SFT only.** DPO/GRPO on the roadmap.
+- **Validated on 1.7B and 1.2B.** 7B+ is on the roadmap.
+- **SFT only.** DPO/GRPO support is the next milestone — the 2026 post-training frontier.
+- **Repair cap.** `max_repair_steps=10` sometimes hits before full convergence on hard transitions. Bumping to 20 may help on difficult task streams.
+
+## Roadmap
+
+- [x] PyPI release (`pip install avr-cl`)
+- [ ] Quickstart Colab notebook
+- [ ] HuggingFace Hub integration (`avr.push_to_hub`)
+- [ ] DPO/GRPO support for the LEARN phase
+- [ ] 7B+ model validation
+- [ ] arXiv preprint
 
 ## License
 
