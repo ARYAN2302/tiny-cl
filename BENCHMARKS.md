@@ -82,7 +82,7 @@ exp4. Maximally unrelated domains: Code→Math→Instruct→Science.
 |---|---|---|---|
 | **AVR (ours)** | **-0.010** | **0.667** | **17** |
 
-Near-zero forgetting across maximally different domains. 17 repairs fired on 2 of 4 transitions. Full results in `results/experiments/exp4_crossdomain.json`.
+Near-zero forgetting across maximally different domains. 17 repairs fired on 2 of 4 transitions.
 
 ---
 
@@ -104,19 +104,6 @@ exp3. Standard CL-LLM benchmark. 8 diverse tasks: C-STANCE, FOMC, MeetingBank, P
 | CoDyRA | 7B | -3.25 | 2025 |
 
 If AVR (1.7B) achieves BWT ≥ -0.05, that's first-in-class — better than every published method at 4× the scale.
-
----
-
-## Two-Stream Variant — Qwen3-1.7B (500 examples/task)
-
-exp0. Hippocampus/neocortex KL distillation variant. Shelved — underperforms AVR-only.
-
-| Method | BWT | ACC | Repairs |
-|---|---|---|---|
-| Two-Stream | -0.237 | 0.315 | 0 |
-| AVR-only | -0.078 | 0.529 | 29 |
-
-Two-Stream's PPL drift detection didn't fire despite accuracy collapse. KL distillation was unstable. AVR-only remains the validated method. Full analysis in `results/experiments/exp0_twostream.json`.
 
 ---
 

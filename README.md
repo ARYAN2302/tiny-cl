@@ -4,12 +4,6 @@
 
 The forgetting-prevention layer for LLM post-training. After each fine-tuning stage, avr-cl detects if the model forgot prior tasks and repairs the damage in weight space — no replay buffer, no old training data, one LoRA snapshot in memory.
 
-<p align="center">
-  <img src="results/qwen3_1.7b/validation_heatmap_math.png" width="800">
-</p>
-
-*Left: naive sequential SFT — prior tasks collapse (GSM8K 66% → 9%). Right: avr-cl — prior tasks survive (GSM8K 62% → 47%). Same model, same data, same LoRA.*
-
 ## The problem
 
 Every continual learning method in LLMs is just absorption with weight updates. Absorb new data → update weights → try not to forget. EWC, replay, SLAO — all variations of the same thing: absorb → update → hope.
@@ -151,14 +145,26 @@ No replay buffer. No old training data. One LoRA snapshot in memory.
 
 avr-cl needs zero old data, zero gradients at repair time, one LoRA snapshot, and it *knows* when the model forgot. It's not a replacement for your training framework — it's the layer that watches for forgetting between stages.
 
-## Reproduce the headline result
+## Reproduce
+
+All experiment scripts are self-contained — paste into a Kaggle notebook with GPU T4 and run.
 
 ```bash
-# On Kaggle T4 or any GPU with 16GB+ VRAM
+# Headline result: Qwen3-1.7B, 5000 examples/task (~5h on T4)
 python scripts/avr_cl_math_qwen3_1.7b.py
-```
 
-This script is standalone and reproduces the Qwen3-1.7B math stream results shown above. The `avr.run()` API implements the same logic in a pip-installable package.
+# Baselines: Qwen3-1.7B, 500 examples/task (~3h)
+python scripts/exp5_baselines_qwen3.py
+
+# Baselines: LFM2.5-1.2B, 500 examples/task (~2.5h)
+python scripts/exp6_baselines_lfm.py
+
+# EWC only on Qwen3 (fills missing EWC row without rerunning Naive/AVR)
+python scripts/exp5_ewc_only_qwen3.py
+
+# TRACE 8-task benchmark (~5h)
+python scripts/exp3_trace_8task.py
+```
 
 ## Limitations
 
