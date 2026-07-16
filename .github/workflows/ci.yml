@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install package
+        run: pip install -e .
+
+      - name: Import check
+        run: python -c "import avr; print(f'avr-cl {avr.__version__} imported OK')"
+
+      - name: Check API surface
+        run: |
+          python -c "
+          import avr
+          assert hasattr(avr, 'run')
+          assert hasattr(avr, 'compute_metrics')
+          assert hasattr(avr, 'get_lora_state')
+          assert hasattr(avr, 'set_lora_state')
+          assert hasattr(avr, 'reset_lora')
+          assert hasattr(avr, 'repair')
+          assert hasattr(avr, 'check_drift')
+          assert hasattr(avr, 'compute_ppl')
+          assert hasattr(avr, 'eval_ppls')
+          assert hasattr(avr, 'load_model')
+          assert hasattr(avr, 'train_sft')
+          assert hasattr(avr, 'evaluate')
+          print('All API exports present')
+          "
