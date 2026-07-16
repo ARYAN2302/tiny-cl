@@ -353,7 +353,9 @@ TRACE_TASKS = ["C-STANCE", "FOMC", "MeetingBank", "Py150",
                "ScienceQA", "NumGLUE-cm", "NumGLUE-ds", "20Minuten"]
 
 def load_trace():
-    """Download TRACE 0.5K from Google Drive and load all 8 tasks."""
+    """Download TRACE 0.5K from Google Drive and load all 8 tasks.
+    Truncates prompts to ~1500 chars (~500 tokens) to keep training feasible —
+    MeetingBank and Py150 have very long examples that would take 24+ hours each."""
     import gdown, zipfile
     trace_dir = OUTPUT_DIR / "trace_data"
     if not (trace_dir.exists() and any(trace_dir.iterdir())):
@@ -372,17 +374,28 @@ def load_trace():
             if d.is_dir():
                 trace_dir = d; break
 
+    MAX_PROMPT_CHARS = 1500  # ~500 tokens, matches ctx_len=512
     rng = random.Random(SEED)
     tasks = []
     for task_name in TRACE_TASKS:
         task_dir = trace_dir / task_name
         with open(task_dir / "train.json") as f: train_data = json.load(f)
         with open(task_dir / "test.json") as f: test_data = json.load(f)
-        train_pairs = [(ex["prompt"], ex["answer"], ex["answer"]) for ex in train_data]
-        test_pairs = [(ex["prompt"], ex["answer"], ex["answer"]) for ex in test_data]
+        # Truncate long prompts — critical for MeetingBank and Py150
+        train_pairs = []
+        for ex in train_data:
+            prompt = ex["prompt"][:MAX_PROMPT_CHARS] if len(ex["prompt"]) > MAX_PROMPT_CHARS else ex["prompt"]
+            train_pairs.append((prompt, ex["answer"], ex["answer"]))
+        test_pairs = []
+        for ex in test_data:
+            prompt = ex["prompt"][:MAX_PROMPT_CHARS] if len(ex["prompt"]) > MAX_PROMPT_CHARS else ex["prompt"]
+            test_pairs.append((prompt, ex["answer"], ex["answer"]))
         rng.shuffle(train_pairs); rng.shuffle(test_pairs)
         tasks.append((task_name, train_pairs, test_pairs))
-        print(f"  {task_name}: {len(train_pairs)} train, {len(test_pairs)} eval", flush=True)
+        # Show token estimate
+        total_chars = sum(len(p) for p, _, _ in train_pairs)
+        print(f"  {task_name}: {len(train_pairs)} train, {len(test_pairs)} eval, "
+              f"~{total_chars//4:,} tokens (truncated to {MAX_PROMPT_CHARS} chars)", flush=True)
     return tasks
 
 # EXPERIMENT CONFIG
