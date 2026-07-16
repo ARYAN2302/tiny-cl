@@ -90,12 +90,23 @@ Near-zero forgetting across maximally different domains. 17 repairs fired on 2 o
 
 exp3. Standard CL-LLM benchmark. 8 diverse tasks: C-STANCE, FOMC, MeetingBank, Py150, ScienceQA, NumGLUE-cm, NumGLUE-ds, 20Minuten.
 
-| Method | BWT | ACC | Repairs |
-|---|---|---|---|
-| Naive SFT | *(running)* | | |
-| **AVR (ours)** | *(running)* | | |
+**Caveat:** Used the 0.5K variant (500 ex/task). Published baselines use 5000 ex/task — NOT directly comparable. R-matrix shows instability at this scale.
 
-### Published baselines on TRACE 8-task (7B models, for reference)
+| Method | BWT | ACC | Repairs | Status |
+|---|---|---|---|---|
+| Naive SFT | -0.089 | 0.141 | 0 | ✅ complete |
+| **AVR (ours)** | *(incomplete)* | | 24+ | ⚠️ 5/8 tasks (ran out of GPU) |
+
+**AVR partial results (through task 5/8):**
+- Repair loop fired on 4 of 4 possible transitions (tasks 3, 4, 5, 6)
+- Task 3 (MeetingBank): drift detected, **converged in 4 repairs**
+- Task 4 (Py150): drift detected, maxed 10 repairs
+- Task 5 (ScienceQA): drift detected, maxed 10 repairs
+- Task 6: was on repair 5/10 when stopped
+
+**To complete:** Run AVR-only on TRACE (~3h GPU, skips Naive which is done).
+
+### Published baselines on TRACE 8-task (7B models, 5000 ex/task — NOT comparable)
 
 | Method | Model | BWT | Source |
 |---|---|---|---|
@@ -103,7 +114,7 @@ exp3. Standard CL-LLM benchmark. 8 diverse tasks: C-STANCE, FOMC, MeetingBank, P
 | O-LoRA | 7B | -4.3 | NeurIPS 2023 |
 | CoDyRA | 7B | -3.25 | 2025 |
 
-If AVR (1.7B) achieves BWT ≥ -0.05, that's first-in-class — better than every published method at 4× the scale.
+**Important:** Our -0.089 Naive BWT uses 10× less data than these baselines. Do not claim we beat GORP — the comparison is invalid without matching data scale.
 
 ---
 

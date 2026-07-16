@@ -1,0 +1,76 @@
+{
+  "experiment": "exp3_trace_8task",
+  "model": "Qwen/Qwen3-1.7B",
+  "config": {
+    "lora_rank": 32,
+    "examples_per_task": 500,
+    "epochs": 3,
+    "tasks": ["C-STANCE", "FOMC", "MeetingBank", "Py150", "ScienceQA", "NumGLUE-cm", "NumGLUE-ds", "20Minuten"],
+    "seed": 42,
+    "note": "TRACE 0.5K variant (500 ex/task). Published baselines use 5000 ex/task — not directly comparable."
+  },
+  "results": {
+    "naive": {
+      "status": "complete",
+      "acc": 0.141,
+      "bwt": -0.089,
+      "ff": 0.229,
+      "repairs": 0,
+      "runtime_seconds": 24106,
+      "R": [
+        [0.460, 0, 0, 0, 0, 0, 0, 0],
+        [0.240, 0.260, 0, 0, 0, 0, 0, 0],
+        [0.640, 0.970, 0.010, 0, 0, 0, 0, 0],
+        [0.070, 0.010, 0.000, 0.090, 0, 0, 0, 0],
+        [0.570, 1.000, 0.000, 0.150, 0.010, 0, 0, 0],
+        [0.300, 0.260, 0.000, 0.090, 0.000, 0.432, 0, 0],
+        [0.370, 0.580, 0.000, 0.050, 0.000, 0.407, 0.490, 0],
+        [0.040, 0.330, 0.000, 0.080, 0.000, 0.321, 0.360, 0.000]
+      ],
+      "note": "R-matrix shows instability — FOMC bounces 0.26->0.97->0.01->1.00->0.26. Likely due to small (500 ex) training data."
+    },
+    "avr": {
+      "status": "incomplete",
+      "note": "AVR condition ran out of GPU time during task 6 (NumGLUE-cm) at repair step 5/10. Tasks 1-5 complete.",
+      "tasks_completed": 5,
+      "tasks_total": 8,
+      "runtime_seconds": 41928,
+      "partial_R": [
+        [0.460, 0, 0, 0, 0],
+        [0.240, 0.260, 0, 0, 0],
+        [0.270, 0.510, 0.000, 0, 0],
+        [0.310, 0.250, 0.000, 0.080, 0],
+        [0.400, 0.220, 0.000, 0.120, 0.000]
+      ],
+      "repair_log": [
+        {"task": "C-STANCE", "repairs": 0},
+        {"task": "FOMC", "repairs": 0},
+        {"task": "MeetingBank", "repairs": 4, "outcome": "converged"},
+        {"task": "Py150", "repairs": 10, "outcome": "max_steps_reached"},
+        {"task": "ScienceQA", "repairs": 10, "outcome": "max_steps_reached"},
+        {"task": "NumGLUE-cm", "repairs": "incomplete (5/10 when stopped)"}
+      ],
+      "drift_detections": [
+        {"after_task": "MeetingBank", "drifted": ["C-STANCE (1.71x)", "FOMC (2.68x)"]},
+        {"after_task": "Py150", "drifted": ["C-STANCE (2.86x)", "FOMC (7.34x)", "MeetingBank (1.81x)"]},
+        {"after_task": "ScienceQA", "drifted": ["C-STANCE (1.66x)", "FOMC (2.83x)", "MeetingBank (1.69x)", "Py150 (1.76x)"]},
+        {"after_task": "NumGLUE-cm", "drifted": ["C-STANCE (1.26x)", "FOMC (1.38x)", "MeetingBank (1.38x)", "Py150 (1.51x)", "ScienceQA (2.38x)"]}
+      ]
+    }
+  },
+  "comparison_at_task_5": {
+    "note": "Both conditions through task 5 (ScienceQA), apples-to-apples",
+    "naive": {
+      "R[4]": [0.570, 1.000, 0.000, 0.150, 0.010],
+      "acc": 0.346,
+      "bwt_4": 0.225
+    },
+    "avr": {
+      "R[4]": [0.400, 0.220, 0.000, 0.120, 0.000],
+      "acc": 0.148,
+      "bwt_4": -0.015
+    },
+    "interpretation": "At task 5, AVR has lower ACC but lower-magnitude BWT (less forgetting). Naive shows wild forward transfer (likely noise from small data)."
+  },
+  "verdict": "INCOMPLETE. Naive finished, AVR did not. R-matrix shows instability suggesting 500 ex/task is too small for stable TRACE results. To complete: run AVR-only on TRACE (skip Naive, ~3h GPU). Data scale caveat: published baselines (GORP -0.7, O-LoRA -4.3) use 5000 ex/task — our 500-ex Naive BWT of -0.089 is NOT directly comparable."
+}
