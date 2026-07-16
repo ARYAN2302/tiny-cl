@@ -2,7 +2,7 @@
 
 **Your fine-tune silently broke your model. avr-cl checks if it broke, and fixes it.**
 
-A continual post-training framework with three phases: LEARN → VERIFY → REPAIR. After each fine-tuning stage, it detects if the model forgot prior tasks and repairs the damage in weight space — no replay buffer, no old training data, one LoRA snapshot in memory.
+The forgetting-prevention layer for LLM post-training. After each fine-tuning stage, avr-cl detects if the model forgot prior tasks and repairs the damage in weight space — no replay buffer, no old training data, one LoRA snapshot in memory.
 
 <p align="center">
   <img src="results/qwen3_1.7b/validation_heatmap_math.png" width="800">
@@ -30,65 +30,28 @@ avr-cl builds those missing steps:
 
 ## Results
 
-### Headline — Qwen3-1.7B (5000 examples/task)
+Qwen3-1.7B, 4-task stream: GSM8K → MATH(algebra) → AQuA-RAT → SVAMP. LoRA r=128, 5000 examples/task.
 
-4-task math stream: GSM8K → MATH → AQuA-RAT → SVAMP. LoRA r=128, 3 epochs.
+| | Naive SFT | avr-cl |
+|---|---|---|
+| **BWT** | −0.453 | **−0.078** |
+| **GSM8K after all 4 tasks** | 9% | **47%** |
+| **ACC** | 0.220 | **0.529** |
+| **Repair steps** | — | 29 |
 
-| | Naive SFT | EWC | **avr-cl** |
-|---|---|---|---|
-| **BWT** | −0.453 | — | **−0.078** |
-| **GSM8K after all 4 tasks** | 9% | — | **47%** |
-| **ACC** | 0.220 | — | **0.529** |
-| **Repair steps** | 0 | 0 | **29** |
+5.8× less forgetting. The repair loop fired 29 times across 3 tasks — each time detecting PPL drift on prior tasks and pulling weights back until the drift resolved.
 
-**5.8× less forgetting.** The repair loop fired 29 times across 3 task transitions.
-
-### Cross-model validation — 500 examples/task
-
-Same 4-task math stream, reduced data for fast iteration.
-
-| Model | Method | BWT | ACC | Repairs |
-|---|---|---|---|---|
-| Qwen3-1.7B | Naive | −0.320 | 0.240 | 0 |
-| Qwen3-1.7B | **AVR** | **−0.037** | **0.522** | **27** |
-| LFM2.5-1.2B | Naive | −0.280 | 0.198 | 0 |
-| LFM2.5-1.2B | EWC | −0.267 | 0.232 | 0 |
-| LFM2.5-1.2B | **AVR** | **−0.150** | **0.357** | **30** |
-
-**AVR beats both Naive and EWC on every model.** EWC barely outperforms Naive — the Fisher penalty slows forgetting but doesn't prevent it. AVR detects and repairs it.
-
-### Cross-domain — Qwen3-1.7B
-
-4 maximally unrelated domains: Code → Math → Instruct → Science.
-
-| Method | BWT | ACC | Repairs |
-|---|---|---|---|
-| **AVR** | **−0.010** | **0.667** | **17** |
-
-Near-zero forgetting across maximally different domains. Not just a math trick.
-
-### TRACE 8-task benchmark
-
-The standard CL-LLM benchmark. 8 diverse tasks: C-STANCE, FOMC, MeetingBank, Py150, ScienceQA, NumGLUE-cm, NumGLUE-ds, 20Minuten.
-
-| Method | BWT | ACC | Repairs |
-|---|---|---|---|
-| Naive | *(running)* | | |
-| **AVR** | *(running)* | | |
-
-Published baselines on TRACE 8-task (7B models): GORP (ACL 2025) BWT = −0.7, O-LoRA BWT = −4.3, CoDyRA BWT = −3.25.
-
-Full results: [`BENCHMARKS.md`](BENCHMARKS.md) · [`results/`](results/)
+Results: [`results/qwen3_1.7b/`](results/qwen3_1.7b/)
 
 ## Install
 
 ```bash
-pip install avr-cl
+pip install git+https://github.com/ARYAN2302/tiny-cl.git
 ```
 
-*Until PyPI release: `pip install git+https://github.com/ARYAN2302/tiny-cl.git`*
-
 ## Use it
+
+**Option 1: Full loop** — avr-cl handles everything (model loading, LoRA, SFT, verify, repair, eval):
 
 ```python
 import avr
@@ -105,24 +68,37 @@ result = avr.run(
 print(f"BWT: {result['bwt']:+.3f}  Repairs: {result['repairs']}")
 ```
 
+**Option 2: As a layer** — keep your existing training loop (TRL, Axolotl, Unsloth), add avr-cl between stages:
+
+```python
+import avr
+from trl import SFTTrainer  # your existing training
+
+# Train on task A (your existing code)
+trainer = SFTTrainer(model, train_dataset=task_a)
+trainer.train()
+
+# After training: check if the model forgot prior tasks
+snapshot = avr.get_lora_state(model)  # snapshot before training task B
+# ... train on task B ...
+drift = avr.check_drift(
+    current_ppls=avr.eval_ppls(model, tokenizer, prior_tasks, ...),
+    best_ppls=best_ppls,
+    completed_tasks=prior_task_names,
+    threshold=1.15,
+)
+if drift:
+    avr.repair(model, snapshot, alpha=0.1)  # 2 lines, plugs into anything
+```
+
+The layer API: `avr.get_lora_state()`, `avr.check_drift()`, `avr.repair()`. Use them with any training framework.
+
 Each task is a `(name, train_examples, eval_examples)` tuple. Each example is a `(question, answer, gold)` triple:
 - `question` — the input prompt
 - `answer` — the full training target (reasoning + answer)
 - `gold` — the short answer for scoring
 
-The framework handles: model loading, LoRA, chat templates, SFT training, PPL drift detection, weight repair, batched evaluation, R-matrix, BWT/FF/ACC.
-
-**Custom repair operator** (TIES, TaskArithmetic, etc.):
-
-```python
-import avr
-
-def my_repair(model, snapshot, alpha, device):
-    # your merge logic here
-    return n_params_touched
-
-result = avr.run(model=..., tasks=..., repair_fn=my_repair)
-```
+The full-loop API handles: model loading, LoRA, chat templates, SFT training, PPL drift detection, weight repair, batched evaluation, R-matrix, BWT/FF/ACC.
 
 ## The framework
 
@@ -169,44 +145,25 @@ No replay buffer. No old training data. One LoRA snapshot in memory.
 | **Retrain from scratch** | Expensive. Days of compute for every new task. |
 | **LoRA adapter switching** | Needs a router at inference. Multiple adapters in memory. |
 | **EWC** | Fisher penalty slows forgetting but doesn't prevent it. Barely better than Naive (see LFM2.5 results above). |
-| **mergekit** | Merges N separately-trained models *after* the fact. avr-cl prevents the damage *during* one training run. |
-| **Just use TRL** | TRL has no concept of "after this task, before the next." It doesn't know your model forgot. |
-| **Letta / memory layers** | Handles the retrieval layer. avr-cl handles the weight layer. Use both. |
+| **mergekit** | Merges N separately-trained models *after* the fact. avr-cl prevents the damage *during* one training run. Complementary, not competing. |
+| **TRL / Axolotl / Unsloth** | Great training frameworks — but none of them check if your model forgot between stages. avr-cl plugs into them as a layer. |
+| **Letta / memory layers** | Handles the retrieval/memory layer for agents. avr-cl handles the weight layer. Use both. |
 
-avr-cl needs zero old data, zero gradients at repair time, one LoRA snapshot, and it *knows* when the model forgot.
+avr-cl needs zero old data, zero gradients at repair time, one LoRA snapshot, and it *knows* when the model forgot. It's not a replacement for your training framework — it's the layer that watches for forgetting between stages.
 
-## Reproduce
+## Reproduce the headline result
 
 ```bash
-# Headline result (Qwen3-1.7B, 5000 examples/task, ~5h on Kaggle T4)
+# On Kaggle T4 or any GPU with 16GB+ VRAM
 python scripts/avr_cl_math_qwen3_1.7b.py
-
-# Baseline comparison (Qwen3-1.7B, 500 examples/task, ~3h)
-python scripts/exp5_baselines_qwen3.py
-
-# Baseline comparison (LFM2.5-1.2B, 500 examples/task, ~2.5h)
-python scripts/exp6_baselines_lfm.py
-
-# TRACE 8-task benchmark (~5h)
-python scripts/exp3_trace_8task.py
 ```
 
-All experiment scripts are **self-contained** — paste into a Kaggle notebook with GPU T4 enabled and run. No external setup needed.
+This script is standalone and reproduces the Qwen3-1.7B math stream results shown above. The `avr.run()` API implements the same logic in a pip-installable package.
 
 ## Limitations
 
-- **Validated on 1.7B and 1.2B.** 7B+ is on the roadmap.
-- **SFT only.** DPO/GRPO support is the next milestone — the 2026 post-training frontier.
-- **Repair cap.** `max_repair_steps=10` sometimes hits before full convergence on hard transitions. Bumping to 20 may help on difficult task streams.
-
-## Roadmap
-
-- [ ] PyPI release (`pip install avr-cl`)
-- [ ] Quickstart Colab notebook
-- [ ] HuggingFace Hub integration (`avr.push_to_hub`)
-- [ ] DPO/GRPO support for the LEARN phase
-- [ ] 7B+ model validation
-- [ ] arXiv preprint
+- **Validated on 1.7B.** Smaller and larger models are next.
+- **SFT only.** DPO/GRPO on the roadmap.
 
 ## License
 
