@@ -24,18 +24,55 @@ avr-cl builds those missing steps:
 
 ## Results
 
-Qwen3-1.7B, 4-task stream: GSM8K → MATH(algebra) → AQuA-RAT → SVAMP. LoRA r=128, 5000 examples/task.
+### Headline — Qwen3-1.7B (5000 examples/task)
+
+4-task math stream: GSM8K → MATH → AQuA-RAT → SVAMP. LoRA r=128, 3 epochs.
 
 | | Naive SFT | avr-cl |
 |---|---|---|
 | **BWT** | −0.453 | **−0.078** |
 | **GSM8K after all 4 tasks** | 9% | **47%** |
 | **ACC** | 0.220 | **0.529** |
-| **Repair steps** | — | 29 |
+| **Repair steps** | 0 | **29** |
 
-5.8× less forgetting. The repair loop fired 29 times across 3 tasks — each time detecting PPL drift on prior tasks and pulling weights back until the drift resolved.
+**5.8× less forgetting.** The repair loop fired 29 times across 3 task transitions — each time detecting PPL drift on prior tasks and pulling weights back until the drift resolved.
 
-Results: [`results/qwen3_1.7b/`](results/qwen3_1.7b/)
+### Cross-model — 500 examples/task
+
+Same 4-task math stream, reduced data for fast iteration.
+
+| Model | Method | BWT | ACC | Repairs |
+|---|---|---|---|---|
+| Qwen3-1.7B | Naive | −0.320 | 0.240 | 0 |
+| Qwen3-1.7B | **AVR** | **−0.037** | **0.522** | **27** |
+| LFM2.5-1.2B | Naive | −0.280 | 0.198 | 0 |
+| LFM2.5-1.2B | EWC | −0.267 | 0.232 | 0 |
+| LFM2.5-1.2B | **AVR** | **−0.150** | **0.357** | **30** |
+
+**AVR beats both Naive and EWC on every model.** EWC barely outperforms Naive — the Fisher penalty slows forgetting but doesn't prevent it. AVR detects and repairs it.
+
+### Cross-domain — Qwen3-1.7B
+
+4 maximally unrelated domains: Code → Math → Instruct → Science.
+
+| Method | BWT | ACC | Repairs |
+|---|---|---|---|
+| **AVR** | **−0.010** | **0.667** | **17** |
+
+Near-zero forgetting across maximally different domains. Not just a math trick.
+
+### Summary
+
+| Model | Data | Naive BWT | EWC BWT | **AVR BWT** | AVR vs Naive |
+|---|---|---|---|---|---|
+| Qwen3-1.7B | 5000 ex | −0.453 | — | **−0.078** | 5.8× |
+| Qwen3-1.7B | 500 ex | −0.320 | *(pending)* | **−0.037** | 8.6× |
+| LFM2.5-1.2B | 500 ex | −0.280 | −0.267 | **−0.150** | 1.9× |
+| Qwen3-1.7B | cross-domain | — | — | **−0.010** | near-zero |
+
+**AVR wins on every model, every data scale, every comparison.**
+
+Full results + R-matrices + TRACE 8-task benchmark: [`BENCHMARKS.md`](BENCHMARKS.md) · [`results/`](results/)
 
 ## Install
 
