@@ -1,4 +1,4 @@
-# avr-cl
+# Avr-cl
 
 **Your fine-tune silently broke your model. avr-cl checks if it broke, and fixes it.**
 
