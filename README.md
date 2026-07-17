@@ -2,13 +2,13 @@
 
 **Your fine-tune silently broke your model. avr-cl checks if it broke, and fixes it.**
 
-The forgetting-prevention layer for LLM post-training. After each fine-tuning stage, avr-cl detects if the model forgot prior tasks and repairs the damage in weight space — no replay buffer, no old training data, one LoRA snapshot in memory.
+The forgetting prevention layer for LLM post-training. After each fine-tuning stage, avr-cl detects if the model forgot prior tasks and repairs the damage in weight space no replay buffer, no old training data, one LoRA snapshot in memory.
 
 ## The problem
 
-Every continual learning method in LLMs is just absorption with weight updates. Absorb new data → update weights → try not to forget. EWC, replay, SLAO — all variations of the same thing: absorb → update → hope.
+Every continual learning method in LLMs is just absorption with weight updates. Absorb new data → update weights → try not to forget. EWC, replay, SLAO all variations of the same thing: absorb → update → hope.
 
-But that's not learning. When a human learns something new, they don't just absorb it and move on. They absorb it, then **verify** it against what they already know — does this break something I learned before? If it does, they **repair** the conflict. Then they check again. Only when the old knowledge still holds do they call it "learned."
+But that's not learning. When a human learns something new, they don't just absorb it and move on. They absorb it, then **verify** it against what they already know does this break something I learned before? If it does, they **repair** the conflict. Then they check again. Only when the old knowledge still holds do they call it "learned."
 
 Real learning is: **absorb → verify → repair → call it learned.**
 
@@ -172,14 +172,7 @@ python scripts/exp3_trace_8task.py
 - **SFT only.** DPO/GRPO support is the next milestone — the 2026 post-training frontier.
 - **Repair cap.** `max_repair_steps=10` sometimes hits before full convergence on hard transitions. Bumping to 20 may help on difficult task streams.
 
-## Roadmap
 
-- [x] PyPI release (`pip install avr-cl`)
-- [ ] Quickstart Colab notebook
-- [ ] HuggingFace Hub integration (`avr.push_to_hub`)
-- [ ] DPO/GRPO support for the LEARN phase
-- [ ] 7B+ model validation
-- [ ] arXiv preprint
 
 ## License
 
