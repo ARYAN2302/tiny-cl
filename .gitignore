@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+*.egg-info/
+results/
+modal_result.json
+
+# The original tiny-cl clone is reference material and has its own Git history.
+tiny-cl/

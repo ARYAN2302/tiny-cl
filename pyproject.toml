@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "continual-pt"
+version = "0.1.0"
+description = "Autonomous web-grounded continual post-training with AVR retention gates."
+requires-python = ">=3.10"
+dependencies = [
+  "beautifulsoup4>=4.12",
+  "ddgs>=9.0",
+  "pyyaml>=6.0",
+  "requests>=2.31",
+  "torch>=2.2",
+  "transformers>=4.45",
+  "peft>=0.13",
+  "accelerate>=1.0",
+]
+
+[project.optional-dependencies]
+gpu = ["bitsandbytes>=0.43"]
+modal = ["modal>=0.73"]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+continual-pt = "continual_pt.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["continual_pt*"]

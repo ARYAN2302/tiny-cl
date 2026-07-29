@@ -1,0 +1,77 @@
+name: learn-pytorch-fsdp2-dtensor
+objective: >-
+  Learn the current PyTorch distributed-training stack well enough to explain,
+  design, and debug FSDP2 fully_shard, DeviceMesh, DTensor, tensor parallelism,
+  and pipeline parallelism for real multi-GPU model training.
+# The learner creates its own research queries and selects sources through the
+# web-search tool. Domains constrain the tool to primary technical material.
+research_queries: []
+sources: []
+trusted_domains:
+  - docs.pytorch.org
+target_eval:
+  - id: fsdp2-fully-shard-order
+    prompt: >-
+      In PyTorch FSDP2, how should fully_shard be applied to a transformer model
+      and why is applying it bottom-up relevant?
+    must_contain: [fully_shard, bottom-up]
+  - id: fsdp2-mesh
+    prompt: >-
+      What is the role of DeviceMesh when configuring FSDP2, and what collective
+      communication group does it define?
+    must_contain: [DeviceMesh, process]
+  - id: dtensor-placement
+    prompt: >-
+      Explain the difference between Shard and Replicate placements in a PyTorch
+      DTensor and give one situation where each is appropriate.
+    must_contain: [Shard, Replicate]
+  - id: dtensor-redistribute
+    prompt: >-
+      What does DTensor redistribute do, and why can it introduce collective
+      communication cost?
+    must_contain: [redistribute, collective]
+  - id: tensor-parallel-plan
+    prompt: >-
+      In PyTorch tensor parallelism, what does a parallelization plan specify?
+      Name a style suitable for a linear layer whose output features are split.
+    must_contain: [parallel, ColwiseParallel]
+  - id: fsdp-tp-composition
+    prompt: >-
+      Describe a valid high-level composition of tensor parallelism and FSDP for
+      a transformer model. Which mesh dimension belongs to each technique?
+    must_contain: [tensor, FSDP]
+  - id: pipeline-schedule
+    prompt: >-
+      Why do pipeline-parallel schedules use microbatches, and what dependency
+      must a schedule preserve between forward and backward passes?
+    must_contain: [microbatch, backward]
+  - id: distributed-init
+    prompt: >-
+      Before using distributed collectives in PyTorch, what initialization step
+      is normally required and what does rank identify?
+    must_contain: [init_process_group, rank]
+retention_eval:
+  - id: retained-python-context-manager
+    prompt: What does a Python context manager guarantee around a with block?
+    must_contain: [enter, exit]
+  - id: retained-json
+    prompt: What are the two top-level data structures supported by JSON?
+    must_contain: [object, array]
+  - id: retained-sql-filter
+    prompt: In SQL, which clause filters rows before aggregation and which filters groups after aggregation?
+    must_contain: [WHERE, HAVING]
+  - id: retained-git-rebase
+    prompt: What is the main effect of git rebase compared with merging a branch?
+    must_contain: [commit, history]
+  - id: retained-python-generator
+    prompt: What does yield do in a Python function?
+    must_contain: [generator, value]
+  - id: retained-pytorch-autograd
+    prompt: What does PyTorch autograd compute during backpropagation?
+    must_contain: [gradient]
+  - id: retained-http-status
+    prompt: What does HTTP status 404 mean, and which class of status code is it?
+    must_contain: [not, found, 4]
+  - id: retained-bayes
+    prompt: In Bayes theorem, how are a prior and likelihood used to obtain a posterior?
+    must_contain: [prior, likelihood, posterior]

@@ -1,0 +1,22 @@
+name: learn-fastapi-dependency-injection
+objective: Learn to explain and correctly use FastAPI dependency injection.
+research_queries:
+  - FastAPI dependencies tutorial
+sources:
+  - https://fastapi.tiangolo.com/tutorial/dependencies/
+trusted_domains:
+  - fastapi.tiangolo.com
+target_eval:
+  - id: dependency-explain
+    prompt: In FastAPI, what does Depends do and when should it be used?
+    must_contain: [dependency, Depends]
+  - id: dependency-code
+    prompt: Write a minimal FastAPI route that injects a shared query parameter dependency.
+    must_contain: [Depends, def]
+retention_eval:
+  - id: retained-python-context-manager
+    prompt: What does a Python context manager guarantee around a with block?
+    must_contain: [enter, exit]
+  - id: retained-json
+    prompt: What are the two top-level data structures supported by JSON?
+    must_contain: [object, array]
