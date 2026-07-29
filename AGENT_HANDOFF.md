@@ -84,11 +84,18 @@ retention cases. The target cases were not used as training prompts.
 | First 1.5B attempt | target 0.500; candidate reduced target | Raw/weak synthetic SFT was not a valid learning signal. |
 | First Qwen3 4B attempt | target 0.500 -> 0.500; retention 0.875 | AVR correctly rejected all candidates. It exposed only three optimizer steps and first-document curriculum starvation. |
 | Corrected Qwen3 4B run | target **0.500 -> 0.625**; retention **0.875 -> 1.000** | `balanced-all-lora`, 3 epochs, 10 source-verified correction examples was accepted. The gained held-out case was `pipeline-schedule`; no target case regressed. |
+| Two-cycle moonshot | cycle 1: **0.500 -> 0.625**, retention **0.875 -> 1.000**; cycle 2: all three candidates scored 0.500 and were rejected; final **0.625/1.000** | This is a clean first acquisition plus safe non-regression. It is **not** evidence of sequential acquisition yet: the system retained the cycle-1 capability but did not earn a second commit. |
 
 The historical Modal apps are stopped. The latest successful app was
 `ap-9Z7plx97P5xzMSrhTi4ijH`; its persisted result is in the
 `continual-pt-results` volume under
 `learn-pytorch-fsdp2-dtensor-20260729-184319/`.
+
+The final two-cycle moonshot was
+`ap-Otrmxxv5He8XMtlTnSiBeQ`, persisted under
+`learn-pytorch-fsdp2-dtensor-20260729-192524/`. It proves that AVR restores a
+previously accepted update after later candidates fail; it does not prove that
+the current curriculum can autonomously accumulate two independent skills.
 
 ## What worked
 
@@ -143,6 +150,34 @@ The historical Modal apps are stopped. The latest successful app was
 5. Train or search an edit controller across many goals only after outcome
    verifiers exist. SEAL-style self-edits should be rewarded by post-update
    success, not trusted by default.
+
+## Research maturity and the next decisive experiment
+
+The present result is around **3--4/10 toward the long-horizon moonshot**:
+the framework has moved beyond an architecture diagram and produced one
+externally gated, durable acquisition. It is not 4/10 of the engineering work;
+the remaining stages are substantially harder and non-linear.
+
+The immediate next decisive experiment is deliberately simple:
+
+1. Start from one untouched model and pre-register 10 learning objectives in
+   several distinct technical domains.
+2. Permit no human-written training examples. The model must research,
+   construct its own source-backed practice, and choose from bounded update
+   directives.
+3. Require an external verifier for every objective: source-span checks are
+   acceptable for factual claims, but use unit tests, structured validators, or
+   environment success wherever possible.
+4. After every accepted update, evaluate all earlier learned suites, a fixed
+   unrelated retention suite, and transfer tasks. At objective 10, evaluate the
+   complete capability staircase.
+5. Compare against no-update, naive continual post-training, and replay-only
+   baselines under identical model, token, and compute budgets.
+
+Success means a repeated, statistically credible staircase of accumulated
+skills, not a single +1/8 lexical case. That would establish the central claim:
+a static pretrained model entered and a model that repeatedly researched,
+verified, weight-updated, and retained new capabilities emerged.
 
 ## Operational notes
 
